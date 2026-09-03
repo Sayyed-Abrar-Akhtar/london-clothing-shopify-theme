@@ -1,0 +1,171 @@
+{% if customer.orders.size != 0 %}
+  <section class="my-20 mx-6">
+    <section class="hidden lg:!grid lg:grid-cols-6 lg:grid-rows-1">
+      <section class="col-span-1">
+        <h2 class="uppercase font-bold tracking-wide mb-4">{{ customer.name }}</h2>
+        <p class="my-2 text-sm">{{ customer.email }}</p>
+        <p class="my-2">{{ customer.default_address.address1 }}</p>
+        <p class="my-2">{{ customer.default_address.phone }}</p>
+        <p class="mt-4 border border-black px-5 py-2 w-max">{{ 'Log out' | customer_logout_link }}</p>
+      </section>
+      <section class="col-span-5">
+        <section class="mb-6">
+          <h2 class="uppercase font-bold">Order History</h2>
+        </section>
+        {% paginate customer.orders by 20 %}
+          <section class="bg-[#fbfbfb] shadow-md">
+            <section class="grid grid-cols-12 grid-rows-1 gap-1 bg-[#333333] font-bold capitalize text-white px-2 py-3.5 items-center justify-center text-center mb-0">
+              <p>{{ 'customer.orders.order_number' | t }}</p>
+              <p class="col-span-2">{{ 'customer.orders.date' | t }}</p>
+              <p class="col-span-3">Product</p>
+              <p class="col-span-2">{{ 'customer.orders.payment_status' | t }}</p>
+              <p class="col-span-2">{{ 'customer.orders.fulfillment_status' | t }}</p>
+              <p>{{ 'customer.orders.total' | t }}</p>
+              <p>Shipment</p>
+            </section>
+            {% for order in customer.orders %}
+              <section class="grid grid-cols-12 grid-rows-1 gap-1 px-2 [&:not(:last-child)]:border-b border-gray-300 items-center justify-center text-center py-4">
+                <p data-label="{{ 'customer.orders.order_number' | t }}">
+                  {{ order.name | link_to: order.customer_url }}
+                </p>
+                <p class="col-span-2" data-label="{{ 'customer.orders.date' | t }}">
+                  {{ order.created_at | date: '%B %d, %Y' }}
+                </p>
+
+                <section data-label="Products" class="col-span-3">
+                  {% if order.line_items.size > 0 %}
+                    {% for lineItem in order.line_items %}
+                      <section class="flex items-center space-x-2 py-3">
+                        {% if lineItem.image != blank %}
+                          {{
+                            lineItem.image
+                            | image_url: width: 30
+                            | image_tag: preload: true, alt: lineItem.product.title
+                          }}
+                          <p class="tracking-wider">{{ lineItem.product.title }}</p>
+                        {% endif %}
+                      </section>
+                    {% endfor %}
+                  {% endif %}
+                </section>
+                <p class="col-span-2" data-label="{{ 'customer.orders.payment_status' | t }}">
+                  {{ order.financial_status_label }}
+                </p>
+                <p class="col-span-2" data-label="{{ 'customer.orders.fulfillment_status' | t }}">
+                  {{ order.fulfillment_status_label }}
+                </p>
+                <p data-label="{{ 'customer.orders.total' | t }}">{{ order.total_price | money }}</p>
+                <section class="tracking-td">
+                  {% for lineItem in order.line_items limit: 1 %}
+                    {% if lineItem.fulfillment.tracking_url %}
+                      <a class="tracking-url" href="{{ lineItem.fulfillment.tracking_url }}"> Track</a>
+                    {% else %}
+                      <p>Tracking not added</p>
+                    {% endif %}
+                  {% endfor %}
+                </section>
+              </section>
+            {% endfor %}
+          </section>
+
+          <section class="text-right">
+            {% if paginate.pages > 1 %}
+              {% include 'pagination' %}
+            {% endif %}
+          </section>
+        {% endpaginate %}
+      </section>
+    </section>
+
+    <section class="lg:hidden text-xs">
+      <section class="mb-6">
+        <h2 class="uppercase font-bold tracking-wide mb-4">{{ customer.name }}</h2>
+        <p class="my-2">{{ customer.email }}</p>
+        <p class="my-2">{{ customer.default_address.address1 }}</p>
+        <p class="my-2">{{ customer.default_address.phone }}</p>
+        <p class="mt-4 border border-black px-5 py-2 w-max">{{ 'Log out' | customer_logout_link }}</p>
+      </section>
+
+      <section>
+        <section class="grid grid-rows-1 grid-cols-6 bg-[#333333] font-normal capitalize text-white px-2 py-3.5 items-center justify-center text-center mb-0 tracking-wide">
+          <p class="">
+            <strong>Order</strong>
+          </p>
+          <p class="col-span-3">
+            <strong>Product</strong>
+          </p>
+          <p class="col-span-2">
+            <strong>Status</strong>
+          </p>
+        </section>
+
+        {% for order in customer.orders %}
+          <section class="grid grid-rows-1 grid-cols-6 items-start justify-center gap-2 my-6 px-1">
+            <section class="flex flex-col items-center justify-center space-y-4 text-center">
+              <p data-label="{{ 'customer.orders.order_number' | t }}">
+                {{ order.name | link_to: order.customer_url }}
+              </p>
+              <p data-label="{{ 'customer.orders.date' | t }}">{{ order.created_at | date: '%B %d, %Y' }}</p>
+            </section>
+            <section data-label="Products" class="col-span-3">
+              {% for lineItem in order.line_items %}
+                <section class="flex flex-col items-center justify-center space-y-2 py-1">
+                  {{- lineItem | image_url: width: 50 | image_tag: preload: true, alt: lineItem.product.title -}}
+
+                  <p class="tracking-wide text-center px-3">{{ lineItem.product.title }}</p>
+                </section>
+              {% endfor %}
+            </section>
+            <section class="col-span-2 grid grid-cols-1 grid-rows-2 gap-4">
+              <section class="flex flex-col items-center justify-center space-y-2 text-center">
+                <p>
+                  <strong>Payment</strong>
+                </p>
+                <p class="col-span-2" data-label="{{ 'customer.orders.payment_status' | t }}">
+                  {{ order.financial_status_label }}
+                </p>
+              </section>
+              <section class="flex flex-col items-center justify-center space-y-2 text-center">
+                <p>
+                  <strong>Fulfillment</strong>
+                </p>
+                <p class="col-span-2" data-label="{{ 'customer.orders.fulfillment_status' | t }}">
+                  {{ order.fulfillment_status_label }}
+                </p>
+              </section>
+            </section>
+          </section>
+          <section class="flex justify-between items-center [&:not(:last-child)]:border-b border-gray-300 bg-gray-100 px-1">
+            <div class="flex flex-col space-y-3 my-4">
+              <p>
+                <strong>Shipment</strong>
+              </p>
+              {% for lineItem in order.line_items limit: 1 %}
+                {% if lineItem.fulfillment.tracking_url %}
+                  <a class="tracking-url" href="{{ lineItem.fulfillment.tracking_url }}"> Track</a>
+                {% else %}
+                  <p>Tracking not added</p>
+                {% endif %}
+              {% endfor %}
+            </div>
+            <div class="flex flex-col space-y-3 my-4">
+              <p>
+                <strong>Total</strong>
+              </p>
+              <p data-label="{{ 'customer.orders.total' | t }}">{{ order.total_price | money }}</p>
+            </div>
+          </section>
+        {% endfor %}
+      </section>
+    </section>
+  </section>
+{% else %}
+  <div class="flex flex-col items-center justify-center m-20 space-y-6">
+    <p class="text-md">{{ 'customer.orders.none' | t }}</p>
+    <a
+      href="/"
+      class="mt-5 bg-black text-white border-black border-[1px] hover:bg-[#213a70] hover:border-[#213a70] hover:text-white h-[46px] transition delay-75 cursor-pointer w-max flex items-center justify-center tracking-widest lowercase px-4 py-2"
+      >Continue Shopping</a
+    >
+  </div>
+{% endif %}

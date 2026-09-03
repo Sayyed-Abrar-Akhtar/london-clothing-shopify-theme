@@ -1,0 +1,52 @@
+ <div class="group main-menu tracking-[1px] font-normal px-[6px] py-[2px]">
+  <a href="{{- link.url -}}" class="sticky z-[60] px-5">
+    <li class="relative overflow-hidden group-hover:after:content-[''] group-hover:after:w-[98%] group-hover:after:border-b-2 group-hover:after:border-black group-hover:after:absolute group-hover:after:bottom-[0] group-hover:after:left-[0] group-hover:after:z-20">{{- link.title -}}</li>
+  </a>
+  
+  {%- assign linkName =  link.title | downcase -%}
+
+  {% if link.links.size > 0 %}
+    {%- for block in section.blocks -%}
+      {%- assign menuName =  block.settings.menu-name | downcase -%}
+      {%- if linkName == menuName -%}
+        {%- assign imageUrl = block.settings.bg-dropdown-image |image_url: height: 600 -%}
+      {%- endif -%}
+    {%- endfor-%}
+
+    <div class="main-menu-child hidden fixed w-full top-0 left-0 pt-[200px] z-[55] px-[80px] pb-[100px] lowercase text-[14px] tracking-wider min-h-[500px] justify-between items-start bg-white corner-case" style="clip-path:polygon(0 0,100% 0,100% 100%,0 85%);">
+      {% render 'mega-menu-list.liquid', links:link.links %} 
+      {% for image_detail in images_detail %}
+
+        {% assign menu_name = image_detail.settings.menu-name | downcase  %}
+        {% assign filter = link.title | downcase  %}
+        
+        {% if menu_name == filter %}
+          {% render 'mega-menu-image.liquid', 
+          title: image_detail.settings.image-title,
+          first_image: image_detail.settings.first-menu-image, 
+          first_image_heading: image_detail.settings.first-image-heading,
+          first_collection:image_detail.settings.first-image-collection,
+          first_heading_color: image_detail.settings.first-heading-color,
+          second_image: image_detail.settings.second-menu-image,
+          second_image_heading: image_detail.settings.second-image-heading,
+          second_collection:image_detail.settings.second-image-collection,
+          second_heading_color: image_detail.settings.second-heading-color,
+          %}
+        {% endif  %}
+      {% endfor %}
+    </div>
+  {%- endif -%}
+</div>
+
+<style>
+  @media screen and (min-width: 1024px) and (max-width: 1044px) {
+    .corner-case {
+      padding: 200px 15px 100px 15px;
+    }
+  }
+  @media screen and (min-width: 1045px) and (max-width: 1185px) {
+    .corner-case {
+      padding: 200px 25px 100px 25px;
+    }
+  }
+</style>

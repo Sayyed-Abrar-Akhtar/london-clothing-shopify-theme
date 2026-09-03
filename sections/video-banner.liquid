@@ -1,0 +1,816 @@
+{%- liquid
+  assign video = section.settings.video
+  assign fallback_image = section.settings.fallback_image
+  assign mobile_fallback_image = section.settings.mobile_fallback_image | default: fallback_image
+  assign heading = section.settings.heading
+  assign heading_style = section.settings.heading_style
+  assign heading_weight = section.settings.heading_weight
+  assign heading_case = section.settings.heading_case
+  assign heading_color = section.settings.heading_color
+  assign button_text = section.settings.button_text
+  assign button_link = section.settings.button_link
+  assign url_size = section.settings.url_size
+  assign url_style = section.settings.url_style
+  assign url_weight = section.settings.url_weight
+  assign url_case = section.settings.url_case
+  assign url_color = section.settings.url_color
+  assign overlay_opacity = section.settings.overlay_opacity | divided_by: 100.0
+  assign overlay_color = section.settings.overlay_color
+  assign disable_on_mobile = section.settings.disable_on_mobile
+  assign autoplay = section.settings.autoplay
+  assign loop_video = section.settings.loop
+  assign mute_video = section.settings.mute
+  assign show_controls = section.settings.show_controls
+-%}
+
+{% capture caption_styles %}
+          background-color:{{ section.settings.background_color }};
+          color:heading_color;
+        {% endcapture %}
+
+{% capture cta_container_styles %}
+          
+          {% case section.settings.text_alignment %}
+            {% when "left" %}
+              justify-content: flex-start;
+            {% when "right" %}
+              justify-content: flex-end;
+            {% else %}
+              justify-content: center;
+          {% endcase %}
+        {% endcapture %}
+
+
+
+{% capture heading_styles %}
+  color:{{ heading_color }};
+  font-size:clamp({{ section.settings.heading_size|times:0.4 }}px, calc({{ section.settings.heading_size |times:0.5}}px + 1vw), {{ section.settings.heading_size |times:1.2}}px);
+  font-style:{{ heading_style }};
+  font-weight:{{ heading_weight }};
+  text-transform:{{ heading_case }};
+{% endcapture %}
+{% capture cta_styles %}
+  color:{{ url_color }};font-size:{{ url_size }}rem;font-style:{{ url_style }};font-weight:{{ url_weight }};text-transform:{{ url_case }};{% if section.settings.is_url_underlined %}border-bottom:1px solid #000000;{% endif %}
+{% endcapture %}
+
+{% if section.settings.video %}
+  <div class="video-banner-section section-{{ section.id }}" data-section-id="{{ section.id }}">
+    <div class="video-banner__container">
+      {%- if video != blank -%}
+        <div class="video-banner__video {% if disable_on_mobile %}small--hide{% endif %}">
+          {{
+            video
+            | video_tag:
+              autoplay: autoplay,
+              loop: loop_video,
+              muted: mute_video,
+              controls: show_controls,
+              image_size: '2000x'
+          }}
+        </div>
+      {%- endif -%}
+
+      {%- if fallback_image != blank -%}
+        <div class="video-banner__fallback {% if video != blank %}video-banner__fallback--hidden{% endif %}">
+          <div
+            class="video-banner__image medium-up--show"
+            style="background-image: url({{ fallback_image | image_url: '2000x' }});"
+          ></div>
+          {%- if mobile_fallback_image != blank -%}
+            <div
+              class="video-banner__image small--show"
+              style="background-image: url({{ mobile_fallback_image | image_url: '800x' }});"
+            ></div>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+
+      <div
+        class="video-banner__overlay"
+        style="background-color: {{ overlay_color }}; opacity: {{ overlay_opacity }};"
+      >
+        &nbsp;
+      </div>
+    </div>
+    {% if section.settings.caption_location == 'top' %}
+      {% render 'image-caption',
+        heading_one: section.settings.heading,
+        paragraph: section.settings.paragraph,
+        cta_label: section.settings.button_text,
+        cta_link: section.settings.button_link,
+        caption_styles: caption_styles,
+        heading_styles: heading_styles,
+        paragraph_styles: paragraph_styles,
+        cta_container_styles: cta_container_styles,
+        cta_styles: cta_styles
+      %}
+    {% else %}
+      {% render 'banner-caption',
+        heading_type: 'h1',
+        heading: heading,
+        cta_label: button_text,
+        cta_link: button_link,
+        heading_styles: heading_styles,
+        cta_styles: cta_styles
+      %}
+    {% endif %}
+  </div>
+{% endif %}
+
+<style>
+  .video-banner-section {
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 30px;
+    padding-bottom:10px;
+  }
+  .video-banner__container {
+    position: relative;
+    width: 100%;
+    height: 0;
+    padding-bottom: {{ section.settings.video_height }};
+  }
+  .video-banner__video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .video-banner__video video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .video-banner__fallback {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .video-banner__image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+  }
+  .video-banner__overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+  }
+  @media screen and (max-width: 768px) {
+    .video-banner__container {
+      padding-bottom: {{ section.settings.mobile_video_height }};
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Video Banner",
+  "class": "index-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Video Settings"
+    },
+    {
+      "type": "video",
+      "id": "video",
+      "label": "Video",
+      "info": "Upload MP4 file (recommended 1080p, max 50MB)"
+    },
+    {
+      "type": "image_picker",
+      "id": "fallback_image",
+      "label": "Fallback Image",
+      "info": "Displayed if video fails to load"
+    },
+    {
+      "type": "image_picker",
+      "id": "mobile_fallback_image",
+      "label": "Mobile Fallback Image",
+      "info": "Optional different image for mobile"
+    },
+    {
+      "type": "checkbox",
+      "id": "disable_on_mobile",
+      "label": "Disable video on mobile",
+      "default": false,
+      "info": "Show only fallback image on mobile"
+    },
+    {
+      "type": "checkbox",
+      "id": "autoplay",
+      "label": "Autoplay",
+      "default": true,
+      "info": "Recommended for background videos"
+    },
+    {
+      "type": "checkbox",
+      "id": "loop",
+      "label": "Loop",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "mute",
+      "label": "Mute",
+      "default": true,
+      "info": "Required for autoplay on most browsers"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_controls",
+      "label": "Show Controls",
+      "default": false,
+      "info": "Display video player controls"
+    },
+    {
+      "type": "select",
+      "id": "video_height",
+      "label": "Video Height (Desktop)",
+      "default": "56.25%",
+      "options": [
+        {
+          "value": "30%",
+          "label": "Small"
+        },
+        {
+          "value": "45%",
+          "label": "Medium"
+        },
+        {
+          "value": "56.25%",
+          "label": "16:9 Ratio"
+        },
+        {
+          "value": "75%",
+          "label": "4:3 Ratio"
+        },
+        {
+          "value": "100%",
+          "label": "Full Height"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "mobile_video_height",
+      "label": "Video Height (Mobile)",
+      "default": "75%",
+      "options": [
+        {
+          "value": "45%",
+          "label": "Small"
+        },
+        {
+          "value": "56.25%",
+          "label": "16:9 Ratio"
+        },
+        {
+          "value": "75%",
+          "label": "Tall"
+        },
+        {
+          "value": "100%",
+          "label": "Full Height"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Overlay Settings"
+    },
+    {
+      "type": "color",
+      "id": "overlay_color",
+      "label": "Overlay Color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "label": "Overlay Opacity",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 30
+    },
+    {
+      "type": "header",
+      "content": "Caption Settings"
+    },
+    {
+      "type": "radio",
+      "id": "caption_location",
+      "label": "Text Placement",
+      "options": [
+        {
+          "label": "Display text over video",
+          "value": "top"
+        },
+        {
+          "label": "Display text below video",
+          "value": "bottom"
+        }
+      ],
+      "default": "top",
+      "info": "Choose where the heading and button appear"
+    },
+    {
+      "type": "select",
+      "id": "caption_position",
+      "label": "Caption Position",
+      "options": [
+        {
+          "value": "top-left",
+          "label": "Top Left"
+        },
+        {
+          "value": "top-center",
+          "label": "Top Center"
+        },
+        {
+          "value": "top-right",
+          "label": "Top Right"
+        },
+        {
+          "value": "middle-left",
+          "label": "Middle Left"
+        },
+        {
+          "value": "middle-center",
+          "label": "Middle Center"
+        },
+        {
+          "value": "middle-right",
+          "label": "Middle Right"
+        },
+        {
+          "value": "bottom-left",
+          "label": "Bottom Left"
+        },
+        {
+          "value": "bottom-center",
+          "label": "Bottom Center"
+        },
+        {
+          "value": "bottom-right",
+          "label": "Bottom Right"
+        }
+      ],
+      "default": "middle-center"
+    },
+    {
+      "type": "range",
+      "id": "horizontal_offset",
+      "label": "Horizontal Offset",
+      "min": 0,
+      "max": 200,
+      "step": 5,
+      "unit": "px",
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "vertical_offset",
+      "label": "Vertical Offset",
+      "min": 0,
+      "max": 200,
+      "step": 5,
+      "unit": "px",
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Caption Max Width",
+      "min": 10,
+      "max": 100,
+      "step": 1,
+      "unit": "vw",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "padding",
+      "label": "Caption Padding",
+      "min": 10,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 30
+    },
+    {
+      "type": "header",
+      "content": "Content Settings"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Welcome to Our Store"
+    },
+    {
+      "type": "range",
+      "label": "Heading size",
+      "id": "heading_size",
+      "min": 10,
+      "max": 72,
+      "step": 1,
+      "unit": "px",
+      "default": 36
+    },
+    {
+      "type": "select",
+      "id": "heading_case",
+      "label": "Heading Case",
+      "options": [
+        {
+          "label": "Normal",
+          "value": "none"
+        },
+        {
+          "label": "Uppercase",
+          "value": "uppercase"
+        },
+        {
+          "label": "Lowercase",
+          "value": "lowercase"
+        },
+        {
+          "label": "Capitalize",
+          "value": "capitalize"
+        }
+      ],
+      "default": "uppercase"
+    },
+    {
+      "type": "select",
+      "id": "heading_weight",
+      "label": "Heading Weight",
+      "options": [
+        {
+          "label": "Bold",
+          "value": "bold"
+        },
+        {
+          "label": "Bolder",
+          "value": "bolder"
+        },
+        {
+          "label": "Lighter",
+          "value": "lighter"
+        },
+        {
+          "label": "Normal",
+          "value": "normal"
+        }
+      ],
+      "default": "normal"
+    },
+    {
+      "type": "select",
+      "id": "heading_style",
+      "label": "Heading Style",
+      "options": [
+        {
+          "label": "Italic",
+          "value": "italic"
+        },
+        {
+          "label": "Normal",
+          "value": "normal"
+        },
+        {
+          "label": "Oblique",
+          "value": "oblique"
+        }
+      ],
+      "default": "normal"
+    },
+    {
+      "type": "color",
+      "label": "Heading color",
+      "id": "heading_color",
+      "default": "#000000"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button Text",
+      "default": "Shop Now"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button Link"
+    },
+    {
+      "type": "header",
+      "content": "Link Style"
+    },
+    {
+      "type": "checkbox",
+      "id": "is_url_underlined",
+      "label": "Link Label Underline",
+      "default": true
+    },
+    {
+      "type": "range",
+      "label": "Link Label size",
+      "id": "url_size",
+      "min": 0,
+      "max": 10,
+      "step": 0.1,
+      "unit": "rem",
+      "default": 0.9
+    },
+    {
+      "type": "select",
+      "id": "url_case",
+      "label": "Link Label Case",
+      "options": [
+        {
+          "label": "Normal",
+          "value": "none"
+        },
+        {
+          "label": "Uppercase",
+          "value": "uppercase"
+        },
+        {
+          "label": "Lowercase",
+          "value": "lowercase"
+        },
+        {
+          "label": "Capitalize",
+          "value": "capitalize"
+        }
+      ],
+      "default": "uppercase"
+    },
+    {
+      "type": "select",
+      "id": "url_weight",
+      "label": "Link Label Weight",
+      "options": [
+        {
+          "label": "Bold",
+          "value": "bold"
+        },
+        {
+          "label": "Bolder",
+          "value": "bolder"
+        },
+        {
+          "label": "Lighter",
+          "value": "lighter"
+        },
+        {
+          "label": "Normal",
+          "value": "normal"
+        }
+      ],
+      "default": "normal"
+    },
+    {
+      "type": "select",
+      "id": "url_style",
+      "label": "Link Label Style",
+      "options": [
+        {
+          "label": "Italic",
+          "value": "italic"
+        },
+        {
+          "label": "Normal",
+          "value": "normal"
+        },
+        {
+          "label": "Oblique",
+          "value": "oblique"
+        }
+      ],
+      "default": "normal"
+    },
+    {
+      "type": "color",
+      "label": "Link Label color",
+      "id": "url_color",
+      "default": "#000000"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Video Banner - Hero Welcome",
+      "category": "Video",
+      "settings": {
+        "video_height": "56.25%",
+        "mobile_video_height": "75%",
+        "overlay_color": "#000000",
+        "overlay_opacity": 40,
+        "heading": "Welcome to Our World",
+        "heading_size": 20,
+        "heading_case": "uppercase",
+        "heading_weight": "bold",
+        "heading_style": "normal",
+        "heading_color": "#ffffff",
+        "button_text": "Explore Collection",
+        "is_url_underlined": false,
+        "url_size": 1.1,
+        "url_case": "uppercase",
+        "url_weight": "normal",
+        "url_style": "normal",
+        "url_color": "#ffffff",
+        "autoplay": true,
+        "loop": true,
+        "mute": true,
+        "show_controls": false,
+        "disable_on_mobile": false
+      }
+    },
+    {
+      "name": "Video Banner - New Collection",
+      "category": "Video",
+      "settings": {
+        "video_height": "75%",
+        "mobile_video_height": "100%",
+        "overlay_color": "#1d3557",
+        "overlay_opacity": 25,
+        "heading": "New Collection",
+        "heading_size": 24,
+        "heading_case": "uppercase",
+        "heading_weight": "bolder",
+        "heading_style": "normal",
+        "heading_color": "#ffffff",
+        "button_text": "Shop Now",
+        "is_url_underlined": true,
+        "url_size": 1.0,
+        "url_case": "uppercase",
+        "url_weight": "normal",
+        "url_style": "normal",
+        "url_color": "#f1faee",
+        "autoplay": true,
+        "loop": true,
+        "mute": true,
+        "show_controls": false,
+        "disable_on_mobile": true
+      }
+    },
+    {
+      "name": "Video Banner - Brand Story",
+      "category": "Video",
+      "settings": {
+        "video_height": "100%",
+        "mobile_video_height": "100%",
+        "overlay_color": "#000000",
+        "overlay_opacity": 50,
+        "heading": "Our Story",
+        "heading_size": 28,
+        "heading_case": "none",
+        "heading_weight": "normal",
+        "heading_style": "italic",
+        "heading_color": "#ffffff",
+        "button_text": "Learn More",
+        "is_url_underlined": false,
+        "url_size": 0.9,
+        "url_case": "none",
+        "url_weight": "lighter",
+        "url_style": "italic",
+        "url_color": "#e9ecef",
+        "autoplay": true,
+        "loop": true,
+        "mute": true,
+        "show_controls": false,
+        "disable_on_mobile": false
+      }
+    },
+    {
+      "name": "Video Banner - Summer Campaign",
+      "category": "Video",
+      "settings": {
+        "video_height": "56.25%",
+        "mobile_video_height": "75%",
+        "overlay_color": "#ff6b6b",
+        "overlay_opacity": 20,
+        "heading": "Summer Vibes",
+        "heading_size": 32,
+        "heading_case": "uppercase",
+        "heading_weight": "bold",
+        "heading_style": "normal",
+        "heading_color": "#ffffff",
+        "button_text": "Shop Summer",
+        "is_url_underlined": false,
+        "url_size": 1.0,
+        "url_case": "uppercase",
+        "url_weight": "bold",
+        "url_style": "normal",
+        "url_color": "#ffd166",
+        "autoplay": true,
+        "loop": true,
+        "mute": true,
+        "show_controls": false,
+        "disable_on_mobile": false
+      }
+    },
+    {
+      "name": "Video Banner - Minimal Style",
+      "category": "Video",
+      "settings": {
+        "video_height": "45%",
+        "mobile_video_height": "56.25%",
+        "overlay_color": "#333333",
+        "overlay_opacity": 15,
+        "heading": "Minimal Elegance",
+        "heading_size": 25,
+        "heading_case": "none",
+        "heading_weight": "normal",
+        "heading_style": "normal",
+        "heading_color": "#ffffff",
+        "button_text": "Discover",
+        "is_url_underlined": true,
+        "url_size": 0.8,
+        "url_case": "none",
+        "url_weight": "normal",
+        "url_style": "normal",
+        "url_color": "#ffffff",
+        "autoplay": true,
+        "loop": true,
+        "mute": true,
+        "show_controls": false,
+        "disable_on_mobile": false
+      }
+    },
+    {
+      "name": "Video Banner - Product Showcase",
+      "category": "Video",
+      "settings": {
+        "video_height": "75%",
+        "mobile_video_height": "100%",
+        "overlay_color": "#2a9d8f",
+        "overlay_opacity": 30,
+        "heading": "Premium Quality",
+        "heading_size": 30,
+        "heading_case": "uppercase",
+        "heading_weight": "bolder",
+        "heading_style": "normal",
+        "heading_color": "#ffffff",
+        "button_text": "View Products",
+        "is_url_underlined": false,
+        "url_size": 1.0,
+        "url_case": "uppercase",
+        "url_weight": "normal",
+        "url_style": "normal",
+        "url_color": "#a8dadc",
+        "autoplay": true,
+        "loop": true,
+        "mute": true,
+        "show_controls": true,
+        "disable_on_mobile": false
+      }
+    },
+    {
+      "name": "Video Banner - Holiday Special",
+      "category": "Video",
+      "settings": {
+        "video_height": "56.25%",
+        "mobile_video_height": "75%",
+        "overlay_color": "#6a0572",
+        "overlay_opacity": 35,
+        "heading": "Holiday Magic",
+        "heading_size": 38,
+        "heading_case": "uppercase",
+        "heading_weight": "bold",
+        "heading_style": "normal",
+        "heading_color": "#ffffff",
+        "button_text": "Shop Gifts",
+        "is_url_underlined": false,
+        "url_size": 1.1,
+        "url_case": "uppercase",
+        "url_weight": "normal",
+        "url_style": "normal",
+        "url_color": "#ffd166",
+        "autoplay": true,
+        "loop": true,
+        "mute": true,
+        "show_controls": false,
+        "disable_on_mobile": true
+      }
+    }
+  ]
+}
+{% endschema %}

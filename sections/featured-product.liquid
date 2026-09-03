@@ -1,0 +1,79 @@
+{{ 'product-card.css' | asset_url | stylesheet_tag }}
+{% if section.settings.shuffleActive == true %}
+  <script src="{{ 'shuffle-collection.js' | asset_url }}"></script>
+{% endif %}
+<script src="{{ 'swiper.js' | asset_url }}"></script>
+<div class="flex flex-col gap-2 mx-auto mb-3 md:mb-16 my-1 md:my-8 md:my-[30px]">
+  <h3 class="text-[11px] font-bold">
+    {% if section.settings.heading != blank %}
+      {{ section.settings.heading }}
+    {% else %}
+      {{ section.settings['featured-collection'].title }}
+    {% endif %}
+  </h3>
+  <div class="w-full md:w-[98%] flex justify-start overflow-hidden">
+    <div
+      class="w-full inline-flex justify-between gap-[2dvw] transition-transform lg:mx-auto swiper-container-{{  section.id  }}"
+      id="swiper-container-{{section.id}}"
+    >
+      {% for product in section.settings['featured-collection'].products %}
+        {% assign product_variant = product.variants | first %}
+        {% assign collection_type = 'FEATURED_PRODUCT' | append: section.id %}
+        {%- render 'card-product',
+          product: product,
+          variant: product_variant,
+          front_image: product.featured_image,
+          back_image: product.images[1],
+          extraclass: '',
+          data_coll_type: collection_type,
+          show_discount_badge: settings.show_discount_badge,
+          show_quickview: true
+        -%}
+      {% endfor %}
+    </div>
+  </div>
+  <div class="flex justify-center items-center">
+    {% render 'cta-button', id: section.id, link: section.settings['featured-collection'].url %}
+  </div>
+</div>
+
+<script>
+  if(productSwiper) {
+
+  productSwiper('{{ section.id }}')
+  }
+  {% if section.settings.shuffleActive == true %}
+  collectionShuffler('FEATURED_PRODUCT{{ section.id }}', 4)
+  {% endif %}
+</script>
+
+{% schema %}
+{
+  "name": "featured-product",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "collection",
+      "label": "Select Collection",
+      "id": "featured-collection"
+    },
+    { "type": "text", "id": "heading", "label": "Heading" },
+    {
+      "type": "checkbox",
+      "label": "Shuffle Collection",
+      "id": "shuffleActive",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "Featured Products",
+      "category": "Product",
+      "settings": {
+        "heading": "Featured Products",
+        "shuffleActive": true
+      }
+    }
+  ]
+}
+{% endschema %}

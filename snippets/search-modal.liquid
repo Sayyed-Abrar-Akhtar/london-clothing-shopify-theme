@@ -1,0 +1,67 @@
+<section
+  id="searchModalContainer"
+  data-modal-name="search-modal"
+  class="hidden md:!block w-full h-[100vh] fixed top-0 left-0 z-[100] search-modal--close"
+>
+  <div style="height:33px; background:transparent; width:100%;">&nbsp;</div>
+
+  <div class="w-full h-full bg-black/80">
+    <section class="py-2 bg-white" style="padding-inline:5%;" data-element-type="input-box">
+      <div class="w-full mx-auto" data-element-type="input-box">
+        <!--
+          <input
+            id="searchModalInput"
+            onkeyup="handleChangeSearchResult(event)"
+            onpaste="handlePasteSearchResult(event)"
+            class="w-full px-5 py-3 text-2xl placeholder:text-gray-500 font-normal"
+            style="border-bottom:1px solid black;"
+            type="text"
+            placeholder="Search our store"
+            name="q"
+            value="{{ search.terms | escape }}"
+          >
+        -->
+        <div class="flex gap-2 justify-center" id="searchFormContainer" data-element-type="input-box">
+          <form action="{{ routes.search_url }}" class="relative w-[95%]" data-element-type="input-box">
+            <label class="px-5 uppercase text-sm tracking-widest" for="searchModalInput" data-element-type="input-box"
+              >Search</label
+            >
+            <input
+              data-element-type="input-box"
+              id="searchModalInput"
+              class="w-full px-5 pb-2 placeholder:text-gray-500 font-normal"
+              style="border-bottom:1px solid black;"
+              type="text"
+              placeholder="Search our store"
+              name="q"
+              value="{{ search.terms | escape }}"
+            >
+          </form>
+          <button onclick="closeSearchModal()">
+            {% render 'hamburger-icon', type: 'general-close' %}
+          </button>
+        </div>
+      </div>
+    </section>
+    <section
+      data-element-type="search-result-container"
+      class="invisible w-[80%] min-h-[400px] max-h-[800px] mx-auto px-2 bg-white flex items-center justify-start space-x-6 overflow-x-scroll"
+    >
+      &nbsp;
+    </section>
+  </div>
+</section>
+
+<style>
+  .search-modal--open {
+    display: block !important;
+  }
+   .search-modal--close {
+    display: none !important;
+  }
+   @media(min-width:942px) {
+    #searchFormContainer > form{
+      max-width:478px;
+    }
+  }
+</style>

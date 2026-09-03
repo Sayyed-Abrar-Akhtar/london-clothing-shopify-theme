@@ -1,0 +1,1012 @@
+{{ 'product-card.css' | asset_url | stylesheet_tag }}
+{{ 'collection.css' | asset_url | stylesheet_tag }}
+{{ 'vendor-page.css' | asset_url | stylesheet_tag }}
+{{ 'loader.css' | asset_url | stylesheet_tag }}
+{{ 'sa-filter.css' | asset_url | stylesheet_tag }}
+
+<script src="{{ 'shuffle-collection.js' | asset_url }}" defer></script>
+
+<script src="{{ 'sa-filter.js' | asset_url }}" defer></script>
+<script src="{{ 'show-filter.js' | asset_url }}" defer></script>
+<script src="{{ 'sort-product.js' | asset_url }}" defer></script>
+
+{% paginate collection.products by section.settings.products_range -%}
+  {% assign total_pages_collection = 1 %}
+  {% if collection.products_count <= section.settings.products_range %}
+    {% assign total_pages_collection = 1 %}
+  {% else %}
+    {% assign total_pages_collection = collection.products_count
+      | divided_by: section.settings.products_range
+      | ceil
+      | plus: total_pages_collection
+    %}
+  {% endif %}
+  <style>
+    .collection-heading-{{- collection.id -}} {
+      font-weight: {{ section.settings.heading-font-weight }};
+      font-style:{{ section.settings.heading-font-style }};
+      font-size: {{ section.settings.heading-size }}px;
+      color: {{ section.settings.heading-color }};
+      padding-inline: {{ section.settings.heading-px }}px;
+      padding-block: {{ section.settings.heading-py }}px;
+      margin-top: {{ section.settings.heading-mt }}px;
+      margin-bottom: {{ section.settings.heading-mb }}px;
+    }
+    .sa-collection-filter-title-font {
+      font-weight: {{ section.settings.filter-title-font-weight }};
+      font-style:{{ section.settings.filter-title-font-style }};
+      font-size:{{section.settings.filter-title-size}}px;
+      color: {{section.settings.filter-title-color}};
+
+    }
+    .sa-collection-filter-headings-font {
+      font-weight: {{ section.settings.filter-headings-font-weight }};
+      font-style:{{ section.settings.filter-headings-font-style }};
+      font-size:{{section.settings.filter-headings-size}}px;
+      color:{{section.settings.filter-headings-color}};
+    }
+    .sa-collection-filter-labels-font {
+      font-weight: {{ section.settings.filter-labels-font-weight }};
+      font-style:{{ section.settings.filter-labels-font-style }};
+      font-size:{{section.settings.filter-labels-size}}px;
+      color:{{section.settings.filter-labels-color}};
+    }
+    .no-products {
+      padding: 3px 8px;
+      background: #e5e7eb;
+      color: #374151;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+      margin-inline:auto;
+      margin-top: 30px;
+      width:max-content;
+    }
+  </style>
+
+  <section class="flex justify-between items-center my-0 md:my-4 w-full">
+    {% render 'breadcrumbs' %}
+
+    <section class="flex items-center gap-2">
+      <div class="collections-sort-box hidden text-xs md:text-sm ">
+        <select id="collectionSort" aria-label="Sort products by">
+          {%- for option in collection.sort_options %}
+            <option
+              value="{{ option.value }}"
+              {%- if option.value == 'sort_by' %}
+                selected="selected"
+              {%- endif %}
+            >
+              {{ option.name | upcase | split: ',' | last }}
+            </option>
+          {% endfor -%}
+        </select>
+      </div>
+      <button
+        id="filter_btn"
+        class="filter-btn flex items-center justify-center gap-1 uppercase relative p-1 sm:py-1 md:py-1 lg:py-2 md:tracking-[1px] !text-xs sm:!text-xs md:text-sm"
+        onclick="saFilterShow(true)"
+      >
+        <span class="hidden md:!block">filter</span>
+        <span class="ml-2">{% render 'icon-filter', width: 14, height: 14 %}</span>
+      </button>
+    </section>
+  </section>
+
+  <section id="saAppliedFilterContainer">
+    {% render 'sa-applied-filter', collection: collection %}
+  </section>
+  <section class="w-full h-0 relative filter" id="filter_container">
+    <section class="w-full p-3 absolute top-0 left-0 bg-white border-[1px] border-black">
+      {% render 'collection-filter' %}
+    </section>
+  </section>
+  {% render 'sa-filter', collection: collection %}
+  {% assign vendor_size = collection.all_vendors | size %}
+  {% if vendor_size == 1 %}
+    {% if collection.metafields.custom.logo %}
+      <div class="flex items-center justify-center my-10">
+        {{
+          collection.metafields.custom.logo
+          | image_url: width: section.settings['logo-width']
+          | image_tag: width: section.settings['logo-width'], alt: 'Indeep'
+        }}
+      </div>
+    {% else %}
+      {% if collection.description.size > 20 %}
+        <section class="flex gap-2 justify-center w-[90%] md:w-[60%] items-center mx-auto my-10 font-bold">
+          <div class="collection-description-box flex items-center" style="height: 100px;">
+            <h1 class="collection-heading-{{ collection.id }} vendor-heading">{{ collection.all_vendors }}</h1>
+            <div>{{ collection.description }}</div>
+          </div>
+          <button class="collection-description-toggler" data-state="close">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 50 50"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="h-6 w-6"
+            >
+              <defs>
+                <style>
+                  .st0 {
+                    fill: none;
+                    stroke: #000;
+                    stroke-miterlimit: 10;
+                    stroke-width: 1.5px;
+                  }
+                </style>
+              </defs>
+              <polyline class="st0" points="10.4 20.2 25 29.8 39.6 20.2"/>
+            </svg>
+          </button>
+        </section>
+      {% endif %}
+    {% endif %}
+  {% else %}
+    {% if collection.description.size > 20 %}
+      <div class="flex gap-2 justify-center w-[90%] md:w-[60%] items-center mx-auto my-10">
+        <div class="collection-description-box" style="height: 100px;">
+          {{ collection.description }}
+        </div>
+        <button class="collection-description-toggler" data-state="close">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 50 50"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="h-6 w-6"
+          >
+            <defs>
+              <style>
+                .st0 {
+                  fill: none;
+                  stroke: #000;
+                  stroke-miterlimit: 10;
+                  stroke-width: 1.5px;
+                }
+              </style>
+            </defs>
+            <polyline class="st0" points="10.4 20.2 25 29.8 39.6 20.2"/>
+          </svg>
+        </button>
+      </div>
+    {% endif %}
+  {% endif %}
+
+  {% if collection.products_count > 0 %}
+    <section
+      id="{{ collection.handle }}_{{ collection.id }}"
+      data-element="product-list-container"
+      data-collection-handle="{{- collection.handle -}}"
+      data-current-page="{{ paginate.current_page }}"
+      data-pages="{{ total_pages_collection }}"
+      class="collection-products-list invisible grid justify-items-center gap-[2dvw] sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 mb-12"
+    >
+      {% for product in collection.products %}
+        {% assign has_negative_stock = false %}
+        {% comment %}
+          {% for variant in product.variants %}
+            {% if variant.inventory_quantity < 0 %}
+              {% assign has_negative_stock = true %}
+            {% endif %}
+          {% endfor %}
+        {% endcomment %}
+
+        {% if has_negative_stock == false %}
+          {% liquid
+            assign front_image = ''
+            assign back_image = ''
+          %}
+
+          {% assign variant_color = '' %}
+          {% for variant in product.variants %}
+            {% for image in product.images %}
+              {% assign image_color = image.alt | split: ',' | last | strip %}
+              {% if variant.option1 == image_color and variant_color != image_color %}
+                {% assign variant_color = image_color %}
+                {% liquid
+                  assign front_image = image.src
+                  assign image_position = image.position
+                %}
+                {% assign current_img_color = product.images[image_position].alt | split: ',' | last | strip %}
+
+                {% if current_img_color == image_color %}
+                  {% assign back_image = product.images[image_position].src %}
+                {% else %}
+                  {% assign back_image = front_image %}
+                {% endif %}
+
+                {%-
+                  render 'card-product',
+                  product: product,
+                  front_image: front_image,
+                  back_image: back_image,
+                  variant: variant,
+                  extraclass: 'brand__collection-item collection-page-only',
+                  data_coll_type: 'MAIN_COLLECTION',
+                  show_discount_badge: settings.show_discount_badge,
+                  show_quickview: true,
+                  loading: forloop.index0 < 2 ? 'eager' : 'lazy',
+                  fetchpriority: forloop.first ? 'high' : 'auto'
+                -%}
+
+                {% break %}
+              {% endif %}
+            {% endfor %}
+          {% endfor %}
+        {% endif %}
+      {% endfor %}
+    </section>
+  {% else %}
+    <div class="no-products">
+      <p>Coming soon...</p>
+    </div>
+  {% endif %}
+  <!--
+    <section class="flex items-center justify-center my-10">
+      <button
+        id="load-more-btn--{{ collection.handle }}"
+        class="border-[1px] border-black px-10 py-2 lowercase hover:bg-black hover:text-white"
+      >
+        Load more
+      </button>
+    </section>
+  -->
+
+  <button class="back-to-top" id="myBackToTopBtn" onclick="topFunction()">&uarr;</button>
+{% endpaginate %}
+{% render 'loader', id: 'moreProductsLoader', coll_handle: collection.handle %}
+
+<script>
+     /*(function() {
+          // Ensure DOM is fully loaded
+          document.addEventListener('DOMContentLoaded', function() {
+              // Find the product list container using the data attribute
+              const productContainer = document.querySelector('[data-element="product-list-container"]');
+              // Find the hidden bottom block (footer content)
+              const bottomBlock = document.querySelector('.collection-content-section.footer-content.hidden');
+
+              // If both exist, move bottomBlock right after productContainer
+              if (productContainer && bottomBlock) {
+                  // Remove the 'hidden' class so it becomes visible
+                  bottomBlock.classList.remove('hidden');
+
+                  // Insert bottomBlock as a sibling immediately after productContainer
+                  productContainer.parentNode.insertBefore(bottomBlock, productContainer.nextSibling);
+
+                  // (Optional) small console log to confirm placement
+                  console.log('✅ SEO footer content moved after product grid.');
+              } else {
+                  // If elements missing, at least make bottom block visible as fallback?
+                  // but better to log warning.
+                  if (!productContainer) console.warn('⚠️ No element with data-element="product-list-container" found.');
+                  if (!bottomBlock) console.warn('⚠️ No .footer-content.hidden block found.');
+              }
+
+              // Optional: if you want the hidden block to start visible even if container missing,
+              // but we stick to spec.
+          });
+      })();
+      */
+
+
+
+    (function() {
+      // Ensure DOM is fully loaded
+      document.addEventListener('DOMContentLoaded', function() {
+          const collectionDescriptionBox = document.querySelector('.collection-description-box');
+          const collectionDescriptionToggler = document.querySelector('.collection-description-toggler');
+
+          if (!collectionDescriptionBox || !collectionDescriptionToggler) return;
+
+          // Initialize the state
+          collectionDescriptionToggler.dataset.state = 'close';
+          collectionDescriptionBox.style.height = "100px";
+          collectionDescriptionBox.style.overflow = "hidden";
+          collectionDescriptionBox.style.transition = "height 0.3s ease";
+
+          collectionDescriptionToggler.addEventListener('click', function() {
+              if (collectionDescriptionToggler.dataset.state === 'close') {
+                  collectionDescriptionBox.style.height = (collectionDescriptionBox.scrollHeight-10) + "px";
+                  collectionDescriptionToggler.dataset.state = 'open';
+              } else {
+                  collectionDescriptionBox.style.height = "100px";
+                  collectionDescriptionToggler.dataset.state = 'close';
+              }
+          });
+      });
+  })();
+
+
+    document.addEventListener('DOMContentLoaded', function() {
+
+      const filterBtn = document.getElementById('filter_btn');
+      const productsParentElement = document.getElementById('{{ collection.handle }}_{{ collection.id }}');
+      const mybutton = document.getElementById('myBackToTopBtn');
+
+      // Hide products initially to prevent flash
+      if (productsParentElement) {
+        productsParentElement.style.opacity = '0';
+        productsParentElement.style.visibility = 'hidden';
+      }
+
+      let hasShuffled = false;
+
+      function initSort() {
+        const sortSelectElement = document.getElementById("collectionSort");
+        if (sortSelectElement) {
+          sortSelectElement.parentElement.classList.remove('hidden');
+          const url = new URL(window.location);
+          const sortBy = url.searchParams.get("sort_by");
+          sortSelectElement.value = sortBy || "manual";
+        }
+      }
+
+      function initFilterBtn() {
+        if (filterBtn) {
+          filterBtn.classList.remove('filter-btn');
+          filterBtn.classList.add('filter-btn--show');
+        }
+      }
+
+      function initShuffle() {
+        {% if section.settings.shuffleActive and vendor_size > 1 %}
+          if (hasShuffled) return;
+          hasShuffled = true;
+
+          if (typeof collectionShuffler !== 'undefined') {
+            collectionShuffler('MAIN_COLLECTION', null);
+            // Show products after shuffling
+            if (productsParentElement) {
+              productsParentElement.style.opacity = '1';
+              productsParentElement.style.visibility = 'visible';
+            }
+          } else {
+            window.addEventListener('load', function() {
+              if (typeof collectionShuffler !== 'undefined' && !hasShuffled) {
+                collectionShuffler('MAIN_COLLECTION', null);
+                hasShuffled = true;
+                // Show products after shuffling
+                if (productsParentElement) {
+                  productsParentElement.style.opacity = '1';
+                  productsParentElement.style.visibility = 'visible';
+                }
+              }
+            });
+          }
+        {% else %}
+          // If no shuffling needed, show products immediately
+          if (productsParentElement) {
+            productsParentElement.style.opacity = '1';
+            productsParentElement.style.visibility = 'visible';
+          }
+        {% endif %}
+      }
+
+      function initBackToTop() {
+        if (!mybutton) return;
+        let scrollTimeout;
+
+        const handleScroll = () => {
+          if (scrollTimeout) return;
+          scrollTimeout = setTimeout(() => {
+            const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+            mybutton.style.display = scrollTop > 2000 ? 'block' : 'none';
+            scrollTimeout = null;
+          }, 100);
+        };
+
+        mybutton.addEventListener('click', () => {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+        window.addEventListener('scroll', handleScroll);
+      }
+
+      function initAll() {
+        initSort();
+        initFilterBtn();
+        initShuffle();
+        initBackToTop();
+      }
+
+      initAll();
+    });
+</script>
+
+<style>
+    .back-to-top, .back-to-top:link, .back-to-top:visited {
+      font-size: 21px;
+      text-align: center;
+      width: 40px;
+      height: 40px;
+      display: none;
+      position: fixed;
+      bottom: 17vh;
+      right: 30px;
+      border: 1px solid #000;
+      background-color: #fff;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 4s linear;
+      -webkit-transition: all .2s linear;
+  }
+</style>
+
+{% stylesheet %}
+  .collection-description-box {
+    overflow: hidden;
+    transition: height 0.3s ease;
+  }
+
+  .collection-description-toggler {
+    cursor: pointer;
+    margin-top: 10px;
+  }
+
+  .collection-description-toggler svg {
+    transition: transform 0.3s ease;
+  }
+
+  .collection-description-toggler[data-state="open"] svg {
+    transform: rotate(180deg);
+  }
+  .filter-btn--show {
+    visibility:visible;
+  }
+
+  .filter-btn {
+    visibility:hidden;
+  }
+
+  .filter {
+    visibility: hidden;
+    transform: translateY(-10px);
+    z-index:50;
+    transition: all 0.1s;
+    animation: easeOutFilter;
+    backface-visibility: hidden;
+  }
+
+  .filter--active {
+    visibility: visible;
+    z-index: 2;
+    transform: translateY(0);
+    transition: all 0.5s;
+    animation: easeOutFilter;
+    backface-visibility: hidden;
+  }
+
+  .price-filter-box {
+    grid-column:1 / span 2;
+    width:80%;
+    margin:auto;
+  }
+
+
+
+  @media(max-width:768px) {
+    .price-filter-box {
+      grid-column:2 / span 3;
+    }
+  }
+
+  @media(max-width:500px) {
+     .price-filter-box {
+        grid-column:2 / span 4;
+     }
+  }
+  .price-range-label{
+    border: 1px solid #eee;
+    padding: 4px 8px;
+    width:40%;
+    display: flex;
+    align-items: center;
+    gap:2px;
+  }
+
+  .price-range-slider {
+    position:absolute;
+    background: transparent;
+    height: 28px;
+    -webkit-appearance: none;
+    margin: 10px 0;
+    width: 50.1%;
+  }
+  .price-range-slider:focus {
+    outline: none;
+  }
+  .price-range-slider::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 2px;
+    cursor: pointer;
+    animate: 0.2s;
+    box-shadow: 0px 0px 0px #000000;
+    background: #000000;
+    border-radius: 0px;
+    border: 0px solid #010101;
+  }
+  .price-range-slider::-webkit-slider-thumb {
+    box-shadow: 1px 1px 2px #787878;
+    border: 1px solid #000000;
+    height: 20px;
+    width: 20px;
+    border-radius: 10px;
+    background: #FFFFFF;
+    cursor: pointer;
+    -webkit-appearance: none;
+    margin-top: -9.5px;
+  }
+  .price-range-slider:focus::-webkit-slider-runnable-track {
+    background: #000000;
+  }
+  .price-range-slider::-moz-range-track {
+    width: 100%;
+    height: 2px;
+    cursor: pointer;
+    animate: 0.2s;
+    box-shadow: 0px 0px 0px #000000;
+    background: #000000;
+    border-radius: 0px;
+    border: 0px solid #010101;
+  }
+  .price-range-slider::-moz-range-thumb {
+    box-shadow: 1px 1px 2px #787878;
+    border: 1px solid #000000;
+    height: 20px;
+    width: 20px;
+    border-radius: 10px;
+    background: #FFFFFF;
+    cursor: pointer;
+  }
+  .price-range-slider::-ms-track {
+    width: 100%;
+    height: 2px;
+    cursor: pointer;
+    animate: 0.2s;
+    background: transparent;
+    border-color: transparent;
+    color: transparent;
+  }
+  .price-range-slider::-ms-fill-lower {
+    background: #000000;
+    border: 0px solid #010101;
+    border-radius: 0px;
+    box-shadow: 0px 0px 0px #000000;
+  }
+  .price-range-slider::-ms-fill-upper {
+    background: #000000;
+    border: 0px solid #010101;
+    border-radius: 0px;
+    box-shadow: 0px 0px 0px #000000;
+  }
+  .price-range-slider::-ms-thumb {
+    margin-top: 1px;
+    box-shadow: 1px 1px 2px #787878;
+    border: 1px solid #000000;
+    height: 20px;
+    width: 20px;
+    border-radius: 10px;
+    background: #FFFFFF;
+    cursor: pointer;
+  }
+  .price-range-slider:focus::-ms-fill-lower {
+    background: #000000;
+  }
+  .price-range-slider:focus::-ms-fill-upper {
+    background: #000000;
+  }
+
+  .collections-sort-box{
+    display:inline-block;
+    /*padding-right:7px;
+    border: 1px solid #000;*/
+  }
+
+
+  _::-webkit-full-page-media, _:future, :root .collections-sort-box {
+    /*padding:0 8px;*/
+  }
+
+
+  _::-webkit-full-page-media, _:future, :root .collections-sort-box > select{
+    height:28px;
+    padding:0;
+    -webkit-appearance: none;
+  }
+
+  .collections-sort-box > select {
+    background:transparent;
+    width:95px;
+    padding:7px;
+    font-size: 11px;
+  }
+
+  .collections-sort-box  option {
+    text-transform:uppercase;
+  }
+
+  .collections-sort-box > select:hover > option {
+    color:black;
+  }
+
+  @media(min-width:768px) {
+
+    .collections-sort-box > select {
+      /*padding:6px 14px;*/
+      min-width:112px;
+    }
+
+    _::-webkit-full-page-media, _:future, :root .collections-sort-box {
+      padding:0 10px;
+    }
+
+    _::-webkit-full-page-media, _:future, :root .collections-sort-box > select{
+      height:28px;
+      padding:0;
+    }
+  }
+
+
+  @media(min-width:1024px) {
+    .collections-sort-box {
+      /*padding-right:14px;*/
+    }
+    .collections-sort-box > select {
+      /*padding:9.5px 14px;*/
+    }
+
+    _::-webkit-full-page-media, _:future, :root .collections-sort-box {
+      padding:0 20px;
+    }
+    _::-webkit-full-page-media, _:future, :root .collections-sort-box > select{
+      height:35px;
+      padding:0;
+    }
+  }
+
+  @keyframes easeOutFilter {
+    0% {
+      transform: translateY(0);
+    } 50% {
+      transform: translateY(10px);
+    } 100% {
+      transform: translateY(0);
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "main-collection",
+  "tag": "section",
+  "class": "mt-10 mb-20",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Filter Settings"
+    },
+    {
+      "type": "select",
+      "id": "filter-title-font-weight",
+      "label": "Filter Title Font Weight",
+      "options": [
+        {
+          "label": "Bold",
+          "value": "bold"
+        },
+        {
+          "label": "Bolder",
+          "value": "bolder"
+        },
+        {
+          "label": "Lighter",
+          "value": "lighter"
+        },
+        {
+          "label": "Normal",
+          "value": "normal"
+        }
+      ],
+      "default": "normal"
+    },
+    {
+      "type": "select",
+      "id": "filter-title-font-style",
+      "label": "Filter Title Font Style",
+      "options": [
+        {
+          "label": "Italic",
+          "value": "italic"
+        },
+        {
+          "label": "Normal",
+          "value": "normal"
+        },
+        {
+          "label": "Oblique",
+          "value": "oblique"
+        }
+      ],
+      "default": "normal"
+    },
+    {
+      "type": "color",
+      "id": "filter-title-color",
+      "default": "#1a1a1a",
+      "label": "Title Color"
+    },
+    {
+      "type": "range",
+      "id": "filter-title-size",
+      "min": 10,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 13,
+      "label": "Title Size"
+    },
+    {
+      "type": "select",
+      "id": "filter-headings-font-weight",
+      "label": "Filter Headings Font Weight",
+      "options": [
+        {
+          "label": "Bold",
+          "value": "bold"
+        },
+        {
+          "label": "Bolder",
+          "value": "bolder"
+        },
+        {
+          "label": "Lighter",
+          "value": "lighter"
+        },
+        {
+          "label": "Normal",
+          "value": "normal"
+        }
+      ],
+      "default": "normal"
+    },
+    {
+      "type": "select",
+      "id": "filter-headings-font-style",
+      "label": "Filter Headings Font Style",
+      "options": [
+        {
+          "label": "Italic",
+          "value": "italic"
+        },
+        {
+          "label": "Normal",
+          "value": "normal"
+        },
+        {
+          "label": "Oblique",
+          "value": "oblique"
+        }
+      ],
+      "default": "normal"
+    },
+    {
+      "type": "color",
+      "id": "filter-headings-color",
+      "default": "#1a1a1a",
+      "label": "Headings Color"
+    },
+    {
+      "type": "range",
+      "id": "filter-headings-size",
+      "min": 10,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 13,
+      "label": "Headings Size"
+    },
+    {
+      "type": "select",
+      "id": "filter-labels-font-weight",
+      "label": "Filter Labels Font Weight",
+      "options": [
+        {
+          "label": "Bold",
+          "value": "bold"
+        },
+        {
+          "label": "Bolder",
+          "value": "bolder"
+        },
+        {
+          "label": "Lighter",
+          "value": "lighter"
+        },
+        {
+          "label": "Normal",
+          "value": "normal"
+        }
+      ],
+      "default": "normal"
+    },
+    {
+      "type": "select",
+      "id": "filter-labels-font-style",
+      "label": "Filter Labels Font Style",
+      "options": [
+        {
+          "label": "Italic",
+          "value": "italic"
+        },
+        {
+          "label": "Normal",
+          "value": "normal"
+        },
+        {
+          "label": "Oblique",
+          "value": "oblique"
+        }
+      ],
+      "default": "normal"
+    },
+    {
+      "type": "color",
+      "id": "filter-labels-color",
+      "default": "#1a1a1a",
+      "label": "Labels Color"
+    },
+    {
+      "type": "range",
+      "id": "filter-labels-size",
+      "min": 10,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 11,
+      "label": "Labels Size"
+    },
+    {
+      "type": "header",
+      "content": "Collection Settings"
+    },
+    {
+      "type": "checkbox",
+      "label": "Shuffle Collection",
+      "id": "shuffleActive",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "products_range",
+      "min": 12,
+      "max": 32,
+      "step": 4,
+      "label": "Number of Products",
+      "default": 12
+    },
+    {
+      "type": "header",
+      "content": "Heading Settings"
+    },
+    {
+      "type": "select",
+      "id": "heading-font-weight",
+      "label": "Heading Font Weight",
+      "options": [
+        {
+          "label": "Bold",
+          "value": "bold"
+        },
+        {
+          "label": "Bolder",
+          "value": "bolder"
+        },
+        {
+          "label": "Lighter",
+          "value": "lighter"
+        },
+        {
+          "label": "Normal",
+          "value": "normal"
+        }
+      ],
+      "default": "normal"
+    },
+    {
+      "type": "select",
+      "id": "heading-font-style",
+      "label": "Heading Font Style",
+      "options": [
+        {
+          "label": "Italic",
+          "value": "italic"
+        },
+        {
+          "label": "Normal",
+          "value": "normal"
+        },
+        {
+          "label": "Oblique",
+          "value": "oblique"
+        }
+      ],
+      "default": "normal"
+    },
+    {
+      "type": "color",
+      "id": "heading-color",
+      "default": "#000000",
+      "label": "Text Color"
+    },
+    {
+      "type": "range",
+      "id": "heading-size",
+      "min": 10,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 24,
+      "label": "Text Size"
+    },
+    {
+      "type": "range",
+      "id": "heading-mt",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 10,
+      "label": "Heading Margin Top"
+    },
+    {
+      "type": "range",
+      "id": "heading-mb",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 10,
+      "label": "Heading Margin Bottom"
+    },
+    {
+      "type": "range",
+      "id": "heading-py",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 5,
+      "label": "Vertical Spacing"
+    },
+    {
+      "type": "range",
+      "id": "heading-px",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 5,
+      "label": "Vertical Spacing"
+    },
+    {
+      "type": "header",
+      "content": "Logo Setting"
+    },
+    {
+      "type": "range",
+      "id": "logo-width",
+      "min": 50,
+      "max": 900,
+      "step": 10,
+      "unit": "px",
+      "default": 150,
+      "label": "Logo Width"
+    }
+  ]
+}
+{% endschema %}

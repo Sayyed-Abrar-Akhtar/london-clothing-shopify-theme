@@ -1,0 +1,46 @@
+<div class="mx-10 flex flex-col">
+  {% if title != blank %}
+    <p class="flex min-h-[30px] items-center justify-start tracking-wider font-bold w-max px-0.5 mb-3">
+      <span class="border-black border-b ">{{ title }}</span>
+    </p>
+  {% endif %}
+
+  {% if first_image != blank and second_image != blank %}
+    <div class="flex space-x-2">
+      {% render "menu-image", 
+      url: first_collection.url,
+      img_type: "portrait",
+      image: first_image,
+      heading: first_image_heading
+      color: first_heading_color
+      %}
+      {% render "menu-image", 
+      url: second_collection.url,
+      img_type: "portrait",
+      image: second_image,
+      heading: second_image_heading
+      color: second_heading_color
+      %}
+    </div>
+  {% else %}
+    {% if first_image != blank %}
+      {% render "menu-image", 
+      url: first_collection.url,
+      img_type: "landscape",
+      image: first_image,
+      heading: first_image_heading
+      color: first_heading_color
+      %} 
+    {% endif %}
+    {% if second_image != blank %}
+     {% render "menu-image", 
+      url:second_collection.url,
+      img_type: "landscape",
+      image: second_image,
+      heading: second_image_heading
+      color: second_heading_color
+      %} 
+    {% endif %}
+  {% endif %}
+</div>
+

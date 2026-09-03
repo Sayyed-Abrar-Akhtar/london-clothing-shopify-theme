@@ -1,0 +1,14 @@
+<form action="{{ routes.search_url }}" class="p-[20px] w-full h-[75px] border-b-[1px] flex justify-between items-center">
+  <input
+    class="w-full"
+    type="text"
+    placeholder="Search our store"
+    name="q"
+    value="{{ search.terms | escape }}">
+  <label for="search-btn" class="cursor-pointer w-[50px] h-[50px] flex justify-end items-center">{%- render 'icon-search-thin', class: 'w-[20px] h-[20px]' -%}</label>
+  <input
+    class="hidden"
+    id="search-btn"
+    type="submit"
+    value="Search">
+</form>

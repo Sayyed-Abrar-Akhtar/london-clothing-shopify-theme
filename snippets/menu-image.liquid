@@ -1,0 +1,14 @@
+<a href="{{url}}">
+  <div class="relative {% if img_type =="landscape" %}w-[440px]{% else %}w-[216px]{% endif %} overflow-hidden border p-0.5 border-gray-200 hover:border-blue-800">
+    {% if img_type == 'landscape' %}
+      {{ image | image_url: width: 440 | image_tag: alt: heading, preload: true, widths: '440, 880, 1660, 1780' }}
+    {% else %}
+      {{ image | image_url: width: 220 | image_tag: alt: heading, preload: true, widths: '216, 432, 648, 864, 1080' }}
+    {% endif %}
+    <div class="bg-gradient-to-b from-transparent from-60% to-gray-200 absolute inset-0 flex justify-center items-end ">
+      <p class="text-lg font-bold my-4" style="color:{{color}};">
+        {{ heading }}
+      </p>
+    </div>
+  </div>
+</a>

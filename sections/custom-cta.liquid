@@ -1,0 +1,232 @@
+<div class="w-full flex justify-center items-center mb-12 md:mb-28">
+  {%- for block in section.blocks -%}
+    {%- if block.settings.btn_link != blank -%}
+    <a href="{{- block.settings.btn_link -}}" style="min-width:{{- block.settings.btn_width -}}px;" class="text-[11px] uppercase mx-4 min-w-[100px] bg-slate-100 text-center rounded-[2px] m-0 leading-[100%] pt-[8px] pb-[10px]">{{- block.settings.btn_text | downcase -}}</a>
+    {%- endif -%}
+  {%- endfor -%}
+  
+</div>
+
+
+{% schema %}
+{
+  "name": "CTA",
+  "tag": "section",
+  "blocks": [
+    {
+      "name": "CTA",
+      "type": "cta",
+      "settings": [
+        {
+          "type": "text",
+          "label": "Tab Text",
+          "id": "btn_text",
+          "info": "men",
+          "default": "Men"
+        },
+        {
+          "type": "url",
+          "label": "Tab Link",
+          "id": "btn_link",
+          "info": "Collections, menus or pages link."
+        },
+        {
+          "type": "range",
+          "label": "Button Width",
+          "id": "btn_width",
+          "unit": "px",
+          "step": 10,
+          "min": 20,
+          "max": 250,
+          "default": 150
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "CTA - Gender Navigation",
+      "category": "Navigation",
+      "blocks": [
+        {
+          "type": "cta",
+          "settings": {
+            "btn_text": "Men",
+            "btn_width": 120
+          }
+        },
+        {
+          "type": "cta",
+          "settings": {
+            "btn_text": "Women",
+            "btn_width": 120
+          }
+        },
+        {
+          "type": "cta",
+          "settings": {
+            "btn_text": "Kids",
+            "btn_width": 120
+          }
+        },
+        {
+          "type": "cta",
+          "settings": {
+            "btn_text": "Sale",
+            "btn_width": 120
+          }
+        }
+      ]
+    },
+    {
+      "name": "CTA - Category Filter",
+      "category": "Navigation",
+      "blocks": [
+        {
+          "type": "cta",
+          "settings": {
+            "btn_text": "All Products",
+            "btn_width": 150
+          }
+        },
+        {
+          "type": "cta",
+          "settings": {
+            "btn_text": "New Arrivals",
+            "btn_width": 150
+          }
+        },
+        {
+          "type": "cta",
+          "settings": {
+            "btn_text": "Best Sellers",
+            "btn_width": 150
+          }
+        },
+        {
+          "type": "cta",
+          "settings": {
+            "btn_text": "On Sale",
+            "btn_width": 150
+          }
+        }
+      ]
+    },
+    {
+      "name": "CTA - Collection Types",
+      "category": "Navigation",
+      "blocks": [
+        {
+          "type": "cta",
+          "settings": {
+            "btn_text": "Clothing",
+            "btn_width": 130
+          }
+        },
+        {
+          "type": "cta",
+          "settings": {
+            "btn_text": "Accessories",
+            "btn_width": 130
+          }
+        },
+        {
+          "type": "cta",
+          "settings": {
+            "btn_text": "Shoes",
+            "btn_width": 130
+          }
+        },
+        {
+          "type": "cta",
+          "settings": {
+            "btn_text": "Home",
+            "btn_width": 130
+          }
+        }
+      ]
+    },
+    {
+      "name": "CTA - Seasonal Navigation",
+      "category": "Navigation",
+      "blocks": [
+        {
+          "type": "cta",
+          "settings": {
+            "btn_text": "Summer",
+            "btn_width": 140
+          }
+        },
+        {
+          "type": "cta",
+          "settings": {
+            "btn_text": "Winter",
+            "btn_width": 140
+          }
+        },
+        {
+          "type": "cta",
+          "settings": {
+            "btn_text": "Spring",
+            "btn_width": 140
+          }
+        },
+        {
+          "type": "cta",
+          "settings": {
+            "btn_text": "Fall",
+            "btn_width": 140
+          }
+        }
+      ]
+    },
+    {
+      "name": "CTA - Simple Actions",
+      "category": "Navigation",
+      "blocks": [
+        {
+          "type": "cta",
+          "settings": {
+            "btn_text": "Shop Now",
+            "btn_width": 180
+          }
+        },
+        {
+          "type": "cta",
+          "settings": {
+            "btn_text": "Learn More",
+            "btn_width": 180
+          }
+        },
+        {
+          "type": "cta",
+          "settings": {
+            "btn_text": "View All",
+            "btn_width": 180
+          }
+        }
+      ]
+    },
+    {
+      "name": "CTA - Minimal Navigation",
+      "category": "Navigation",
+      "blocks": [
+        {
+          "type": "cta",
+          "settings": {
+            "btn_text": "Men",
+            "btn_width": 100
+          }
+        },
+        {
+          "type": "cta",
+          "settings": {
+            "btn_text": "Women",
+            "btn_width": 100
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

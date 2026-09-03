@@ -1,0 +1,20 @@
+<p class="tracking-[1px] font-normal uppercase text-sm md:text-md {{ class }}">
+  {{- localization.country.currency.iso_code -}}
+</p>
+
+<style>
+  .language-switcher-container:hover .form-currency-selector {
+    display: block !important;
+  }
+  .show-currency-selector {
+    display: block !important;
+  }
+</style>
+
+<script>
+  document.querySelector('.language-switcher-mobile').addEventListener('click', () => {
+    document.querySelector('.language-switcher-container  .form-currency-selector').classList.toggle('show-currency-selector')
+    const el = document.querySelector('.form-currency-selector')
+
+  })
+</script>

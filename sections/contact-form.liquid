@@ -1,0 +1,669 @@
+<style>
+  {{ section.settings.heading-font | font_face }}
+  .heading-contact-us{
+    font-size: {{ section.settings.heading-size }}px;
+    font-weight: {{ section.settings.heading-font-weight }};
+    font-style: {{ section.settings.heading-font-style }};
+    color: {{ section.settings.heading-color }};
+  }
+  .subheading-contact-us{
+    font-size: {{ section.settings.subheading-size }}px;
+    font-weight: {{ section.settings.subheading-font-weight }};
+    font-style: {{ section.settings.subheading-font-style }};
+    color: {{ section.settings.subheading-color }};
+  }
+  .contact-us-form-submit-btn{
+    font-size: {{section.settings.btn-text-size}}px;
+    font-weight: {{ section.settings.btn-font-weight }};
+    font-style: {{ section.settings.btn-font-style }};
+    color: {{ section.settings.btn-color }};
+    background-color: {{section.settings.btn-bg-color}};
+    border-radius:{{section.settings.btn-border-radius}}px;
+  }
+  .contact-us-form-input{
+    border: {{section.settings.input-border-size}}px solid {{section.settings.input-border-color}};
+    background: {{section.settings.input-background-color}};
+  }
+</style>
+<section class="w-full md:h-[900px] flex flex-col-reverse md:flex-row -mt-10">
+  <section
+    data-page="contact-us"
+    class="w-full md:w-[50%] flex items-center justify-center"
+    style="background-color:{{ section.settings.bg_color }};"
+  >
+    {% form 'contact' %}
+      <section class="flex flex-col items-center justify-start space-y-5 mx-auto mb-8 md:my-8 gap-4">
+        <h2 class="heading-contact-us leading-[140%] [word-spacing:3px] my-4">
+          {{ section.settings.heading }}
+        </h2>
+        <p class="subheading-contact-us my-4">{{ section.settings.subheading }}</p>
+
+        {% if form.posted_successfully? %}
+          <p class="text-[#008000] font-semibold tracking-wider self-start">"Message posted successfully!"</p>
+        {% endif %}
+        <p class="text-red font-semibold tracking-wider self-start">
+          {{ form.errors | default_errors }}
+        </p>
+        <!-- <label for="ContactFormName">{{ 'contact.form.name' }}</label> -->
+        <input
+          type="text"
+          name="contact[name]"
+          id="ContactFormName"
+          class="contact-us-form-input w-full rounded h-12 px-2 placeholder-gray-500 text-sm"
+          placeholder="{{ section.settings.name-placeholder }}"
+          value="{% if form[name] %}{{ form[name] }}{% elsif customer %}{{ customer.name }}{% endif %}"
+        >
+
+        <!-- <label for="ContactFormEmail">{{ 'contact.form.email' }}</label> -->
+        <input
+          type="email"
+          name="contact[email]"
+          id="ContactFormEmail"
+          class="contact-us-form-input w-full rounded h-12 px-2 placeholder-gray-500 text-sm"
+          placeholder="{{ section.settings.email-placeholder }}"
+          value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}"
+          spellcheck="false"
+          autocomplete="off"
+          autocapitalize="off"
+        >
+
+        <!-- <label for="ContactFormPhone">{{ 'contact.form.phone' }}</label> -->
+        <input
+          type="tel"
+          name="contact[phone]"
+          id="ContactFormPhone"
+          class="contact-us-form-input w-full rounded h-12 px-2 placeholder-gray-500 text-sm"
+          placeholder="{{ section.settings.phone-placeholder }}"
+          value="{% if form[phone] %}{{ form.phone }}{% elsif customer %}{{ customer.phone }}{% endif %}"
+          pattern="[0-9\-]*"
+        >
+
+        <!-- <label for="ContactFormMessage">{{ 'contact.form.message' }}</label> -->
+        <textarea
+          rows="10"
+          name="contact[body]"
+          id="ContactFormMessage"
+          class="contact-us-form-input w-full rounded h-[230px] px-2 placeholder-gray-500 text-sm py-4 resize-none"
+          placeholder="{{ section.settings.message-placeholder }}"
+        >
+          {%- if form.body -%}
+            {{- form.body -}}
+          {%- endif -%}
+        </textarea>
+
+        <input
+          type="submit"
+          class="contact-us-form-submit-btn w-24 uppercase p-3 self-start"
+          value="{{ section.settings.btn-text }}"
+        >
+        <div class="w-full">
+          <div class="relative flex gap-2 border-t border-gray-300 mt-8 py-6 w-full uppercase text-[11px]">
+            <span
+              style="background-color:{{ section.settings.bg_color }};"
+              class="absolute top-0 left-[50%] translate-x-[-50%] translate-y-[-50%] px-2 py-1 w-max"
+              >Or</span
+            >
+            <p>{{ section.settings['email-label'] }}</p>
+            <a href="mailto:{{ section.settings.email }}">{{ section.settings.email }}</a>
+          </div>
+        </div>
+      </section>
+    {% endform %}
+  </section>
+  <section
+    class="w-full md:w-[50%] h-[450px] md:h-full"
+    style="background:url('{% if section.settings.bg_img %}{{ section.settings.bg_img | image_url }}{% else %}https://cdn.shopify.com/s/files/1/1897/6299/files/1_8307b54d-7383-4d46-8bcc-57e91e719708.jpg?v=1627906105{% endif %}'); background-position:right; background-repeat: no-repeat; background-size:cover;"
+  >
+    &nbsp;
+  </section>
+</section>
+<div
+  data-type="local-stores-location"
+  class="hidden mx-6 my-20 grid grid-rows-2 grid-cols-1 justify-between md:grid-cols-2 md:grid-rows-1 min-h-[425px] gap-2 md:gap-6"
+>
+  <div class="w-full">
+    <iframe
+      id="store-map"
+      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2284.841691123822!2d33.995730565756524!3d34.9866983390778!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14dfc56b4a311b99%3A0x4a9e540e93308820!2sLondon%20Clothing%20Company%20%E2%84%A2!5e0!3m2!1sen!2snp!4v1626533501623!5m2!1sen!2snp"
+      width="100%"
+      min-height="425px"
+      height="100%"
+      style="border:0;"
+      allowfullscreen=""
+      loading="lazy"
+    ></iframe>
+  </div>
+  <div class="w-full border-[1px] border-black p-5">
+    <div class="w-full">
+      <h5 class="font-semibold text-3xl">Store locations</h5>
+      <section class="grid grid-cols-2 grid-rows-2 gap-1 text-xs md:grid-cols-4 md:grid-rows-1 lg:text-lg my-6">
+        {%- for block in section.blocks -%}
+          <h5
+            data-location-btn="{{- block.settings.store_location | replace: ' ', '-' | downcase  -}}"
+            class="cursor-pointer px-2 py-2 md:py-1 border-[1px] border-black hover:bg-[#213a70] hover:border-[#213a70] hover:text-white flex items-center justify-center"
+            onclick="showStoreAddress(event)"
+          >
+            {{- block.settings.store_location -}}
+          </h5>
+        {%- endfor -%}
+      </section>
+      {%- for block in section.blocks -%}
+        {%- render 'stores-hour',
+          store: block.settings.store_location,
+          address: block.settings.store_address,
+          tel: block.settings.store_tel,
+          email: block.settings.store_email,
+          sunday: block.settings.sunday,
+          monday: block.settings.monday,
+          tuesday: block.settings.tuesday,
+          wednesday: block.settings.wednesday,
+          thursday: block.settings.thursday,
+          friday: block.settings.friday,
+          saturday: block.settings.saturday
+        -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</div>
+
+<style>
+  [data-page="contact-us"] .contact-form {
+    width: 60%;
+  }
+
+  .store--active {
+    background-color: black;
+    color: white;
+    cursor: initial;
+  }
+
+  .store--active:hover {
+    background-color: black;
+    color: white;
+  }
+
+  @media only screen and (max-width: 768px) {
+    .contact-form {
+      width: 90%;
+    }
+  }
+</style>
+
+<script>
+  const storeMap = document.getElementById("store-map");
+  const paralimniMapSrc = 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3266.6228770686553!2d33.97537675028154!3d35.0411632723198!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14dfc5ff1ef65fb7%3A0x20bb1920240cde9!2sLondon%20Clothing%20Company%E2%84%A2!5e0!3m2!1sen!2snp!4v1626532531853!5m2!1sen!2snp';
+
+  const ayiaNapaMapSrc = 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2284.841691123822!2d33.995730565756524!3d34.9866983390778!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14dfc56b4a311b99%3A0x4a9e540e93308820!2sLondon%20Clothing%20Company%20%E2%84%A2!5e0!3m2!1sen!2snp!4v1626533501623!5m2!1sen!2snp';
+
+  const limassolMapSrc = 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3280.985501389545!2d33.04117725027103!3d34.68031539172245!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14e7330541c672c7%3A0x21bdf9074514a219!2sLondon%20Clothing%20Company%20%E2%84%A2!5e0!3m2!1sen!2snp!4v1626532684246!5m2!1sen!2snp';
+
+  const protarasMapSrc = 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3267.7165859415004!2d34.05440636663201!3d35.01379908128595!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14dfc524b51394dd%3A0x5404e5435486593e!2sLondon%20Clothing%20Company%E2%84%A2!5e0!3m2!1sen!2snp!4v1626793361460!5m2!1sen!2snp';
+
+  const ayiaNapa = document.querySelector('[data-location="ayia-napa"]');
+  const ayiaNapaBtn = document.querySelector('[data-location-btn="ayia-napa"]');
+
+  const paralimni = document.querySelector('[data-location="paralimni"]');
+  const paralimniBtn = document.querySelector('[data-location-btn="paralimni"]');
+
+  const limassol = document.querySelector('[data-location="limassol"]');
+  const limassolBtn = document.querySelector('[data-location-btn="limassol"]');
+
+  const protaras = document.querySelector('[data-location="protaras"]');
+  const protarasBtn = document.querySelector('[data-location-btn="protaras"]');
+
+
+  window.onload = () => {
+    ayiaNapa ?. classList.remove('hidden');
+    ayiaNapaBtn ?. classList.add('store--active');
+  }
+
+  function hideAll() {
+    ayiaNapa ?. classList.add('hidden');
+    paralimni ?. classList.add('hidden');
+    limassol ?. classList.add('hidden');
+    protaras ?. classList.add('hidden');
+
+    ayiaNapaBtn ?. classList.remove('store--active');
+    paralimniBtn ?. classList.remove('store--active');
+    limassolBtn ?. classList.remove('store--active');
+    protarasBtn ?. classList.remove('store--active');
+  }
+
+  function showStoreAddress(event) {
+
+    // console.log("store info", {event})
+
+    const location = event.target.dataset.locationBtn;
+
+    // console.log("store info", {event, location})
+
+    switch (location) {
+      case 'ayia-napa':
+        hideAll();
+        storeMap.src = ayiaNapaMapSrc;
+        ayiaNapa.classList.remove('hidden');
+        ayiaNapaBtn.classList.add('store--active');
+        return
+
+      case 'limassol':
+        hideAll();
+        storeMap.src = limassolMapSrc;
+        limassol.classList.remove('hidden');
+        limassolBtn.classList.add('store--active');
+        return
+
+      case 'protaras':
+        hideAll();
+        storeMap.src = protarasMapSrc;
+        protaras.classList.remove('hidden');
+        protarasBtn.classList.add('store--active');
+        return
+
+      case 'paralimni':
+        hideAll();
+        storeMap.src = paralimniMapSrc;
+        paralimni.classList.remove('hidden');
+        paralimniBtn.classList.add('store--active');
+        return
+
+      default:
+        return
+
+    }
+  }
+</script>
+
+{% schema %}
+{
+  "name": "contact-form",
+  "tag": "section",
+  "class": "w-full my-10",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Background Settings"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Form Background Color",
+      "default":"#eaf0f5"
+    },
+    {
+      "type": "image_picker",
+      "id": "bg_img",
+      "label": "Background Image"
+    },
+    {
+      "type": "header",
+      "content": "Form Input Settings"
+    },
+    {
+      "type": "text",
+      "id": "name-placeholder",
+      "default": "Name",
+      "label": "Name Label"
+    },
+    {
+      "type": "text",
+      "id": "email-placeholder",
+      "default": "Email",
+      "label": "Email Label"
+    },
+    {
+      "type": "text",
+      "id": "phone-placeholder",
+      "default": "Phone",
+      "label": "Phone Label"
+    },
+    {
+      "type": "text",
+      "id": "message-placeholder",
+      "default": "Message",
+      "label": "Message Label"
+    },
+    {
+      "type": "range",
+      "id": "input-border-size",
+      "min": 0,
+      "max": 10,
+      "step": 1,
+      "unit": "px",
+      "default":0,
+      "label": "Inputs Border Width"
+    },
+    {
+      "type": "color",
+      "id": "input-border-color",
+      "label": "Input Border Color",
+      "default":"#444444"
+    },
+    {
+      "type": "color",
+      "id": "input-background-color",
+      "label": "Input Background Color",
+      "default":"#eaf0f5"
+    },
+    {
+      "type": "header",
+      "content": "Heading Settings"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "default": "We'd love to hear from you.",
+      "label": "Heading"
+    },
+    {
+      "type": "color",
+      "id": "heading-color",
+      "label": "Heading Color",
+      "default":"#444444"
+    },
+    {
+      "type": "range",
+      "id": "heading-size",
+      "min": 10,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default":31,
+      "label": "Heading Size"
+    },
+     {
+      "type": "select",
+      "id": "heading-font-weight",
+      "label": "Heading Font Weight",
+      "options": [
+        {
+          "label": "Bold",
+          "value": "bold"
+        },
+        {
+          "label": "Bolder",
+          "value": "bolder"
+        },
+        {
+          "label": "Lighter",
+          "value": "lighter"
+        },
+        {
+          "label": "Normal",
+          "value": "normal"
+        }
+      ],
+      "default":"normal"
+    },
+    {
+      "type": "select",
+      "id": "heading-font-style",
+      "label": "Heading Font Style",
+      "options": [
+        {
+          "label": "Italic",
+          "value": "italic"
+        },
+        {
+          "label": "Normal",
+          "value": "normal"
+        },
+        {
+          "label": "Oblique",
+          "value": "oblique"
+        }
+      ],
+      "default":"normal"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading"
+    },
+    {
+      "type": "color",
+      "id": "subheading-color",
+      "label": "Subheading Color",
+      "default":"#444444"
+    },
+    {
+      "type": "range",
+      "id": "subheading-size",
+      "min": 10,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default":11,
+      "label": "Subheading Size"
+    },
+     {
+      "type": "select",
+      "id": "subheading-font-weight",
+      "label": "Subheading Font Weight",
+      "options": [
+        {
+          "label": "Bold",
+          "value": "bold"
+        },
+        {
+          "label": "Bolder",
+          "value": "bolder"
+        },
+        {
+          "label": "Lighter",
+          "value": "lighter"
+        },
+        {
+          "label": "Normal",
+          "value": "normal"
+        }
+      ],
+      "default":"normal"
+    },
+    {
+      "type": "select",
+      "id": "subheading-font-style",
+      "label": "Subheading Font Style",
+      "options": [
+        {
+          "label": "Italic",
+          "value": "italic"
+        },
+        {
+          "label": "Normal",
+          "value": "normal"
+        },
+        {
+          "label": "Oblique",
+          "value": "oblique"
+        }
+      ],
+      "default":"normal"
+    },
+    {
+      "type": "text",
+      "default":"Contact Us:",
+      "id": "email-label",
+      "label": "Contact Us Label"
+    },
+    {
+      "type": "text",
+      "default":"online@london-clothing.com",
+      "id": "email",
+      "label": "Contact Email Address"
+    },
+    {
+      "type": "text",
+      "id":"btn-text",
+      "label": "Button Text",
+      "default":"Send"
+    },
+    {
+      "type": "color",
+      "id": "btn-color",
+      "label": "Button Color",
+      "default":"#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "btn-bg-color",
+      "label": "Button Background Color",
+      "default":"#e45364"
+    },
+    {
+      "type": "range",
+      "id": "btn-border-radius",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default":4,
+      "label": "Button Rounded Corner"
+    },
+    {
+      "type": "range",
+      "id": "btn-text-size",
+      "min": 10,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default":11,
+      "label": "Button Text Size"
+    },
+     {
+      "type": "select",
+      "id": "btn-font-weight",
+      "label": "Button Font Weight",
+      "options": [
+        {
+          "label": "Bold",
+          "value": "bold"
+        },
+        {
+          "label": "Bolder",
+          "value": "bolder"
+        },
+        {
+          "label": "Lighter",
+          "value": "lighter"
+        },
+        {
+          "label": "Normal",
+          "value": "normal"
+        }
+      ],
+      "default":"normal"
+    },
+    {
+      "type": "select",
+      "id": "btn-font-style",
+      "label": "Button Font Style",
+      "options": [
+        {
+          "label": "Italic",
+          "value": "italic"
+        },
+        {
+          "label": "Normal",
+          "value": "normal"
+        },
+        {
+          "label": "Oblique",
+          "value": "oblique"
+        }
+      ],
+      "default":"normal"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "store location",
+      "type": "store-details",
+      "settings": [
+        {
+          "type": "text",
+          "id": "store_location",
+          "label": "Store Location",
+          "default": "Ayia Napa",
+          "info": "Name of the menu for the selected image"
+        },
+        {
+          "type": "text",
+          "id": "store_address",
+          "label": "Store Address",
+          "default": "nissi avenue 9, 5330 ayia napa",
+          "info": "Store address"
+        },
+        {
+          "type": "text",
+          "id": "store_tel",
+          "label": "Store Phone",
+          "default": "+357 23723566",
+          "info": "Store phone"
+        },
+        {
+          "type": "text",
+          "id": "store_email",
+          "label": "Store Email",
+          "default": "online@london-clothing.com",
+          "info": "Store email"
+        },
+        {
+          "type": "text",
+          "id": "sunday",
+          "label": "Sunday",
+          "default": "9 AM - 10 PM",
+          "info": "Opening hours"
+        },
+        {
+          "type": "text",
+          "id": "monday",
+          "label": "Monday",
+          "default": "9 AM - 10 PM",
+          "info": "Opening hours"
+        },
+        {
+          "type": "text",
+          "id": "tuesday",
+          "label": "Tuesday",
+          "default": "9 AM - 10 PM",
+          "info": "Opening hours"
+        },
+        {
+          "type": "text",
+          "id": "wednesday",
+          "label": "Wednesday",
+          "default": "9 AM - 10 PM",
+          "info": "Opening hours"
+        },
+        {
+          "type": "text",
+          "id": "thursday",
+          "label": "Thursday",
+          "default": "9 AM - 10 PM",
+          "info": "Opening hours"
+        },
+        {
+          "type": "text",
+          "id": "friday",
+          "label": "Friday",
+          "default": "9 AM - 10 PM",
+          "info": "Opening hours"
+        },
+        {
+          "type": "text",
+          "id": "saturday",
+          "label": "Saturday",
+          "default": "9 AM - 10 PM",
+          "info": "Opening hours"
+        },
+        {
+          "type": "url",
+          "id": "store_iframe",
+          "label": "Store Map",
+          "info": "Store Map"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

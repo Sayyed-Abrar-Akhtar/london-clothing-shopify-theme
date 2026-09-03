@@ -1,0 +1,221 @@
+{{ 'product-card.css' | asset_url | stylesheet_tag }}
+
+<section class="pt-6 pb-2 md:pb-20 md:py-20 flex flex-col items-center justify-evenly space-y-8">
+  <p
+    style="color:{{ section.settings.color }};font-size: {{ section.settings.size }}px;font-style:{{ section.settings.style }};font-weight:{{ section.settings.weight }};"
+    class="my-1 md:my-10 uppercase tracking-[2px]"
+  >
+    {{ section.settings.product_recommendation_section_heading }}
+  </p>
+  <section
+    data-product-types="product-recommendations"
+    data-complementary-product-id="{% for comp_prod in product.metafields.shopify--discovery--product_recommendation.complementary_products.value %}{{comp_prod.id}}{% if forloop.last %}{% else %},{%endif%}{% endfor %}"
+    style="column-gap:4%;"
+    class="w-full grid gap-[2dvw] sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 mb-12"
+  >
+    <div data-type="product-recommendations-skeleton" class="w-full h-[350px] overflow-hidden">
+      <div class="animate-pulse w-full h-full"><div class="bg-slate-300 w-full h-full">&nbsp;</div></div>
+    </div>
+    <div data-type="product-recommendations-skeleton" class="w-full h-[350px] overflow-hidden">
+      <div class="animate-pulse w-full h-full"><div class="bg-slate-300 w-full h-full">&nbsp;</div></div>
+    </div>
+    <div data-type="product-recommendations-skeleton" class="w-full h-[350px] overflow-hidden">
+      <div class="animate-pulse w-full h-full"><div class="bg-slate-300 w-full h-full">&nbsp;</div></div>
+    </div>
+    <div data-type="product-recommendations-skeleton" class="w-full h-[350px] overflow-hidden">
+      <div class="animate-pulse w-full h-full"><div class="bg-slate-300 w-full h-full">&nbsp;</div></div>
+    </div>
+  </section>
+</section>
+
+<script>
+  
+  
+
+  const productHolder = document.querySelector('[data-product-types="product-recommendations"]');
+
+  const complementaryProductIds = productHolder.dataset.complementaryProductId.split(',').map(i=>Number(i));
+
+  const skeletons = Array.prototype.slice.call(document.querySelectorAll('[data-type="product-recommendations-skeleton"]'))
+
+  window.addEventListener("load", (event) => {
+    try{
+      fetch(window.Shopify.routes.root + `recommendations/products.json?product_id={{ product.id }}&limit=4&intent=related`)
+      .then(response => response.json())
+      .then(({products}) => {
+        //console.log("response", products[0]);
+        if (products.length > 0) {
+          // remove skeleton when response after dom is loaded
+          skeletons.forEach(skeleton=> productHolder.removeChild(skeleton));
+          console.log(products)
+          products.forEach(product=> productHolder.insertAdjacentHTML('beforeend', makeProductCard({...product, compProductsId:complementaryProductIds})));
+        }
+      })
+    } catch(error) {
+      // remove skeleton when response after dom is loaded
+      skeletons.forEach(skeleton=> productHolder.removeChild(skeleton))
+      //console.info(error)
+    }
+  });
+  function makeProductCard (product){
+    const showDiscountBadge = {{settings.show_discount_badge}};
+   
+    return `
+      <section
+          class="product--card relative coll_item self-stretch min-w-[140px] max-w-[284px] sm:max-w-full rounded-sm product {{ extraclass }} min-h-max my-5"
+          data-coll-type="{{ data_coll_type }}"
+      >
+        <a
+          ${product.available
+          ?
+          `href="/products/${product.handle}?variant=${product.variants[0].id}`:null}"
+          class="product-image border-red-300 border-1 block w-full overflow-hidden"
+        >
+          <section
+            class="relative featured-image aspect-[291/431] rounded-sm overflow-hidden w-full h-[250px] md:h-[431px] mb-4"
+          >
+            <img
+              src="${product.featured_image}&amp;width=300"
+              alt="${product.title}"
+              srcset="${product.featured_image}&amp;width=100 100w, ${product.featured_image}&amp;width=200 200w, ${product.featured_image}&amp;width=300 300w"
+              width="300"
+              height="444"
+              loading="lazy"
+              class="w-full"
+            />  
+            <!--
+             <span
+              id="product-badge-${product.id}"
+              class="product-badge absolute bottom-10 md:bottom-16 left-0 text-[9px] md:text-xs font-semibold md:font-normal bg-[rgba(255,255,255,0.75)] text-black px-[8px] py-[5px] uppercase rounded-r shadow-md"
+              >${product.available ? product.compare_at_price > product.price ?
+              'sale': 'new in': 'sold out'}${product.compare_at_price !== '' ? showDiscountBadge? `<span
+                id="discount-badge-${product.id}"
+                class="text-xs text-red-600"
+              >
+                -${product.compare_at_price > product.price ?
+                Math.floor((product.price*100)/product.compare_at_price) : null}% </span
+              >`:'':null}
+            </span>  -->    
+          </section>
+          <section
+            class="absolute second-image aspect-[291/431] rounded-sm overflow-hidden w-full h-[250px] md:h-[431px] mb-4"
+          >
+          ${product.images[1] ? `
+            <img
+              src="${product.images[1]}&amp;width=437"
+              alt="${product.title} - back detail"
+              srcset="${product.images[1]}&amp;width=352 352w, ${product.images[1]}&amp;width=437 437w"
+              width="437"
+              height="647"
+              loading="lazy"
+            />`
+            : `<img
+              src="${product.featured_image}&amp;width=437"
+              alt="${product.title}"
+              srcset="${product.featured_image}&amp;width=352 352w, ${product.featured_image}&amp;width=437 437w"
+              width="437"
+              height="647"
+              loading="lazy"
+            />`}
+          </section>
+
+         
+          <article class="text-[11px] px-2 mt-2" itemscope="" itemtype="http://schema.org/Product">
+            <p itemprop="name" class="uppercase font-semibold leading-[150%] tracking-wide space-x-2 mb-3 max-w-[280px]">
+              ${ product.title }
+            </p>
+            <p itemprop="vendor" class="uppercase mt-2">${product.vendor}</p>
+            <div class="color-swatches-container flex items-center gap-1 py-1">
+              <span class="color-swatches current" style="background-color: rgba(165, 42, 42,0.5);border-color:rgb(165, 42, 42);" title="BROWN">
+                &nbsp;
+              </span>
+              <span data-color-swatch-type="link" data-color-swatch-link="/products/jactorino-leather-belt?variant=56520721793401" class="color-swatches cursor-pointer" style="background-color: rgba(101, 67, 33,0.8);" title="DARK BROWN">
+                &nbsp;
+              </span>
+              <span data-color-swatch-type="link" data-color-swatch-link="/products/jactorino-leather-belt?variant=56520721596793" class="color-swatches cursor-pointer" style="background-color: rgba(0, 0, 0,0.8);" title="Black">
+                &nbsp;
+              </span>
+            </div>
+            <p class="mb-3">
+              <span class="font-semibold">{{ cart.currency.symbol }}${(product.price/100).toFixed(2)} {{ cart.currency.iso_code }}</span>
+              ${ product.compare_at_price !== 'blank' &&  product.compare_at_price > product.price  ? `<s class="ml-2 font-semibold">{{ cart.currency.symbol }}${ (product.compare_at_price/100).toFixed(2) } {{ cart.currency.iso_code }}</s>`:''}
+            </h2>
+          </article>
+        </a>
+      </section>
+    `
+  }
+</script>
+
+{% schema %}
+{
+  "name": "Product recommendations",
+  "settings": [
+    {
+      "type": "text",
+      "label": "Heading",
+      "default": "You might also like",
+      "id": "product_recommendation_section_heading"
+    },
+    {
+      "type": "range",
+      "id": "size",
+      "min": 10,
+      "max": 30,
+      "step": 1,
+      "unit": "px",
+      "default": 20,
+      "label": "Heading Size"
+    },
+    {
+      "type": "color",
+      "id": "color",
+      "label": "Heading Colour"
+    },
+    {
+      "type": "select",
+      "id": "weight",
+      "label": "Heading Weight",
+      "options": [
+        {
+          "label": "Lighter",
+          "value": "lighter"
+        },
+        {
+          "label": "Default",
+          "value": "none"
+        },
+        {
+          "label": "Bold",
+          "value": "bold"
+        },
+        {
+          "label": "Bolder",
+          "value": "bolder"
+        }
+      ],
+      "default": "bold"
+    },
+    {
+      "type": "select",
+      "id": "style",
+      "label": "Heading Style",
+      "options": [
+        {
+          "label": "Italic",
+          "value": "italic"
+        },
+        {
+          "label": "Normal",
+          "value": "normal"
+        },
+        {
+          "label": "Oblique",
+          "value": "oblique"
+        }
+      ],
+      "default": "normal"
+    }
+  ]
+}
+{% endschema %}

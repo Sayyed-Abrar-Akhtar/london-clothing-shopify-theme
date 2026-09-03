@@ -1,0 +1,261 @@
+{{ 'category-grid.css' | asset_url | stylesheet_tag }}
+
+<h2
+  class="text-center"
+  style="
+    padding-block:{{ section.settings.spacing }}px;
+    font-family:{{ section.settings.text-font.family }}, {{ section.settings.text-font.fallback_families }};
+    font-size: {{ section.settings.text-size }}px;
+    font-weight: {{ section.settings.text-font.weight }};
+  "
+>
+  {{ section.settings.title }}
+</h2>
+
+<div
+  style="background-color: {{- section.settings.bg-color -}}; margin-top:{{- section.settings.margin-t -}}px; padding-inline: {{- section.settings.spacing-x -}}px; padding-block: {{- section.settings.spacing-y -}}px"
+  class="category-grid"
+>
+  {% for block in section.blocks %}
+    {% if block.settings.image %}
+      <a href="{{ block.settings.url }}" aria-label="{{ section.settings.name }}">
+        {% if block.settings.image.alt %}
+          {{ block.settings.image | image_url: width: '600' | image_tag }}
+        {% else %}
+          {{ block.settings.image | image_url: width: '600' | image_tag: alt: block.settings.name}}
+        {% endif %}
+      </a>
+      
+    {% endif %}
+  {% endfor %}
+</div>
+
+{% schema %}
+{
+  "tag": "section",
+  "name": "Category Grid",
+  "settings": [
+    {
+      "type": "text",
+      "label": "Title",
+      "id": "title"
+    },
+    {
+      "type": "color",
+      "id": "bg-color",
+      "label": "Background Color"
+    },
+    {
+      "type": "font_picker",
+      "id": "text-font",
+      "label": "Text Font",
+      "default": "helvetica_n4"
+    },
+    {
+      "type": "range",
+      "id": "text-size",
+      "min": 10,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 13,
+      "label": "Text Size"
+    },
+    {
+      "type": "range",
+      "id": "margin-t",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 30,
+      "label": "Margin Top"
+    },
+    {
+      "type": "range",
+      "id": "spacing-x",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 10,
+      "label": "Horizontal Spacing"
+    },
+    {
+      "type": "range",
+      "id": "spacing-y",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 10,
+      "label": "Vertical Spacing"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "Category",
+      "type": "Category",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "url",
+          "id": "url",
+          "label": "Image Link"
+        },
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Category Name"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Category Grid - Fashion",
+      "category": "Image",
+      "settings": {
+        "title": "Shop By Category",
+        "bg-color": "#ffffff",
+        "text-size": 24,
+        "margin-t": 40,
+        "spacing-x": 20,
+        "spacing-y": 20
+      },
+      "blocks": [
+        {
+          "type": "Category",
+          "settings": {
+            "name": "Men's Collection"
+          }
+        },
+        {
+          "type": "Category",
+          "settings": {
+            "name": "Women's Collection"
+          }
+        },
+        {
+          "type": "Category",
+          "settings": {
+            "name": "Accessories"
+          }
+        },
+        {
+          "type": "Category",
+          "settings": {
+            "name": "New Arrivals"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Category Grid - Minimal",
+      "category": "Image",
+      "settings": {
+        "title": "Collections",
+        "bg-color": "#f8f8f8",
+        "text-size": 20,
+        "margin-t": 30,
+        "spacing-x": 15,
+        "spacing-y": 15
+      },
+      "blocks": [
+        {
+          "type": "Category",
+          "settings": {
+            "name": "Men"
+          }
+        },
+        {
+          "type": "Category",
+          "settings": {
+            "name": "Women"
+          }
+        },
+        {
+          "type": "Category",
+          "settings": {
+            "name": "Kids"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Category Grid - Seasonal",
+      "category": "Image",
+      "settings": {
+        "title": "Seasonal Favorites",
+        "bg-color": "#f0f8ff",
+        "text-size": 28,
+        "margin-t": 50,
+        "spacing-x": 25,
+        "spacing-y": 25
+      },
+      "blocks": [
+        {
+          "type": "Category",
+          "settings": {
+            "name": "Summer Essentials"
+          }
+        },
+        {
+          "type": "Category",
+          "settings": {
+            "name": "Winter Collection"
+          }
+        },
+        {
+          "type": "Category",
+          "settings": {
+            "name": "Spring Styles"
+          }
+        },
+        {
+          "type": "Category",
+          "settings": {
+            "name": "Fall Favorites"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Category Grid - Sale",
+      "category": "Image",
+      "settings": {
+        "title": "Shop The Sale",
+        "bg-color": "#fff0f0",
+        "text-size": 26,
+        "margin-t": 35,
+        "spacing-x": 20,
+        "spacing-y": 20
+      },
+      "blocks": [
+        {
+          "type": "Category",
+          "settings": {
+            "name": "Clearance"
+          }
+        },
+        {
+          "type": "Category",
+          "settings": {
+            "name": "Best Sellers"
+          }
+        },
+        {
+          "type": "Category",
+          "settings": {
+            "name": "Limited Time"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

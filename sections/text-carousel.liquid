@@ -1,0 +1,538 @@
+<div class="text-carousel overflow-hidden">
+  <h3 class="text-center uppercase mt-8 mb-6 brand-heading" 
+      style="color: {{ section.settings.heading_color }}; 
+             font-weight: {{ section.settings.heading_font_weight }}; 
+             font-style: {{ section.settings.heading_font_style }};">
+    {{ section.settings.heading }}
+  </h3>
+  {% if section.settings.extra_info != blank %}
+  <p class="brand-extra-info">{{ section.settings.extra_info }}</p>
+  {% endif %}
+  
+  <div class="{{section.id}} text_carousel__container brand__container__lg flex mb-4">
+    {% for block in section.blocks %}
+      <div class="{{section.id}} text_carousel__item carousel__item__lg relative flex items-center gap-6 px-10">
+        {% if block.settings.first_img %}
+          {% render 'brand-card', image: block.settings.first_img, collection:block.settings.first_img_coll %}
+        {% endif %}
+        {% if block.settings.second_img %}
+          {% render 'brand-card', image: block.settings.second_img, collection:block.settings.second_img_coll %}
+        {% endif %}
+        {% if block.settings.third_img %}
+          {% render 'brand-card', image: block.settings.third_img, collection:block.settings.third_img_coll %}
+        {% endif %}
+        {% if block.settings.fourth_img %}
+          {% render 'brand-card', image: block.settings.fourth_img, collection:block.settings.fourth_img_coll %}
+        {% endif %}
+        {% if block.settings.fifth_img %}
+          {% render 'brand-card', image: block.settings.fifth_img, collection:block.settings.fifth_img_coll %}
+        {% endif %}
+        {% if block.settings.sixth_img %}
+          {% render 'brand-card', image: block.settings.sixth_img, collection:block.settings.sixth_img_coll %}
+        {% endif %}
+      </div>
+    {% endfor %}
+  </div>
+  
+  <div class="{{section.id}} text_carousel__container brand__container__md flex mb-4">
+    {% for block in section.blocks %}
+      <div class="{{section.id}} text_carousel__item carousel__item__md relative flex items-center gap-6 px-10">
+        {% if block.settings.first_img %}
+          {% render 'brand-card', image: block.settings.first_img, collection:block.settings.first_img_coll %}
+        {% endif %}
+        {% if block.settings.second_img %}
+          {% render 'brand-card', image: block.settings.second_img, collection:block.settings.second_img_coll %}
+        {% endif %}
+        {% if block.settings.third_img %}
+          {% render 'brand-card', image: block.settings.third_img, collection:block.settings.third_img_coll %}
+        {% endif %}
+      </div>
+      <div class="{{section.id}} text_carousel__item carousel__item__md relative flex items-center gap-6 px-10">
+        {% if block.settings.fourth_img %}
+          {% render 'brand-card', image: block.settings.fourth_img, collection:block.settings.fourth_img_coll %}
+        {% endif %}
+        {% if block.settings.fifth_img %}
+          {% render 'brand-card', image: block.settings.fifth_img, collection:block.settings.fifth_img_coll %}
+        {% endif %}
+        {% if block.settings.sixth_img %}
+          {% render 'brand-card', image: block.settings.sixth_img, collection:block.settings.sixth_img_coll %}
+        {% endif %}
+      </div>
+    {% endfor %}
+  </div>
+  
+  <div class="{{section.id}} text_carousel__container brand__container__sm flex mb-4">
+    {% for block in section.blocks %}
+      <div class="{{section.id}} text_carousel__item carousel__item__sm relative flex items-center gap-6 px-10">
+        {% if block.settings.first_img %}
+          {% render 'brand-card', image: block.settings.first_img, collection:block.settings.first_img_coll %}
+        {% endif %}
+        {% if block.settings.second_img %}
+          {% render 'brand-card', image: block.settings.second_img, collection:block.settings.second_img_coll %}
+        {% endif %}
+      </div>
+      <div class="{{section.id}} text_carousel__item carousel__item__sm relative flex items-center gap-6 px-10">
+        {% if block.settings.third_img %}
+          {% render 'brand-card', image: block.settings.third_img, collection:block.settings.third_img_coll %}
+        {% endif %}
+        {% if block.settings.fourth_img %}
+          {% render 'brand-card', image: block.settings.fourth_img, collection:block.settings.fourth_img_coll %}
+        {% endif %}
+      </div>
+      <div class="{{section.id}} text_carousel__item carousel__item__sm relative flex items-center gap-6 px-10">
+        {% if block.settings.fifth_img %}
+          {% render 'brand-card', image: block.settings.fifth_img, collection:block.settings.fifth_img_coll %}
+        {% endif %}
+        {% if block.settings.sixth_img %}
+          {% render 'brand-card', image: block.settings.sixth_img, collection:block.settings.sixth_img_coll %}
+        {% endif %}
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+<script>
+  // slide -100% x direction
+  let textSlidesDelay = Number('{{section.settings.slide_delay}}');
+  console.log({textSlidesDelay})
+  document.addEventListener('DOMContentLoaded', () => {
+    let timer = null;
+    let classTimer = null;
+
+    function textCarouselInAction() {
+      if (timer) {
+        clearTimeout(timer);
+      }
+      if (classTimer) {
+        clearTimeout(classTimer);
+      }
+
+      const textCarouselContainer = document.querySelector('.{{section.id}}.text_carousel__container.brand__container__lg');
+      const textCarouselItems = Array.from(document.querySelectorAll('.{{section.id}}.text_carousel__item.carousel__item__lg'));
+      if (textCarouselItems.length <= 1) {
+        return;
+      }
+      
+      textCarouselItems.forEach((item) => item.classList.add('translateXFull'));
+
+      classTimer = setTimeout(() => {
+        textCarouselContainer.removeChild(textCarouselItems[0]);
+        textCarouselItems.forEach((item) => item.classList.remove('translateXFull'));
+      }, 1000);
+
+      timer = setTimeout(() => {
+        textCarouselContainer.appendChild(textCarouselItems[0]);
+        textCarouselInAction();
+      }, textSlidesDelay * 1000);
+    }
+
+    setTimeout(() => textCarouselInAction(), 3 * 1000 + 1000);
+  });
+  
+  document.addEventListener('DOMContentLoaded', () => {
+    let timer = null;
+    let classTimer = null;
+
+    function textCarouselInAction() {
+      if (timer) {
+        clearTimeout(timer);
+      }
+      if (classTimer) {
+        clearTimeout(classTimer);
+      }
+
+      const textCarouselContainer = document.querySelector('.{{section.id}}.text_carousel__container.brand__container__md');
+      const textCarouselItems = Array.from(document.querySelectorAll('.{{section.id}}.text_carousel__item.carousel__item__md'));
+      if (textCarouselItems.length <= 1) {
+        return;
+      }
+      
+      textCarouselItems.forEach((item) => item.classList.add('translateXFull'));
+
+      classTimer = setTimeout(() => {
+        textCarouselContainer.removeChild(textCarouselItems[0]);
+        textCarouselItems.forEach((item) => item.classList.remove('translateXFull'));
+      }, 1000);
+
+      timer = setTimeout(() => {
+        textCarouselContainer.appendChild(textCarouselItems[0]);
+        textCarouselInAction();
+      }, textSlidesDelay * 1000);
+    }
+
+    setTimeout(() => textCarouselInAction(), 3 * 1000 + 1000);
+  });
+  
+  document.addEventListener('DOMContentLoaded', () => {
+    let timer = null;
+    let classTimer = null;
+
+    function textCarouselInAction() {
+      if (timer) {
+        clearTimeout(timer);
+      }
+      if (classTimer) {
+        clearTimeout(classTimer);
+      }
+
+      const textCarouselContainer = document.querySelector('.{{section.id}}.text_carousel__container.brand__container__sm');
+      const textCarouselItems = Array.from(document.querySelectorAll('.{{section.id}}.text_carousel__item.carousel__item__sm'));
+      if (textCarouselItems.length <= 1) {
+        return;
+      }
+      
+      textCarouselItems.forEach((item) => item.classList.add('translateXFull'));
+
+      classTimer = setTimeout(() => {
+        textCarouselContainer.removeChild(textCarouselItems[0]);
+        textCarouselItems.forEach((item) => item.classList.remove('translateXFull'));
+      }, 1000);
+
+      timer = setTimeout(() => {
+        textCarouselContainer.appendChild(textCarouselItems[0]);
+        textCarouselInAction();
+      }, textSlidesDelay * 1000);
+    }
+
+    setTimeout(() => textCarouselInAction(), 3 * 1000 + 1000);
+  }); 
+</script>
+
+<style>
+  .text-carousel{
+    min-height: 100px;
+  }
+  
+  .text_carousel__container{
+    width:calc({{ 100 | times: section.blocks.size | times: 3 }}vw - {{ section.blocks.size | times:3 | times:50 }}px);
+  }
+
+  .text_carousel__item {
+    padding-inline: 16px;
+    justify-content: space-between;
+    width:calc(100vw - 50px);
+  }
+  
+  .brand_img_contianer {
+    width: calc(100dvw / 2);
+    margin: 10px;
+  }
+
+  .brand-heading {
+    font-size: {{ section.settings.heading_font_size_mobile }};
+  }
+
+  .brand-extra-info {
+    margin-top:20px;
+    text-align:center;
+    font-weight:700;
+    font-size: {{ section.settings.heading_font_size_mobile }};
+  }
+
+  .text_carousel__container.brand__container__sm {
+    display: flex;
+  }
+  .text_carousel__container.brand__container__md {
+    display: none;
+  }
+  .text_carousel__container.brand__container__lg {
+    display: none;
+  }
+
+  @media(min-width:768px){
+    .text-carousel{
+      min-height: 180px;
+    }
+    
+    .text_carousel__container{
+      width:calc({{ 100 | times: section.blocks.size | times: 2 }}vw - {{ section.blocks.size | times: 2 | times:50 }}px);
+    }
+
+    .brand_img_contianer {
+      width: calc(100dvw / 3);
+      margin-inline: 20px;
+      margin-block: 30px;
+    }
+    
+    .brand-heading {
+      font-size: {{ section.settings.heading_font_size_tablet }};
+    }
+    
+    .text_carousel__container.brand__container__sm {
+      display: none;
+    }
+    .text_carousel__container.brand__container__md {
+      display: flex;
+    }
+    .text_carousel__container.brand__container__lg {
+      display: none;
+    }
+  }
+  
+  @media(min-width:1024px){
+    .text-carousel{
+      min-height: 320px;
+    }
+    
+    .text_carousel__container{
+      width:calc({{ 100 | times: section.blocks.size }}vw - {{ section.blocks.size | times:50 }}px);
+    }
+    
+    .text_carousel__item {
+      width:calc(100vw - 65px);
+    }
+    
+    .brand_img_contianer {
+      width: calc(100dvw / 6);
+      margin-inline: 20px;
+      margin-block: 30px;
+    }
+    
+    .brand-heading {
+      font-size: {{ section.settings.heading_font_size_desktop }};
+    }
+    
+    .text_carousel__container.brand__container__sm {
+      display: none;
+    }
+    .text_carousel__container.brand__container__md {
+      display: none;
+    }
+    .text_carousel__container.brand__container__lg {
+      display: flex;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Brand Carousel",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "range",
+      "default":1,
+      "min": 0.5,
+      "step": 0.5,
+      "max": 10,
+      "id": "slide_delay",
+      "label": "Slide Delay",
+      "unit": "s"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Our Brands"
+    },
+    {
+      "type": "text",
+      "id": "extra_info",
+      "label": "Extra Information",
+      "default": "Include"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading Color",
+      "default": "#000000"
+    },
+    {
+      "type": "select",
+      "id": "heading_font_weight",
+      "label": "Heading Font Weight",
+      "options": [
+        {
+          "value": "normal",
+          "label": "Normal"
+        },
+        {
+          "value": "bold",
+          "label": "Bold"
+        },
+        {
+          "value": "lighter",
+          "label": "Lighter"
+        },
+        {
+          "value": "bolder",
+          "label": "Bolder"
+        },
+        {
+          "value": "100",
+          "label": "100"
+        },
+        {
+          "value": "200",
+          "label": "200"
+        },
+        {
+          "value": "300",
+          "label": "300"
+        },
+        {
+          "value": "400",
+          "label": "400"
+        },
+        {
+          "value": "500",
+          "label": "500"
+        },
+        {
+          "value": "600",
+          "label": "600"
+        },
+        {
+          "value": "700",
+          "label": "700"
+        },
+        {
+          "value": "800",
+          "label": "800"
+        },
+        {
+          "value": "900",
+          "label": "900"
+        }
+      ],
+      "default": "bold"
+    },
+    {
+      "type": "select",
+      "id": "heading_font_style",
+      "label": "Heading Font Style",
+      "options": [
+        {
+          "value": "normal",
+          "label": "Normal"
+        },
+        {
+          "value": "italic",
+          "label": "Italic"
+        },
+        {
+          "value": "oblique",
+          "label": "Oblique"
+        }
+      ],
+      "default": "normal"
+    },
+    {
+      "type": "text",
+      "id": "heading_font_size_mobile",
+      "label": "Heading Font Size - Mobile",
+      "default": "1.5rem"
+    },
+    {
+      "type": "text",
+      "id": "heading_font_size_tablet",
+      "label": "Heading Font Size - Tablet",
+      "default": "2rem"
+    },
+    {
+      "type": "text",
+      "id": "heading_font_size_desktop",
+      "label": "Heading Font Size - Desktop",
+      "default": "2.5rem"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "Slides",
+      "type": "slides",
+      "settings": [
+        {
+          "type": "header",
+          "content": "First Image"
+        },
+        {
+          "type": "image_picker",
+          "label": "Image",
+          "id": "first_img"
+        },
+        {
+          "type": "collection",
+          "id": "first_img_coll",
+          "label": "Link"
+        },
+        {
+          "type": "header",
+          "content": "Second Image"
+        },
+        {
+          "type": "image_picker",
+          "label": "Image",
+          "id": "second_img"
+        },
+        {
+          "type": "collection",
+          "id": "second_img_coll",
+          "label": "Link"
+        },
+        {
+          "type": "header",
+          "content": "Third Image"
+        },
+        {
+          "type": "image_picker",
+          "label": "Image",
+          "id": "third_img"
+        },
+        {
+          "type": "collection",
+          "id": "third_img_coll",
+          "label": "Link"
+        },
+        {
+          "type": "header",
+          "content": "Fourth Image"
+        },
+        {
+          "type": "image_picker",
+          "label": "Image",
+          "id": "fourth_img"
+        },
+        {
+          "type": "collection",
+          "id": "fourth_img_coll",
+          "label": "Link"
+        },
+        {
+          "type": "header",
+          "content": "Fifth Image"
+        },
+        {
+          "type": "image_picker",
+          "label": "Image",
+          "id": "fifth_img"
+        },
+        {
+          "type": "collection",
+          "id": "fifth_img_coll",
+          "label": "Link"
+        },
+        {
+          "type": "header",
+          "content": "Sixth Image"
+        },
+        {
+          "type": "image_picker",
+          "label": "Image",
+          "id": "sixth_img"
+        },
+        {
+          "type": "collection",
+          "id": "sixth_img_coll",
+          "label": "Link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Brand Carousel",
+      "category": "Custom"
+    }
+  ]
+}
+{% endschema %}

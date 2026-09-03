@@ -1,0 +1,259 @@
+{% assign color_variant = blank %}
+
+{% for color in color_values %}
+  {% assign detected_variant = product.variants | find: 'option1', color %}
+  {% assign color_variant = color_variant
+    | append: detected_variant.id
+    | append: '+'
+    | append: detected_variant.featured_image.id
+    | append: '|'
+  %}
+{% endfor %}
+
+{% assign color_variant = color_variant | split: '|' %}
+
+{% for color_name in color_values %}
+  {% assign color_rgba = color_name | downcase %}
+
+  {% case color_rgba %}
+    {% when 'red' %}
+      {% assign color_code = '255, 0, 0' %}
+    {% when 'blue' %}
+      {% assign color_code = '0, 0, 255' %}
+    {% when 'navy' %}
+      {% assign color_code = '0, 0, 128' %}
+    {% when 'royal blue' %}
+      {% assign color_code = '65, 105, 225' %}
+    {% when 'sky blue' %}
+      {% assign color_code = '135, 206, 235' %}
+    {% when 'teal' %}
+      {% assign color_code = '0, 128, 128' %}
+    {% when 'turquoise' %}
+      {% assign color_code = '64, 224, 208' %}
+    {% when 'green' %}
+      {% assign color_code = '0, 128, 0' %}
+    {% when 'dark green' %}
+      {% assign color_code = '0, 100, 0' %}
+    {% when 'olive' %}
+      {% assign color_code = '128, 128, 0' %}
+    {% when 'forest green' %}
+      {% assign color_code = '34, 139, 34' %}
+    {% when 'emerald' %}
+      {% assign color_code = '80, 200, 120' %}
+    {% when 'mint' %}
+      {% assign color_code = '152, 255, 152' %}
+    {% when 'yellow' %}
+      {% assign color_code = '255, 255, 0' %}
+    {% when 'gold' %}
+      {% assign color_code = '255, 215, 0' %}
+    {% when 'mustard' %}
+      {% assign color_code = '255, 219, 88' %}
+    {% when 'orange' %}
+      {% assign color_code = '255, 165, 0' %}
+    {% when 'coral' %}
+      {% assign color_code = '255, 127, 80' %}
+    {% when 'peach' %}
+      {% assign color_code = '255, 218, 185' %}
+    {% when 'pink' %}
+      {% assign color_code = '255, 192, 203' %}
+    {% when 'hot pink' %}
+      {% assign color_code = '255, 105, 180' %}
+    {% when 'rose' %}
+      {% assign color_code = '255, 228, 225' %}
+    {% when 'magenta' %}
+      {% assign color_code = '255, 0, 255' %}
+    {% when 'purple' %}
+      {% assign color_code = '128, 0, 128' %}
+    {% when 'lavender' %}
+      {% assign color_code = '230, 230, 250' %}
+    {% when 'violet' %}
+      {% assign color_code = '238, 130, 238' %}
+    {% when 'burgundy' %}
+      {% assign color_code = '128, 0, 32' %}
+    {% when 'maroon' %}
+      {% assign color_code = '128, 0, 0' %}
+    {% when 'brown' %}
+      {% assign color_code = '165, 42, 42' %}
+    {% when 'dark brown' %}
+      {% assign color_code = '101, 67, 33' %}
+    {% when 'chocolate' %}
+      {% assign color_code = '123, 63, 0' %}
+    {% when 'coffee' %}
+      {% assign color_code = '111, 78, 55' %}
+    {% when 'espresso' %}
+      {% assign color_code = '80, 50, 20' %}
+    {% when 'cognac' %}
+      {% assign color_code = '154, 73, 33' %}
+    {% when 'caramel' %}
+      {% assign color_code = '175, 110, 57' %}
+    {% when 'tan' %}
+      {% assign color_code = '210, 180, 140' %}
+    {% when 'beige' %}
+      {% assign color_code = '245, 245, 220' %}
+    {% when 'khaki' %}
+      {% assign color_code = '240, 230, 140' %}
+    {% when 'camel' %}
+      {% assign color_code = '193, 154, 107' %}
+    {% when 'taupe' %}
+      {% assign color_code = '72, 60, 50' %}
+    {% when 'black' %}
+      {% assign color_code = '0, 0, 0' %}
+    {% when 'white' %}
+      {% assign color_code = '255, 255, 255' %}
+    {% when 'gray' %}
+      {% assign color_code = '128, 128, 128' %}
+    {% when 'light gray' %}
+      {% assign color_code = '211, 211, 211' %}
+    {% when 'charcoal' %}
+      {% assign color_code = '54, 69, 79' %}
+    {% when 'silver' %}
+      {% assign color_code = '192, 192, 192' %}
+    {% when 'platinum' %}
+      {% assign color_code = '229, 228, 226' %}
+    {% when 'denim' %}
+      {% assign color_code = '21, 96, 189' %}
+    {% when 'light denim' %}
+      {% assign color_code = '156, 187, 219' %}
+    {% when 'dark denim' %}
+      {% assign color_code = '16, 62, 116' %}
+    {% when 'indigo' %}
+      {% assign color_code = '75, 0, 130' %}
+    {% when 'cream' %}
+      {% assign color_code = '255, 253, 208' %}
+    {% when 'ivory' %}
+      {% assign color_code = '255, 255, 240' %}
+    {% when 'offwhite' %}
+      {% assign color_code = '250, 249, 246' %}
+    {% when 'off white' %}
+      {% assign color_code = '250, 249, 246' %}
+    {% when 'ecru' %}
+      {% assign color_code = '194, 178, 128' %}
+    {% when 'crimson' %}
+      {% assign color_code = '220, 20, 60' %}
+    {% when 'salmon' %}
+      {% assign color_code = '250, 128, 114' %}
+    {% when 'terra cotta' %}
+      {% assign color_code = '226, 114, 91' %}
+    {% when 'rust' %}
+      {% assign color_code = '183, 65, 14' %}
+    {% when 'champagne' %}
+      {% assign color_code = '247, 231, 206' %}
+    {% when 'blush' %}
+      {% assign color_code = '222, 93, 131' %}
+    {% when 'mauve' %}
+      {% assign color_code = '224, 176, 255' %}
+    {% when 'aubergine' %}
+      {% assign color_code = '59, 31, 31' %}
+    {% when 'eggplant' %}
+      {% assign color_code = '97, 64, 81' %}
+    {% when 'plum' %}
+      {% assign color_code = '142, 69, 133' %}
+    {% when 'lilac' %}
+      {% assign color_code = '200, 162, 200' %}
+    {% when 'orchid' %}
+      {% assign color_code = '218, 112, 214' %}
+    {% when 'stone' %}
+      {% assign color_code = '101, 100, 95' %}
+    {% when 'heather gray' %}
+      {% assign color_code = '182, 177, 169' %}
+    {% when 'lemon' %}
+      {% assign color_code = '255, 247, 0' %}
+    {% when 'lime' %}
+      {% assign color_code = '0, 255, 0' %}
+    {% when 'sage' %}
+      {% assign color_code = '188, 184, 138' %}
+    {% when 'moss' %}
+      {% assign color_code = '138, 154, 91' %}
+    {% when 'pistachio' %}
+      {% assign color_code = '147, 197, 114' %}
+    {% when 'seafoam' %}
+      {% assign color_code = '159, 226, 191' %}
+    {% when 'cobalt' %}
+      {% assign color_code = '0, 71, 171' %}
+    {% when 'cerulean' %}
+      {% assign color_code = '0, 123, 167' %}
+    {% when 'aqua' %}
+      {% assign color_code = '0, 255, 255' %}
+    {% when 'periwinkle' %}
+      {% assign color_code = '204, 204, 255' %}
+    {% when 'dusty rose' %}
+      {% assign color_code = '201, 140, 136' %}
+    {% when 'rose gold' %}
+      {% assign color_code = '183, 110, 121' %}
+    {% when 'copper' %}
+      {% assign color_code = '184, 115, 51' %}
+    {% when 'bronze' %}
+      {% assign color_code = '205, 127, 50' %}
+    {% when 'pewter' %}
+      {% assign color_code = '169, 169, 169' %}
+    {% when 'gunmetal' %}
+      {% assign color_code = '42, 52, 57' %}
+    {% when 'slate' %}
+      {% assign color_code = '112, 128, 144' %}
+    {% when 'sand' %}
+      {% assign color_code = '194, 178, 128' %}
+    {% when 'putty' %}
+      {% assign color_code = '170, 154, 123' %}
+    {% when 'mocha' %}
+      {% assign color_code = '130, 85, 51' %}
+    {% when 'hazelnut' %}
+      {% assign color_code = '167, 123, 92' %}
+    {% when 'almond' %}
+      {% assign color_code = '239, 222, 205' %}
+    {% when 'wine' %}
+      {% assign color_code = '114, 47, 55' %}
+    {% when 'bordeaux' %}
+      {% assign color_code = '92, 30, 41' %}
+    {% when 'raspberry' %}
+      {% assign color_code = '227, 11, 93' %}
+    {% when 'fuchsia' %}
+      {% assign color_code = '255, 0, 128' %}
+    {% else %}
+      {% assign color_code = '0, 0, 0' %}
+  {% endcase %}
+
+  {% assign color_link = color_variant[forloop.index] | split: '+' | first %}
+  {% assign has_image = color_variant[forloop.index] | split: '+' | last %}
+
+
+  {% if active_color == color_name %}
+    {% if active_color contains 'MUL' %}
+      <span
+        class="color-swatches color-swatch-multicolor current"
+        title="{{ color_name }}"
+      >
+        &nbsp;
+      </span>
+    {% else %}
+      <span
+        class="color-swatches current"
+        style="background-color: rgba({{ color_code }},0.5);border-color:rgb({{ color_code }});"
+        title="{{ color_name }}"
+      >
+        &nbsp;
+      </span>
+    {% endif %}
+  {% else %}
+    {% if active_color contains 'MUL' %}
+      <span
+        data-color-swatch-type="link"
+        data-color-swatch-link="{{product.url}}?variant={{ color_link }}"
+        class="color-swatches color-swatch-multicolor cursor-pointer {% if has_image == blank %}swatch--hidden{% endif %}"
+        style="background-color: rgba({{ color_code }},0.8);"
+        title="{{ color_name }}"
+      >
+        &nbsp;
+      </span>
+    {% else %}
+      <span
+        data-color-swatch-type="link"
+        data-color-swatch-link="{{product.url}}?variant={{ color_link }}"
+        class="color-swatches cursor-pointer {% if has_image == blank %}swatch--hidden{% endif %}"
+        style="background-color: rgba({{ color_code }},0.8);"
+        title="{{ color_name }}"
+      >
+        &nbsp;
+      </span>
+    {% endif %}
+  {% endif %}
+{% endfor %}

@@ -1,0 +1,90 @@
+<div class="max-w-sm flex items-center justify-between bg-white mb-4 tracking-[2px] font-semibold !text-[0.75rem]">
+  <div class="w-[140px] mr-4">
+    {{
+      product.featured_image.src
+      | image_url: width: 200, height: 300
+      | image_tag: class: 'w-full h-auto block', alt: product.title
+    }}
+  </div>
+
+  <div class="px-1 w-full flex flex-col gap-3">
+    <a href="{{ product.url }}" class="flex flex-col gap-1">
+      <h2 class="tracking-[2px] font-semibold !text-[0.75rem]">
+        {{ product.title }}
+      </h2>
+      <h3 class="tracking-[2px] font-bold !text-[0.75rem]">
+        {{ product.vendor }}
+      </h3>
+    </a>
+
+    <div class="flex flex-col gap-2">
+      <p class="tracking-[2px] !text-[0.75rem]">
+        {{ product.price | money_with_currency }}
+      </p>
+      <form
+        action="{{ routes.cart_add_url }}"
+        method="post"
+        enctype="multipart/form-data"
+        novalidate="novalidate"
+        class="pair-product-form-element"
+      >
+        <div class="flex items-center gap-1">
+          <div class="flex justify-between items-center gap-4 block w-full border border-gray-300 rounded-md py-1 px-2">
+            <label>{{ product.options | first }}:</label>
+            <select class="text-sm text-gray-700 w-full" style="padding-top:3px;" name="color">
+              {% for value in product.options_by_name.color.values %}
+                <option value="{{ value }}">{{ value }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="flex justify-between items-center gap-4 block w-full border border-gray-300 rounded-md py-1 px-2">
+            <label>{{ product.options | last }}:</label>
+            <select class="text-sm text-gray-700 w-1/2" style="padding-top:3px;" name="size">
+              {% for value in product.options_by_name.size.values %}
+                <option value="{{ value }}">{{ value }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+        <!-- form content -->
+        <input
+          type="text"
+          name="quantity"
+          min="1"
+          value="1"
+          class="hidden"
+        >
+
+        <select name="id" class="hidden">
+          {% for variant in product.variants %}
+            <option
+              value="{{ variant.id }}"
+              {% unless variant.available %}
+                disabled
+              {% endunless %}
+            >
+              {{- variant.title -}}
+            </option>
+          {% endfor %}
+        </select>
+        <input type="hidden" name="form_type" value="product">
+        <input type="hidden" name="utf8" value="✓">
+        {% if product.available %}
+          <input
+            type="button"
+            value="ADD TO CART"
+            class="mt-2 bg-black text-white w-full border-black border-[1px] hover:bg-[#213a70] hover:border-[#213a70] hover:text-white h-[46px] transition delay-75 cursor-pointer"
+            onclick="addVariantToCart(event,this);"
+            data-variant="{{product.first_available_variant.id }}"
+            data-variantid="{{product.first_available_variant.id }}"
+          >
+        {% else %}
+          <div class="flex items-center gap-1 tracking-[2px] !text-[0.75rem] text-red-600">
+            <span class="font-medium">Out of Stock</span>
+            <span class="underline cursor-pointer hover:opacity-80">- Notify Me</span>
+          </div>
+        {% endif %}
+      </form>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,185 @@
+<form>
+  <div class="relative w-full grid grid-cols-1 md:grid-cols-5 grid-rows-1 justify-evenly ">
+    {%- for filter in collection.filters -%}
+      <details
+        class="w-full"
+        data-type="collection-filters"
+        data-open-filter-of="{{ filter.label | downcase | split: ' ' | join: '-' }}">
+        <summary class="text-sm font-semibold w-full" onclick="showActiveFilter()">
+          <div class="w-full">
+            <span data-filter-label="{{ filter.label | downcase | split: ' ' | join: '-' }}" class="w-full block">{{ filter.label }}&nbsp;
+
+              {%- if filter.active_values.size > 0 -%}
+                <span>({{ filter.active_values.size }})</span>
+              {%- endif -%}
+            </span>
+          </div>
+        </summary>
+
+
+        <div class="hidden w-[60%] ml-[40%] md:ml-0 md:w-[500%] h-full md:h-[110px] py-4 my-auto">
+          {%- case filter.type -%}
+            {%- when 'boolean' or 'list' -%}
+
+            <ul class="absolute w-full top-2 md:top-10 left-[40%] md:left-0 grid gap-2 grid-cols-1 md:grid-cols-3 lg:grid-cols-6 grid-rows-auto text-xs h-full md:h-[100px] py-4 overflow-y-scroll">
+              {%- for filter_value in filter.values -%}
+                <li class="w-full">
+                  <label for="Filter-{{ filter.param_name }}-{{ forloop.index }}" class="w-full text-ellipsis">
+                    <input
+                      type="checkbox"
+                      name="{{ filter_value.param_name }}"
+                      value="{{ filter_value.value }}"
+                      id="Filter-{{ filter.param_name }}-{{ forloop.index }}"
+                      {% if filter_value.active -%}checked{%- endif %}
+                      {% if filter_value.count == 0 and filter_value.active == false -%}disabled{%- endif %}>{{ filter_value.label }}</label>
+                </li>
+              {%- endfor -%}
+
+            </ul>
+
+
+            {%- when 'price_range' -%}
+            <div class="absolute text-xs w-full top-10 left-0 grid gap-2 grid-cols-1 grid-rows-2">
+              <section class=" flex items-center justify-start space-x-2">
+                <span>{{ cart.currency.symbol }} 0</span>
+
+                <input
+                  class="hidden"
+                  name="{{ filter.min_value.param_name }}"
+                  id="Filter-{{ filter.min_value.param_name }}"
+                  {% if filter.min_value.value -%}value="{{ filter.min_value.value | money_without_currency | replace: ',', '' }}"{%- endif %}type="number"placeholder="{{ filter.range_max | money_without_currency | replace: ',', '' }}"min="0"max="{{ filter.range_max | money_without_currency | replace: ',', '' }}">
+
+                <input
+                  data-elem-type="price-input-range"
+                  name="{{ filter.max_value.param_name }}"
+                  id="Filter-{{ filter.max_value.param_name }}"
+                  {% if filter.max_value.value -%}value="{{ filter.max_value.value | money_without_currency | replace: ',', '' }}"{%- endif %}type="range"placeholder="0"min="0"max="{{ filter.range_max | money_without_currency | replace: ',', '' }}"oninput="getMaxPricevalue()">
+
+                <span>{{ cart.currency.symbol }} {{ filter.range_max | money_without_currency | replace: ',', '' }}</span>
+              </section>
+              <section class="flex justify-start items-center space-x-2 text-md">
+
+                <span data-elem-type="max-selected-price">&nbsp;</span>
+              </section>
+              <!-- <div class="">
+              <span>{{ cart.currency.symbol }}</span>
+
+              <input name="{{ filter.max_value.param_name }}"id="Filter-{{ filter.max_value.param_name }}"{% if filter.max_value.value -%}value="{{ filter.max_value.value | money_without_currency | replace: ',', '' }}"{%- endif %}type="number"placeholder="{{ filter.range_max | money_without_currency | replace: ',', '' }}"min="0"max="{{ filter.range_max | money_without_currency | replace: ',', '' }}">
+
+              <label for="Filter-{{ filter.max_value.param_name }}">To</label>
+              </div>-->
+
+            </div>
+
+
+          {%- endcase -%}
+
+        </div>
+      </details>
+    {%- endfor -%}
+  </div>
+
+
+
+  <div class="flex space-x-4 my-2 justify-start items-center">
+    <input
+      class="text-sm underline capitalize font-semibold cursor-pointer"
+      type="submit"
+      value="Apply">
+
+    {%- for filter in collection.filters -%}
+      {%- if filter.type == "price_range" -%}
+        {%- if filter.min_value.value != nil or filter.max_value.value != nil -%}
+          <a class="w-max px-2 py-1 bg-slate-300 rounded-md text-xs" href="{{ filter.url_to_remove }}">
+            {%- assign min_value = filter.min_value.value | default: 0 -%}
+            {%- assign max_value = filter.max_value.value | default: filter.range_max -%}
+            {{ min_value | money }} - {{ max_value | money }} X
+          </a>
+        {%- endif -%}
+      {%- else -%}
+        {%- for filter_value in filter.active_values -%}
+          <a class="w-max px-2 py-1 bg-slate-300 rounded-md text-xs" href="{{ filter_value.url_to_remove }}">
+            {{ filter_value.label }} X
+          </a>
+        {%- endfor -%}
+      {%- endif- %}
+    {%- endfor -%}
+    <a href="{{ collection.url }}" class="text-xs text-red-800 lowercase font-semibold border-red-800 rounded-sm border-b-[1px] p-0">Clear all</a>
+  </div>
+</form>
+
+<style>
+  [data-elem-type="max-selected-price"] {
+    word-spacing: 3px;
+    letter-spacing: 1px;
+  }
+</style>
+
+<script>
+
+  const priceSlider = document.querySelector('[data-elem-type="price-input-range"]');
+  var output = document.querySelector('[data-elem-type="max-selected-price"]');
+  output.innerHTML = `{{ cart.currency.symbol }}0.00 to {{ cart.currency.symbol }}${
+    priceSlider.value
+  }.00`;
+
+  priceSlider.oninput = function() {
+    output.innerHTML = `{{ cart.currency.symbol }}0.00 to {{ cart.currency.symbol }}${
+      this.value
+    }.00`;
+  }
+
+  const filterElems = Array.prototype.slice.call(document.querySelectorAll('[data-type="collection-filters"]'));
+
+  const filterElemsContainer = Array.prototype.slice.call(document.querySelectorAll('[data-type="collection-filters"] > div'));
+
+  filterElems.forEach(element => {
+    //console.log("hohho", element.dataset.openFilterOf)
+    if (element.dataset.openFilterOf === 'product-type') {
+      element
+        .children[1]
+        .classList
+        .remove('hidden')
+        element
+        .setAttribute("open", '')
+    }
+  })
+
+
+  function showActiveFilter() {
+    const filterElems = Array.prototype.slice.call(document.querySelectorAll('[data-type="collection-filters"]'));
+
+    const filterElemsContainer = Array.prototype.slice.call(document.querySelectorAll('[data-type="collection-filters"] > div'));
+
+    const type = event.target.dataset.filterLabel;
+
+    filterElems
+      .forEach(element => element.removeAttribute("open"))
+
+      filterElemsContainer
+      .forEach(el => {
+
+  /* console.log(el)
+        console.log(event
+          .target
+          .parentElement
+          .parentElement
+          .nextElementSibling)*/
+        if (el === event
+            .target
+            .parentElement
+            .parentElement
+            .nextElementSibling) {
+
+          el.classList.toggle('hidden')
+        } else {
+
+          el.classList.add('hidden')
+        }
+      })
+      event
+      .target
+      .parentElement
+      .setAttribute('open', 'open')
+  }
+</script>

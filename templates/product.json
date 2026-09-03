@@ -1,0 +1,202 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "blocks": {
+        "vendor": {
+          "type": "text",
+          "settings": {}
+        },
+        "title": {
+          "type": "title",
+          "settings": {}
+        },
+        "caption": {
+          "type": "text",
+          "settings": {}
+        },
+        "price": {
+          "type": "price",
+          "settings": {}
+        },
+        "variant_picker": {
+          "type": "variant_picker",
+          "settings": {}
+        },
+        "quantity_selector": {
+          "type": "quantity_selector",
+          "settings": {}
+        },
+        "buy_buttons": {
+          "type": "buy_buttons",
+          "settings": {}
+        },
+        "description": {
+          "type": "description",
+          "settings": {}
+        },
+        "collapsible-row-0": {
+          "type": "collapsible_tab",
+          "settings": {}
+        },
+        "collapsible-row-1": {
+          "type": "collapsible_tab",
+          "settings": {}
+        },
+        "collapsible-row-2": {
+          "type": "collapsible_tab",
+          "settings": {}
+        },
+        "collapsible-row-3": {
+          "type": "collapsible_tab",
+          "settings": {}
+        },
+        "share": {
+          "type": "share",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "vendor",
+        "title",
+        "caption",
+        "price",
+        "variant_picker",
+        "quantity_selector",
+        "buy_buttons",
+        "description",
+        "collapsible-row-0",
+        "collapsible-row-1",
+        "collapsible-row-2",
+        "collapsible-row-3",
+        "share"
+      ],
+      "settings": {
+        "btn_text": "ADD TO CART",
+        "wishlist_btn_text": "ADD TO WISHLIST",
+        "shipping_info": "Please note, all taxes and duties are included in the price for any orders shipped to mainland EU.",
+        "order_price_limit": 0,
+        "faqs": "",
+        "shipping_policy": "<p>WE SHIP YOUR ORDER WITHIN 48 HOURS</p><p>DOMESTIC : 2-3 BUSINESS DAYS </p><p>EUROPE AND WORLDWIDE ORDERS : 3-5 BUSINESS DAYS                                                                                                                                                      </p><p>SHIPPING COST IS €9.90.                                           </p><p>GET FREE SHIPPING WORLDWIDE WHEN YOU SPEND €70.00 OR MORE.</p><p>WE TRY OUR BEST TO SEND ALL ORDERS BY EXPRESS SHIPMENT DEPENDING ON PRECISE LOCATION.</p>",
+        "local_shipping_policy": "<p>WE SHIP YOUR ORDER WITHIN 48 HOURS</p><p>DOMESTIC : 2-3 BUSINESS DAYS </p><p>EUROPE AND WORLDWIDE ORDERS : 3-5 BUSINESS DAYS                                                                                                                                                      </p><p>SHIPPING COST IS €5.                                           </p><p>GET FREE SHIPPING WHEN YOU SPEND €20.00 OR MORE.</p><p>WE TRY OUR BEST TO SEND ALL ORDERS BY EXPRESS SHIPMENT DEPENDING ON PRECISE LOCATION.</p>"
+      }
+    },
+    "product-recommendations": {
+      "type": "product-recommendations",
+      "settings": {
+        "product_recommendation_section_heading": "YOU MIGHT ALSO LIKE",
+        "size": 23,
+        "color": "#000000",
+        "weight": "bold",
+        "style": "normal"
+      }
+    },
+    "recently-viewed": {
+      "type": "recently-viewed",
+      "settings": {}
+    },
+    "size-guide": {
+      "type": "size-guide",
+      "blocks": {
+        "b964ef74-c236-4cf8-9c69-b2664bc6d76d": {
+          "type": "measurement",
+          "settings": {
+            "page": "womens-shirts-tops",
+            "name": "WOMENS | SHIRTS & TOPS"
+          }
+        },
+        "016fd9a9-31dd-4fba-a7d7-745224956636": {
+          "type": "measurement",
+          "settings": {
+            "page": "mens-shirts-tops",
+            "name": "Mens | Shirts & Tops"
+          }
+        },
+        "c30cc979-8c4c-4431-91f1-2996aeb2fcec": {
+          "type": "measurement",
+          "settings": {
+            "page": "womens-hoodies",
+            "name": "Womens | Hoodies"
+          }
+        },
+        "b2612f1c-eea5-44e1-afef-f6712b63825e": {
+          "type": "measurement",
+          "settings": {
+            "page": "mens-hoodies",
+            "name": "Mens | Hoodies"
+          }
+        },
+        "709b9069-7ee0-46f9-8f33-7e699f77b0d3": {
+          "type": "measurement",
+          "settings": {
+            "page": "womens-trousers",
+            "name": "WOMENS | TROUSERS"
+          }
+        },
+        "9c7b3800-a742-405a-ace3-a02e12a93d04": {
+          "type": "measurement",
+          "settings": {
+            "page": "mens-trousers",
+            "name": "MENS | TROUSERS"
+          }
+        },
+        "67313a8e-37ea-4525-8c2b-201b17ea36bd": {
+          "type": "measurement",
+          "settings": {
+            "page": "womens-coats-jackets-1",
+            "name": "womens | coats & jackets"
+          }
+        },
+        "85444c47-717d-4087-9554-3f1c7a56535b": {
+          "type": "measurement",
+          "settings": {
+            "page": "mens-coats-jackets",
+            "name": "mens | coats & jackets"
+          }
+        },
+        "aae5d4ec-a815-4506-9c41-6537c20c89a2": {
+          "type": "measurement",
+          "settings": {
+            "page": "dress-1",
+            "name": "Womens | Dresses"
+          }
+        },
+        "85bb8bc8-a442-43af-bba9-2a1250b93059": {
+          "type": "measurement",
+          "settings": {
+            "page": "womens-skirts",
+            "name": "womens | skirts"
+          }
+        }
+      },
+      "block_order": [
+        "b964ef74-c236-4cf8-9c69-b2664bc6d76d",
+        "016fd9a9-31dd-4fba-a7d7-745224956636",
+        "c30cc979-8c4c-4431-91f1-2996aeb2fcec",
+        "b2612f1c-eea5-44e1-afef-f6712b63825e",
+        "709b9069-7ee0-46f9-8f33-7e699f77b0d3",
+        "9c7b3800-a742-405a-ace3-a02e12a93d04",
+        "67313a8e-37ea-4525-8c2b-201b17ea36bd",
+        "85444c47-717d-4087-9554-3f1c7a56535b",
+        "aae5d4ec-a815-4506-9c41-6537c20c89a2",
+        "85bb8bc8-a442-43af-bba9-2a1250b93059"
+      ],
+      "settings": {}
+    }
+  },
+  "order": [
+    "main",
+    "product-recommendations",
+    "recently-viewed",
+    "size-guide"
+  ]
+}

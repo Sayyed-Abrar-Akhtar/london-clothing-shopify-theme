@@ -1,0 +1,396 @@
+<!doctype html>
+<html class="no-js" lang="{{ request.locale.iso_code }}">
+  <head>
+    {% render 'pandectes-rules' %}
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="">
+    <link rel="canonical" href="{{ canonical_url }}">
+
+    <!-- LCP OPTIMIZATION - PRELOAD CRITICAL IMAGES -->
+    <link
+      rel="preload"
+      as="image"
+      href="//london-clothing.com/cdn/shop/files/1_37e029b4-b510-48b4-932f-a5b0db29cf0d.jpg?v=1747681628&width=768"
+      fetchpriority="high"
+    >
+    <link
+      rel="preload"
+      as="image"
+      href="//london-clothing.com/cdn/shop/files/1_e148776a-93c6-4100-9dff-ba774277a8a4.jpg?v=1747681304&width=2000"
+      fetchpriority="high"
+    >
+
+    <!-- PERFORMANCE OPTIMIZATION - PRECONNECT -->
+    <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
+    <link rel="preconnect" href="//london-clothing.com" crossorigin>
+    <link rel="dns-prefetch" href="//london-clothing.com">
+
+    {%- if settings.favicon != blank -%}
+      <link
+        rel="icon"
+        type="image/png"
+        href="{{ settings.favicon | image_url: width: 32, height: 32 }}"
+      >
+    {%- endif -%}
+
+    {%- unless settings.type_header_font.system? and settings.type_body_font.system? -%}
+      <link
+        rel="preconnect"
+        href="https://fonts.shopifycdn.com"
+        crossorigin
+      >
+    {%- endunless -%}
+
+    <title>
+      {%- if page_title contains 'Search:' -%}
+        Search: Results found for
+        {{- page_title | split: 'results found for' | last -}}
+      {%- else -%}
+        {{- page_title -}}
+        {% comment %}
+          {%- if current_tags %}
+            &ndash; tagged "{{ current_tags | join: ', ' }}"
+          {%- endif -%}
+          {%- if current_page != 1 %}
+            &ndash; Page {{ current_page -}}
+          {%- endif -%}
+        {% endcomment %}
+        {% comment %}
+          {%- unless page_title contains shop.name %}
+            &ndash; &nbsp;
+            {{- shop.name -}}
+          {%- endunless -%}
+        {% endcomment %}
+      {%- endif -%}
+    </title>
+
+    <!-- Avada Boost Sales Script -->
+    {% include 'avada-boost-sales' %}
+    <!-- /Avada Boost Sales Script -->
+
+    {% if page_description %}
+      <meta name="description" content="{{ page_description | truncate: 150 | escape }}">
+    {% endif %}
+
+    {% render 'meta-tags' %}
+
+    <!-- CRITICAL CSS - LOAD EARLY -->
+    {{ 'base.css' | asset_url | stylesheet_tag }}
+    {{ 'app.css' | asset_url | stylesheet_tag }}
+    {{ 'search-popover.css' | asset_url | stylesheet_tag }}
+    {{ 'lookbook.css' | asset_url | stylesheet_tag: preload: true }}
+    <style>
+      :root{
+        --uniform-mx-sm: {{ settings.uniform-mx-sm }}px;
+        --uniform-mx-lg: {{ settings.uniform-mx-lg }}px;
+        --uniform-px-sm: {{ settings.uniform-px-sm }}px;
+        --uniform-px-lg: {{ settings.uniform-px-lg }}px;
+      }
+      *:not(input) {
+        text-transform: uppercase !important;
+      }
+    </style>
+
+    {{ content_for_header }}
+
+    <script src="{{ 'app.js' | asset_url }}" defer="defer"></script>
+    <script src="{{ 'search-popover.js' | asset_url }}" defer="defer"></script>
+    <script src="{{ 'color-swatches.js' | asset_url }}" defer="defer"></script>
+
+    {%- unless settings.type_body_font.system? -%}
+      {{ settings.type_body_font | font_url | preload_tag: as: 'font', type: 'font/woff2', crossorigin: 'anonymous' }}
+    {%- endunless -%}
+
+    {%- unless settings.type_header_font.system? -%}
+      {{ settings.type_header_font | font_url | preload_tag: as: 'font', type: 'font/woff2', crossorigin: 'anonymous' }}
+    {%- endunless -%}
+
+    <script src="{{ 'hamburger-menu.js' | asset_url }}" defer="defer"></script>
+
+    <script>
+      document.documentElement.className = document.documentElement.className.replace('no-js', 'js');
+      if (Shopify.designMode) {
+        document.documentElement.classList.add('shopify-design-mode');
+      }
+    </script>
+    <script>
+      window.currency = {
+        symbol: '{{ cart.currency.symbol }}',
+        name: '{{ cart.currency.name }}',
+        code: '{{ cart.currency.iso_code }}',
+      };
+    </script>
+    <script src="https://t.contentsquare.net/uxa/b84465f63872c.js"></script>
+  </head>
+
+  <body
+    class="gradient"
+    style="font-family:{{ settings.type_body_font.family }}, {{ settings.type_body_font.fallback_families }}"
+  >
+    <a class="skip-to-content-link button visually-hidden" href="#MainContent">
+      {{ 'accessibility.skip_to_text' | t }}
+    </a>
+    {% section 'header' %}
+    {% comment %} {%- render 'cart-drawer' -%} {% endcomment %}
+
+    {% section 'hamburger-menu' %}
+    {% section 'mobile-navigation' %}
+    {% comment %}{% section 'announcement-bar' %}{% endcomment %}
+
+    <main
+      id="MainContent"
+      class="content-for-layout focus-none main-container-mx"
+      role="main"
+      tabindex="-1"
+    >
+      {{ content_for_layout }}
+    </main>
+
+    {% section 'newsletter' %}
+    {% section 'image-link-list' %}
+    {% section 'footer' %}
+
+    <ul hidden>
+      <li id="a11y-refresh-page-message">{{ 'accessibility.refresh_page' | t }}</li>
+      <li id="a11y-new-window-message">{{ 'accessibility.link_messages.new_window' | t }}</li>
+    </ul>
+
+    <script>
+      window.shopUrl = '{{ request.origin }}';
+      window.routes = {
+        cart_add_url: '{{ routes.cart_add_url }}',
+        cart_change_url: '{{ routes.cart_change_url }}',
+        cart_update_url: '{{ routes.cart_update_url }}',
+        cart_url: '{{ routes.cart_url }}',
+        predictive_search_url: '{{ routes.predictive_search_url }}',
+      };
+
+      window.cartStrings = {
+        error: `{{ 'sections.cart.cart_error' | t }}`,
+        quantityError: `{{ 'sections.cart.cart_quantity_error_html' | t: quantity: '[quantity]' }}`,
+      };
+
+      window.variantStrings = {
+        addToCart: `{{ 'products.product.add_to_cart' | t }}`,
+        soldOut: `{{ 'products.product.sold_out' | t }}`,
+        unavailable: `{{ 'products.product.unavailable' | t }}`,
+        unavailable_with_option: `{{ 'products.product.value_unavailable' | t: option_value: '[value]' }}`,
+      };
+
+      window.accessibilityStrings = {
+        imageAvailable: `{{ 'products.product.media.image_available' | t: index: '[index]' }}`,
+        shareSuccess: `{{ 'general.share.success_message' | t }}`,
+        pauseSlideshow: `{{ 'sections.slideshow.pause_slideshow' | t }}`,
+        playSlideshow: `{{ 'sections.slideshow.play_slideshow' | t }}`,
+      };
+    </script>
+
+    <!-- DEFERRED SCRIPTS -->
+    <script src="{{ 'iplocation.js' | asset_url }}" defer="defer"></script>
+    <script>
+      const code = '{{- settings.local_country_code -}}';
+      const order_limit = '{{- settings.local_country_order_limit -}}';
+      const shipping_limit = '{{- settings.local_country_shipping_limit -}}';
+      // Load this after DOM is ready
+      document.addEventListener('DOMContentLoaded', function () {
+        if (typeof testFn === 'function') {
+          testFn(code, order_limit, shipping_limit);
+        }
+      });
+    </script>
+
+    {%- if settings.predictive_search_enabled -%}
+      <script src="{{ 'predictive-search.js' | asset_url }}" defer="defer"></script>
+    {%- endif -%}
+
+    <script src="{{ 'quick-view-container.js' | asset_url }}" defer="defer"></script>
+
+    {% comment %}
+      {% include 'swym-custom' %}
+    {% endcomment %}
+    <!-- <script type="text/javascript" src="https://cdn.ywxi.net/js/1.js" async></script> -->
+
+    <!-- DEFERRED KLAVIYO -->
+    <script
+      defer
+      type="text/javascript"
+      src="https://static.klaviyo.com/onsite/js/klaviyo.js?company_id=Rq64Q2"
+    ></script>
+  </body>
+  <script src="{{ 'jquery-3.7.1.min.js' | asset_url }}" defer></script>
+  <script>
+    // Single optimized script to block unwanted fonts
+    (function () {
+      'use strict';
+
+      const UNWANTED_FONT_PATTERNS = ['GTStandard', 'gravity-font-faces', 'shoplift', 'font-face', '@font-face'];
+      const OBSERVER_CONFIG = { childList: true, subtree: true };
+      let cleanupCount = 0;
+      const MAX_CLEANUP_ATTEMPTS = 10;
+
+      // Fast pattern matching
+      function hasUnwantedFont(content) {
+        if (!content || typeof content !== 'string') return false;
+        return UNWANTED_FONT_PATTERNS.some((pattern) => content.includes(pattern));
+      }
+
+      // Efficient element removal with safety checks
+      function safeRemove(element) {
+        try {
+          if (element && element.parentNode) {
+            element.remove();
+            cleanupCount++;
+            return true;
+          }
+        } catch (e) {
+          console.warn('Could not remove font element:', e);
+        }
+        return false;
+      }
+
+      // Comprehensive element checking
+      function checkAndRemoveElement(element) {
+        if (!element || !element.tagName) return;
+
+        const tag = element.tagName.toLowerCase();
+        let content = '';
+
+        switch (tag) {
+          case 'style':
+            content = element.textContent || element.innerHTML || '';
+            break;
+          case 'link':
+            content = element.outerHTML || element.href || '';
+            break;
+          case 'script':
+            content = element.src || element.textContent || '';
+            break;
+          default:
+            return;
+        }
+
+        if (hasUnwantedFont(content)) {
+          safeRemove(element);
+        }
+      }
+
+      // Initial cleanup - more thorough
+      function initialCleanup() {
+        if (cleanupCount >= MAX_CLEANUP_ATTEMPTS) return;
+
+        const selectors = ['style', 'link[rel*="stylesheet"]', 'link[href*="font"]', 'script[src*="font"]'];
+
+        selectors.forEach((selector) => {
+          document.querySelectorAll(selector).forEach(checkAndRemoveElement);
+        });
+
+        // Also check all style attributes in the document
+        document.querySelectorAll('[style*="font"], [class*="font"], [id*="font"]').forEach((el) => {
+          const style = el.getAttribute('style') || '';
+          if (hasUnwantedFont(style)) {
+            el.removeAttribute('style');
+          }
+        });
+      }
+
+      // Optimized MutationObserver with debouncing
+      let observerTimeout;
+      function handleMutations(mutations) {
+        if (cleanupCount >= MAX_CLEANUP_ATTEMPTS) {
+          observer.disconnect();
+          return;
+        }
+
+        // Debounce rapid mutations
+        clearTimeout(observerTimeout);
+        observerTimeout = setTimeout(() => {
+          mutations.forEach((mutation) => {
+            mutation.addedNodes.forEach((node) => {
+              if (node.nodeType === Node.ELEMENT_NODE) {
+                checkAndRemoveElement(node);
+
+                // Also check children if it's a container element
+                if (node.querySelectorAll) {
+                  node.querySelectorAll('style, link, script').forEach(checkAndRemoveElement);
+                }
+              }
+            });
+          });
+        }, 50);
+      }
+
+      // Start observing as early as possible
+      const observer = new MutationObserver(handleMutations);
+
+      // Initialize based on document state
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
+          initialCleanup();
+          observer.observe(document.head, OBSERVER_CONFIG);
+          observer.observe(document.body, OBSERVER_CONFIG);
+        });
+      } else {
+        initialCleanup();
+        observer.observe(document.head, OBSERVER_CONFIG);
+        observer.observe(document.body, OBSERVER_CONFIG);
+      }
+
+      // Additional protection: override CSS font-face
+      const originalInsertRule = CSSStyleSheet.prototype.insertRule;
+      CSSStyleSheet.prototype.insertRule = function (rule, index) {
+        if (hasUnwantedFont(rule)) {
+          console.log('Blocked font-face rule:', rule.substring(0, 100));
+          return -1; // Return invalid index to indicate failure
+        }
+        return originalInsertRule.call(this, rule, index);
+      };
+
+      // Also override addRule for older browsers
+      if (CSSStyleSheet.prototype.addRule) {
+        const originalAddRule = CSSStyleSheet.prototype.addRule;
+        CSSStyleSheet.prototype.addRule = function (selector, style, index) {
+          if (hasUnwantedFont(selector) || hasUnwantedFont(style)) {
+            return -1;
+          }
+          return originalAddRule.call(this, selector, style, index);
+        };
+      }
+
+      // Prevent font loading via @import
+      const originalCreateElement = document.createElement;
+      document.createElement = function (tagName) {
+        const element = originalCreateElement.call(document, tagName);
+
+        if (tagName.toLowerCase() === 'style') {
+          const originalAppend = element.appendChild;
+          element.appendChild = function (child) {
+            if (child && child.nodeType === Node.TEXT_NODE && hasUnwantedFont(child.textContent)) {
+              return child;
+            }
+            return originalAppend.call(this, child);
+          };
+        }
+
+        return element;
+      };
+
+      // Force system fonts as fallback
+      const systemFontStyle = document.createElement('style');
+      systemFontStyle.textContent = `
+    * {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 
+                   'Helvetica Neue', Arial, sans-serif !important;
+    }
+    @font-face {
+      font-family: 'GTStandard' !important;
+      src: local('Arial') !important;
+      font-display: block !important;
+    }
+  `;
+      document.head.appendChild(systemFontStyle);
+    })();
+  </script>
+</html>

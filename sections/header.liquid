@@ -1,0 +1,302 @@
+<script src="{{ 'cart-items.js' | asset_url }}" defer></script>
+<script src="{{ 'search-modal.js' | asset_url }}" defer></script>
+
+{%- render 'cart-drawer',
+  id: 'cart_drawer',
+  container_id: 'cart_drawer_container',
+  display: 'drawer--inactive',
+  variants: product.variants,
+  items: cart.items,
+  default_coll: section.settings.products_collection
+-%}
+
+{%- render 'search-modal' -%}
+{% render 'announcement-slider',
+  bg-color: section.settings['bg-color'],
+  color: section.settings.color,
+  blocks: section.blocks,
+  slide_delay: section.settings.slide_delay
+%}
+<section class="h-[72px] md:h-[100px] w-full mb-[20px] nav-hamburger-menu">
+  <section class="h-full flex justify-between items-center main-container-px">
+    <div class="flex" style="width:26%;">
+      <div style="position:relative; width:40px;">
+        {% render 'hamburger-icon' %}
+      </div>
+    </div>
+    <div class="flex justify-center z-[60]" style="width:48%;">
+      {%- if section.settings['logo-img'] != blank -%}
+        <a href="{{ routes.root_url }}">
+          {{-
+            section.settings['logo-img']
+            | image_url: width: 280
+            | image_tag: widths: '280, 300, 560', alt: shop.name
+          -}}
+        </a>
+      {%- else -%}
+        <a href="{{ routes.root_url }}">{{ shop.name }}</a>
+      {%- endif -%}
+    </div>
+
+    <!--
+      <nav class="lg:w-[400px]">
+        <ul class="flex justify-between items-center text-sm uppercase">
+          {%- for link in section.settings['main-menu'].links -%}
+            {% render 'mega-menu-item.liquid', link: link, images_detail: section.blocks %}
+          {%- endfor -%}
+        </ul>
+      </nav>
+    -->
+    <section class="flex justify-end items-center gap-3 lg:w-[400px] z-[60]" style="width:26%;">
+      <button onclick="openSearchModal()" class="header__search flex justify-center items-center hover:text-gray-500">
+        <span class="">
+          {%- render 'icon-search-thin', class: 'w-[20px] h-[20px]' -%}
+        </span>
+        <!--
+          <p class="tracking-[1px] text-sm uppercase header__search-text">{{- section.settings['search-text'] -}}</p>
+        -->
+      </button>
+      {% comment %}
+        <div class="language-switcher-container relative">
+          {%- render 'language-switcher', class:"px-[10px]" -%}
+          {%- render 'form-localization' , device: 'lg' -%}
+        </div>
+      {% endcomment %}
+
+      <a href="{{ routes.account_url }}" class="flex items-center inline-block" aria-label="my account">
+        {%- render 'icon-account-thin', class: 'w-[20px] h-[20px]' -%}
+      </a>
+      {% comment %}
+        <div class="w-[30px] h-[30px] flex items-center justify-end">
+          <a href="#swym-wishlist" class="swym-wishlist">{%- render 'icon-heart', class: 'w-[20px] h-[20px]' -%}</a>
+        </div>
+      {% endcomment %}
+      <span
+        onclick='loadCart("cart_drawer_container", "cart_drawer")'
+        class="flex items-center"
+      >
+        {%- render 'icon-cart-thin', class: 'w-[20px] h-[20px]' -%}
+      </span>
+    </section>
+  </section>
+</section>
+
+{%- stylesheet -%}
+  .header-icon .st0 {
+    fill:none;
+  }
+  .main-menu:hover > .main-menu-child {
+    display: flex !important;
+  }
+
+  .bg-transparent{
+    background: transparent;
+  }
+
+  .nav-hamburger-menu{
+    display:none;
+  }
+  @media (min-width: 450px) {
+    .nav-hamburger-menu{
+      display:block;
+    }
+  }
+  @media screen and (max-width:1015px) {
+    .header__search-text {
+      display:none;
+    }
+  }
+{%- endstylesheet -%}
+
+<script>
+  window.ShopCurrency = '{{shop.money_with_currency_format}}';
+  const header = document.getElementById('shopify-section-header');
+
+  let currentScrollTop = 0;
+
+  const reveal = () => {
+    header.classList.add('sticky', 'z-10', 'top-0', 'ease-in', 'duration-10', 'bg-white');
+  };
+
+  const hide = () => {
+    header.classList.remove('bg-white');
+  };
+
+  const onScroll = () => {
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+    if (scrollTop > currentScrollTop) {
+      requestAnimationFrame(reveal);
+      requestAnimationFrame(hide);
+    } else {
+      requestAnimationFrame(reveal);
+    }
+    currentScrollTop = scrollTop;
+  };
+  document.addEventListener('scroll', onScroll);
+</script>
+
+<script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "Organization",
+    "name": {{ shop.name | json }},
+    {% if section.settings.logo %}
+      "logo" : {{ section.settings.logo | image_url: width: section.settings.logo.width | prepend: "https:" | json }},
+    {% endif %}
+    "sameAs": [
+      {{ settings.social_twitter_link | json }},
+      {{ settings.social_facebook_link | json }},
+      {{ settings.social_pinterest_link | json }},
+      {{ settings.social_instagram_link | json }},
+      {{ settings.social_tiktok_link | json }},
+      {{ settings.social_tumblr_link | json }},
+      {{ settings.social_snapchat_link | json }},
+      {{ settings.social_youtube_link | json }},
+      {{ settings.social_vimeo_link | json }}
+    ],
+    "url": {{ request.origin | append: page.url | json }}
+  }
+</script>
+
+{%- schema -%}
+{
+  "name": "header",
+  "tag": "header",
+  "settings": [
+    {
+      "type": "collection",
+      "id": "products_collection",
+      "label": "Products Collection",
+      "info": "List of products to show when cart is empty."
+    },
+    {
+      "type": "image_picker",
+      "id": "logo-img",
+      "label": "Logo"
+    },
+    {
+      "type": "text",
+      "id": "search-text",
+      "label": "Search text",
+      "default": "search"
+    },
+    {
+      "type": "link_list",
+      "id": "main-menu",
+      "label": "Main Menu",
+      "default": "main-menu"
+    },
+    {
+      "type": "text",
+      "id": "bold-text",
+      "label": "Bold Menu",
+      "default": "Featured Brands, a - z of brands"
+    },
+    {
+      "type": "color",
+      "id": "bg-color",
+      "label": "Announcement Background Colour",
+      "default": "#212121"
+    },
+    {
+      "type": "color",
+      "id": "color",
+      "label": "Announcement Text Colour",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "slide_delay",
+      "label": "Announcement Slides delay",
+      "min": 1,
+      "max": 10,
+      "step": 1,
+      "unit": "s",
+      "default": 3
+    }
+  ],
+  "blocks": [
+    {
+      "name": "Dropdown Image",
+      "type": "dropdown-image",
+      "settings": [
+        {
+          "type": "text",
+          "id": "menu-name",
+          "label": "Menu Image for",
+          "info": "Name of the menu for the selected image"
+        },
+        {
+          "type": "text",
+          "id": "image-title",
+          "label": "Image Title",
+          "default": "New Edits"
+        },
+        {
+          "type": "image_picker",
+          "id": "first-menu-image",
+          "label": "Menu Image"
+        },
+        {
+          "type": "text",
+          "id": "first-image-heading",
+          "label": "Image Heading",
+          "default": "Mens"
+        },
+        {
+          "type": "collection",
+          "id": "first-image-collection",
+          "label": "Select Collection"
+        },
+        {
+          "type": "color",
+          "id": "first-heading-color",
+          "label": "Heading Color",
+          "default": "#000000"
+        },
+        {
+          "type": "image_picker",
+          "id": "second-menu-image",
+          "label": "Menu Image"
+        },
+        {
+          "type": "text",
+          "id": "second-image-heading",
+          "label": "Image Heading",
+          "default": "Womens"
+        },
+        {
+          "type": "collection",
+          "id": "second-image-collection",
+          "label": "Select Collection"
+        },
+        {
+          "type": "color",
+          "id": "second-heading-color",
+          "label": "Heading Color",
+          "default": "#000000"
+        }
+      ]
+    },
+    {
+      "name": "Announcement",
+      "type": "announcement",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Announcement",
+          "default": "FREE SHIPPING WITHIN EU AND UK ON ORDERS OVER €70 / £60"
+        },
+        {
+          "type": "text",
+          "id": "local_text",
+          "label": "Local Announcement",
+          "default": "FREE SHIPPING FOR ORDERS OVER €20"
+        }
+      ]
+    }
+  ]
+}
+{%- endschema -%}

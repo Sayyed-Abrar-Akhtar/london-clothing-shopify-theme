@@ -1,0 +1,183 @@
+{% schema %}
+{
+  "name": "Heading",
+  "settings": [
+    {
+      "type": "select",
+      "id": "heading_type",
+      "label": "Heading type",
+      "default": "h2",
+      "options": [
+        {
+          "label": "Heading 2",
+          "value": "h2"
+        },
+        {
+          "label": "Heading 3",
+          "value": "h3"
+        },
+        {
+          "label": "Heading 4",
+          "value": "h4"
+        },
+        {
+          "label": "Heading 5",
+          "value": "h5"
+        },
+        {
+          "label": "Heading 6",
+          "value": "h6"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "label": "Heading",
+      "id": "heading"
+    },
+    {
+      "type": "range",
+      "id": "font_size",
+      "label": "Font size",
+      "min": 10,
+      "max": 100,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_inline",
+      "label": "Horizontal padding",
+      "min": 1,
+      "max": 100,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_block",
+      "label": "Vertical padding",
+      "min": 1,
+      "max": 100,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "color",
+      "id": "color",
+      "label": "Color",
+      "default": "#222222"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Heading - Main Title",
+      "category": "Text",
+      "settings": {
+        "heading_type": "h2",
+        "heading": "Featured Collections",
+        "font_size": 36,
+        "padding_inline": 20,
+        "padding_block": 20,
+        "color": "#222222"
+      }
+    },
+    {
+      "name": "Heading - Section Title",
+      "category": "Text",
+      "settings": {
+        "heading_type": "h3",
+        "heading": "New Arrivals",
+        "font_size": 28,
+        "padding_inline": 16,
+        "padding_block": 16,
+        "color": "#333333"
+      }
+    },
+    {
+      "name": "Heading - Subsection",
+      "category": "Text",
+      "settings": {
+        "heading_type": "h4",
+        "heading": "Shop By Category",
+        "font_size": 24,
+        "padding_inline": 15,
+        "padding_block": 15,
+        "color": "#444444"
+      }
+    },
+    {
+      "name": "Heading - Small Title",
+      "category": "Text",
+      "settings": {
+        "heading_type": "h5",
+        "heading": "Best Sellers",
+        "font_size": 20,
+        "padding_inline": 12,
+        "padding_block": 12,
+        "color": "#555555"
+      }
+    },
+    {
+      "name": "Heading - Minimal",
+      "category": "Text",
+      "settings": {
+        "heading_type": "h6",
+        "heading": "Collections",
+        "font_size": 18,
+        "padding_inline": 10,
+        "padding_block": 10,
+        "color": "#666666"
+      }
+    },
+    {
+      "name": "Heading - Sale Banner",
+      "category": "Text",
+      "settings": {
+        "heading_type": "h2",
+        "heading": "Summer Sale",
+        "font_size": 42,
+        "padding_inline": 25,
+        "padding_block": 25,
+        "color": "#e63946"
+      }
+    },
+    {
+      "name": "Heading - Brand Statement",
+      "category": "Text",
+      "settings": {
+        "heading_type": "h3",
+        "heading": "Quality & Style",
+        "font_size": 32,
+        "padding_inline": 18,
+        "padding_block": 18,
+        "color": "#2a9d8f"
+      }
+    },
+    {
+      "name": "Heading - Compact",
+      "category": "Text",
+      "settings": {
+        "heading_type": "h4",
+        "heading": "Our Story",
+        "font_size": 22,
+        "padding_inline": 8,
+        "padding_block": 8,
+        "color": "#222222"
+      }
+    },
+    {
+      "name": "Heading - Large Display",
+      "category": "Text",
+      "settings": {
+        "heading_type": "h2",
+        "heading": "Welcome to Our Store",
+        "font_size": 48,
+        "padding_inline": 30,
+        "padding_block": 30,
+        "color": "#1d3557"
+      }
+    }
+  ]
+}
+{% endschema %}

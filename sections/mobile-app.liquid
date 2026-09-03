@@ -1,0 +1,65 @@
+<section class="relative">
+  <div class="hidden md:!block h-[]">
+    {{ section.settings['bg-img'].src | image_url: width: 2000 | image_tag: alt: 'Background Image' }}
+  </div>
+  <div class="md:hidden">
+    {{ section.settings['bg-img-mob'].src | image_url: width: 600 | image_tag: alt: 'Background Image', height: 500 }}
+  </div>
+
+  <section class="absolute top-0 left-0 w-full h-full flex items-end md:items-center justify-center md:justify-end">
+    <section
+      class="w-[90%] md:w-[35%] mb-6 md:mb-0 mx-6 md:mx-24 h-[300px] bg-gray-400/60 flex flex-col justify-center items-center gap-6 p-10 bg-gray-100 rounded"
+    >
+      <h1 class="text-3xl font-black text-center">{{ section.settings.heading }}</h1>
+      <a href="{{ section.settings.app-store-url }}" target="_blank" rel="noopener noreferrer">
+        {{- section.settings['app-store-badge'].src | image_url: width: 256 | image_tag: alt: 'app store badge' -}}
+      </a>
+      <a href="{{ section.settings.google-play-url }}" target="_blank" rel="noopener noreferrer">
+        {{- section.settings['google-play-badge'].src | image_url: width: 256 | image_tag: alt: 'google play badge' -}}
+      </a>
+    </section>
+  </section>
+</section>
+
+{% schema %}
+{
+  "name": "Mobile App",
+  "settings": [
+    {
+      "type": "image_picker",
+      "label": "Upload or Select Background Image",
+      "id": "bg-img"
+    },
+    {
+      "type": "image_picker",
+      "label": "Upload or Select Background Image for Mobile Screen",
+      "id": "bg-img-mob"
+    },
+    {
+      "type": "text",
+      "label": "heading",
+      "id": "heading"
+    },
+    {
+      "type": "image_picker",
+      "label": "App Store Badge",
+      "id": "app-store-badge"
+    },
+    {
+      "type": "url",
+      "label": "App Store Url",
+      "id": "app-store-url"
+    },
+    {
+      "type": "image_picker",
+      "label": "Google Play Badge",
+      "id": "google-play-badge"
+    },
+    {
+      "type": "url",
+      "label": "Google Play Url",
+      "id": "google-play-url"
+    }
+  ]
+}
+{% endschema %}

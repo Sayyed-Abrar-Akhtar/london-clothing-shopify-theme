@@ -1,0 +1,68 @@
+<div class="hidden text-sm md:text-lg" data-location="{{- store | replace: ' ', '-' | downcase  -}}">
+  <h6 class="flex justify-start items-center my-2">
+    <span class="w-10 flex justify-center items-center">&#10687;</span>
+    {{- address -}}
+  </h6>
+  <h6 class="flex justify-start items-center my-2">
+    <span class="w-10 flex justify-center items-center">&#9742;</span>
+    {{- tel -}}
+  </h6>
+  <a href="mailto:online@london-clothing.com" class="my-2">
+    <h6 class="flex justify-start items-centerl">
+      <span class="w-10 flex justify-center items-center">&#9993; </span>
+      {{- email -}}
+    </h6>
+  </a>
+  <p class="flex justify-end my-4">
+    <strong>Opening hours</strong>
+  </p>
+  <div class="flex justify-between">
+    <p>Monday</p>
+    <p>{{ monday }}</p>
+  </div>
+  <div class="flex justify-between">
+    <p>Tuesday</p>
+    <p>{{ tuesday }}</p>
+  </div>
+  <div class="flex justify-between">
+    <p>Wednesday</p>
+    <p>{{ wednesday }}</p>
+  </div>
+  <div class="flex justify-between">
+    <p>Thursday</p>
+    <p>{{ thursday }}</p>
+  </div>
+  <div class="flex justify-between">
+    <p>Friday</p>
+    <p>{{ friday }}</p>
+  </div>
+  <div class="flex justify-between">
+    <p>Saturday</p>
+    <p>{{ saturday }}</p>
+  </div>
+  <div class="flex justify-between">
+    <p>Sunday</p>
+    <p>{{ sunday }}</p>
+  </div>
+</div>
+
+<style>
+  .arrow-right {
+    background: url('{{ 'play-arrow' | asset_url }}');
+    width: 2rem;
+    height: 2rem;
+    position: absolute;
+    background-position: right;
+    background-size: 1rem;
+    background-repeat: no-repeat;
+    position: absolute;
+    right: 10%;
+  }
+
+  .arrow-down {
+    background: url('{{ 'down-arrow' | asset_url }}') !important;
+    width: 1.2rem;
+    background-repeat: no-repeat !important;
+    top: 30%;
+  }
+</style>

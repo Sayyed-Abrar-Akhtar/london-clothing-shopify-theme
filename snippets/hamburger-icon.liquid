@@ -1,0 +1,97 @@
+{% if type == 'close' %}
+  <span class="smenu--iconx nav-close-btn" data-btn-type="hamburger-menu-closer">
+    <svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 50 50">
+      <defs>
+        <style>
+          .st0 {
+            fill: none;
+            stroke: #000;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            stroke-width: 1.5px;
+          }
+        </style>
+      </defs>
+      <path class="st0" d="M15,15 L35,35"/>
+      <path class="st0" d="M35,15 L15,35"/>
+    </svg>
+  </span>
+{% elsif type == 'general-close' %}
+  <span class="smenu--iconx" data-btn-type="general-close-icon">
+    <svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 50 50">
+      <defs>
+        <style>
+          .st0 {
+            fill: none;
+            stroke: #000;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            stroke-width: 1.5px;
+          }
+        </style>
+      </defs>
+      <path class="st0" d="M15,15 L35,35"/>
+      <path class="st0" d="M35,15 L15,35"/>
+    </svg>
+  </span>
+{% else %}
+  <span class="smenu--icon nav-open-btn" data-btn-type="hamburger-menu-opener">
+    <svg id="Menu--Streamline-Feather" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 50 50">
+      <!-- Generator: Adobe Illustrator 30.1.0, SVG Export Plug-In . SVG Version: 2.1.1 Build 136)  -->
+      <defs>
+        <style>
+          .st0 {
+            fill: none;
+            stroke: #000;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            stroke-width: 1.5px;
+          }
+        </style>
+      </defs>
+      <path class="st0" d="M7.4,25h35.2"/>
+      <path class="st0" d="M7.4,13.3h35.2"/>
+      <path class="st0" d="M7.4,36.7h35.2"/>
+    </svg>
+  </span>
+{% endif %}
+
+{% if type == 'close' or type == 'open' %}
+  <script>
+    // Event delegation for hamburger menu buttons
+    document.addEventListener('DOMContentLoaded', function () {
+      document.body.addEventListener('click', function (e) {
+        if (e.target.closest('.nav-close-btn') || e.target.closest('.nav-open-btn')) {
+          const menu = document.querySelector('[data-btn-role="toggle-hamburger-menu"]');
+          if (menu) {
+            menu.checked = !menu.checked;
+            document.body.style.overflow = menu.checked ? 'hidden' : 'visible';
+          }
+        }
+      });
+    });
+  </script>
+{% endif %}
+
+<style>
+  {% if type == 'close' or type == 'general-close' %}
+    .smenu--iconx {
+      width: 25px;
+      display: inline-block;
+
+      cursor:pointer;
+      position:relative;
+    }
+
+  {% else %}
+    .smenu--icon {
+      width: 25px;
+      height: 25px;
+      display: inline-block;
+      cursor:pointer;
+
+    }
+
+
+  {% endif %}
+</style>

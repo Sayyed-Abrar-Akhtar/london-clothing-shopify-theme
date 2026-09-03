@@ -1,0 +1,542 @@
+{% unless request.design_mode %}
+  {% unless customer %}
+    <script>
+      window.location.href = '/account/login';
+    </script>
+  {% endunless -%}
+{% endunless -%}
+
+{%- style -%}
+  .confirmation {
+    margin-bottom: {{ section.settings.confirmation_margin_bottom }}px;
+  }
+
+  .confirmation h1 {
+    font-size: {{ section.settings.heading-font-size }}px;
+    font-weight: {{ section.settings.heading-weight }};
+    margin-top: {{section.settings.heading-mt}}px;
+    margin-bottom: {{section.settings.heading-mb}}px;
+    padding-top: {{section.settings.heading-pt}}px;
+    padding-bottom: {{section.settings.heading-pb}}px;
+    color: {{ section.settings.heading-color }};
+    text-transform: uppercase;
+    letter-spacing: 0.9px;
+  }
+
+  .confirmation p {
+    font-size: {{ section.settings.paragraph-font-size }}px;
+    font-weight: {{ section.settings.paragraph-weight }};
+    margin-top: {{section.settings.paragraph-mt}}px;
+    margin-bottom: {{section.settings.paragraph-mb}}px;
+    padding-top: {{section.settings.paragraph-pt}}px;
+    padding-bottom: {{section.settings.paragraph-pb}}px;
+    color: {{ section.settings.paragraph-color }};
+    text-transform: uppercase;
+  }
+
+  .offer {
+
+  }
+
+  .offer h2 {
+    font-size: {{ section.settings.offer-font-size }}px;
+    font-weight: {{ section.settings.offer-weight }};
+    margin-top: {{section.settings.offer-mt}}px;
+    margin-bottom: {{section.settings.offer-mb}}px;
+    padding-top: {{section.settings.offer-pt}}px;
+    padding-bottom: {{section.settings.offer-pb}}px;
+    color: {{ section.settings.offer-color }};
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+  }
+
+  .offer p {
+    font-size: {{ section.settings.offer-paragraph-font-size }}px;
+    font-weight: {{ section.settings.offer-paragraph-weight }};
+    margin-top: {{section.settings.offer-paragraph-mt}}px;
+    margin-bottom: {{section.settings.offer-paragraph-mb}}px;
+    padding-top: {{section.settings.offer-paragraph-pt}}px;
+    padding-bottom: {{section.settings.offer-paragraph-pb}}px;
+    color: {{ section.settings.offer-paragraph-color }};
+    text-transform: uppercase;
+  }
+
+  .offer .promo-code {
+    font-size: {{ section.settings.coupon-font-size }}px;
+    font-weight: {{ section.settings.coupon-weight }};
+    margin-top: {{section.settings.coupon-mt}}px;
+    margin-bottom: {{section.settings.coupon-mb}}px;
+    padding-block: {{section.settings.coupon-py}}px;
+    padding-inline: {{section.settings.coupon-px}}px;
+    color: {{ section.settings.coupon-color }};
+    background-color: {{ section.settings.coupon-bg-color }};
+    text-transform: uppercase;
+  }
+{%- endstyle -%}
+
+<div
+  class="msg-box flex flex-col items-center uppercase"
+  data-page="register-success-page"
+  data-customer="{{ customer.first_name }}"
+>
+  {% comment %}
+    {{ page.content }}
+  {% endcomment %}
+
+  <div class="confirmation">
+    {% if section.settings.heading %}
+      <h1 class="text-center">{{ section.settings.heading }}, {{ customer.first_name }}!</h1>
+    {% endif %}
+    {% if section.settings.paragraph %}
+      <p class="text-center">{{ section.settings.paragraph }}</p>
+    {% endif %}
+  </div>
+
+  <div class="offer flex flex-col justify-center items-center">
+    {% if section.settings['offer-heading'] %}
+      <h2 class="text-center">{{ section.settings['offer-heading'] }}</h2>
+    {% endif %}
+    {% if section.settings['offer-paragraph'] %}
+      <p class="text-center">{{ section.settings['offer-paragraph'] }}</p>
+    {% endif %}
+    {% if section.settings.coupon %}
+      <span class="promo-code text-center">{{ section.settings.coupon }}</span>
+    {% endif %}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Notification Page",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Success Message"
+    },
+    {
+      "type": "text",
+      "label": "Heading",
+      "id": "heading",
+      "default": "Welcome"
+    },
+    {
+      "type": "color",
+      "label": "Color",
+      "id": "heading-color",
+      "default": "#000000"
+    },
+    {
+      "type": "select",
+      "options": [
+        {
+          "label": "Normal",
+          "value": "normal"
+        },
+        {
+          "label": "Bold",
+          "value": "bold"
+        },
+        {
+          "label": "Black",
+          "value": "bolder"
+        }
+      ],
+      "default": "bolder",
+      "label": "Font Weight",
+      "id": "heading-weight"
+    },
+    {
+      "type": "range",
+      "min": 5,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "default": 11,
+      "label": "Font Size",
+      "id": "heading-font-size"
+    },
+    {
+      "type": "range",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "default": 2,
+      "label": "Padding Top",
+      "id": "heading-pt"
+    },
+    {
+      "type": "range",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "default": 2,
+      "label": "Padding Bottom",
+      "id": "heading-pb"
+    },
+    {
+      "type": "range",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "default": 2,
+      "label": "Margin Top",
+      "id": "heading-mt"
+    },
+    {
+      "type": "range",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "default": 2,
+      "label": "Margin Bottom",
+      "id": "heading-mb"
+    },
+
+    {
+      "type": "text",
+      "label": "Paragraph",
+      "id": "paragraph",
+      "default": "Your style journey has just begun."
+    },
+    {
+      "type": "color",
+      "label": "Paragraph Color",
+      "id": "paragraph-color",
+      "default": "#000000"
+    },
+    {
+      "type": "select",
+      "options": [
+        {
+          "label": "Normal",
+          "value": "normal"
+        },
+        {
+          "label": "Bold",
+          "value": "bold"
+        },
+        {
+          "label": "Black",
+          "value": "bolder"
+        }
+      ],
+      "default": "normal",
+      "label": "Paragraph Font Weight",
+      "id": "paragraph-weight"
+    },
+    {
+      "type": "range",
+      "min": 5,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "default": 11,
+      "label": "Paragraph Font Size",
+      "id": "paragraph-font-size"
+    },
+    {
+      "type": "range",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "default": 2,
+      "label": "Paragraph Padding Top",
+      "id": "paragraph-pt"
+    },
+    {
+      "type": "range",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "default": 2,
+      "label": "Paragraph Padding Bottom",
+      "id": "paragraph-pb"
+    },
+    {
+      "type": "range",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "default": 2,
+      "label": "Paragraph Margin Top",
+      "id": "paragraph-mt"
+    },
+    {
+      "type": "range",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "default": 2,
+      "label": "Paragraph Margin Bottom",
+      "id": "paragraph-mb"
+    },
+
+    {
+      "type": "header",
+      "content": "Offer"
+    },
+    {
+      "type": "text",
+      "label": "Heading",
+      "id": "offer-heading",
+      "default": "Enjoy First Class perks on your first order."
+    },
+    {
+      "type": "color",
+      "label": "Color",
+      "id": "offer-color",
+      "default": "#000000"
+    },
+    {
+      "type": "select",
+      "options": [
+        {
+          "label": "Normal",
+          "value": "normal"
+        },
+        {
+          "label": "Bold",
+          "value": "bold"
+        },
+        {
+          "label": "Black",
+          "value": "bolder"
+        }
+      ],
+      "default": "bold",
+      "label": "Font Weight",
+      "id": "offer-weight"
+    },
+    {
+      "type": "range",
+      "min": 5,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "default": 11,
+      "label": "Font Size",
+      "id": "offer-font-size"
+    },
+    {
+      "type": "range",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "default": 2,
+      "label": "Padding Top",
+      "id": "offer-pt"
+    },
+    {
+      "type": "range",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "default": 2,
+      "label": "Padding Bottom",
+      "id": "offer-pb"
+    },
+    {
+      "type": "range",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "default": 2,
+      "label": "Margin Top",
+      "id": "offer-mt"
+    },
+    {
+      "type": "range",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "default": 2,
+      "label": "Margin Bottom",
+      "id": "offer-mb"
+    },
+
+    {
+      "type": "text",
+      "label": "Paragraph",
+      "id": "offer-paragraph",
+      "default": "As a new member, here is a special offer just for you."
+    },
+    {
+      "type": "color",
+      "label": "Paragraph Color",
+      "id": "offer-paragraph-color",
+      "default": "#000000"
+    },
+    {
+      "type": "select",
+      "options": [
+        {
+          "label": "Normal",
+          "value": "normal"
+        },
+        {
+          "label": "Bold",
+          "value": "bold"
+        },
+        {
+          "label": "Black",
+          "value": "bolder"
+        }
+      ],
+      "default": "normal",
+      "label": "Paragraph Font Weight",
+      "id": "offer-paragraph-weight"
+    },
+    {
+      "type": "range",
+      "min": 5,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "default": 11,
+      "label": "Paragraph Font Size",
+      "id": "offer-paragraph-font-size"
+    },
+    {
+      "type": "range",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "default": 2,
+      "label": "Paragraph Padding Top",
+      "id": "offer-paragraph-pt"
+    },
+    {
+      "type": "range",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "default": 2,
+      "label": "Paragraph Padding Bottom",
+      "id": "offer-paragraph-pb"
+    },
+    {
+      "type": "range",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "default": 1,
+      "label": "Paragraph Margin Top",
+      "id": "offer-paragraph-mt"
+    },
+    {
+      "type": "range",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "default": 1,
+      "label": "Paragraph Margin Bottom",
+      "id": "offer-paragraph-mb"
+    },
+
+    {
+      "type": "text",
+      "label": "Coupon Code",
+      "id": "coupon",
+      "default": "LONDON10"
+    },
+    {
+      "type": "color",
+      "label": "Coupon Code Color",
+      "id": "coupon-color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "label": "Coupon Background Color",
+      "id": "coupon-bg-color",
+      "default": "#000000"
+    },
+    {
+      "type": "select",
+      "options": [
+        {
+          "label": "Normal",
+          "value": "normal"
+        },
+        {
+          "label": "Bold",
+          "value": "bold"
+        },
+        {
+          "label": "Black",
+          "value": "bolder"
+        }
+      ],
+      "default": "normal",
+      "label": "Coupon Font Weight",
+      "id": "coupon-weight"
+    },
+    {
+      "type": "range",
+      "min": 5,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "default": 11,
+      "label": "Coupon Font Size",
+      "id": "coupon-font-size"
+    },
+    {
+      "type": "range",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "default": 4,
+      "label": "Coupon Horizontal padding",
+      "id": "coupon-px"
+    },
+    {
+      "type": "range",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "default": 2,
+      "label": "Coupon Padding",
+      "id": "coupon-py"
+    },
+    {
+      "type": "range",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "default": 2,
+      "label": "Coupon Margin Top",
+      "id": "coupon-mt"
+    },
+    {
+      "type": "range",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "default": 2,
+      "label": "Coupon Margin Bottom",
+      "id": "coupon-mb"
+    }
+  ]
+}
+{% endschema %}

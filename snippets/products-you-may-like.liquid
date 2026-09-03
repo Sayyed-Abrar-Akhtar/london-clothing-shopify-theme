@@ -1,0 +1,53 @@
+{{ 'product-card.css' | asset_url | stylesheet_tag }}
+
+<section class="py-20 flex flex-col items-center justify-evenly space-y-8">
+  {% if cart.items.size > 0 %}
+    <section
+      data-product-types="you-may-like"
+      data-err-heading="{{ settings.error_cart_item_text }}"
+      data-btn-text="{{ settings.redirect_btn_text }}"
+      data-btn-url="{{ settings.redirect_btn_url }}"
+      data-show-discount-badge="{% if settings.show_discount_badge %}1{%else%}0{%endif%}"
+      style="column-gap:4%;"
+      class="grid gap-5 sm:grid-cols-1 md:grid-cols-1 mb-12"
+    >
+      <div data-type="you-may-like-skeleton" class="w-full md:w-[291px] lg:w-[350px] h-[500px] animate-pulse">
+        <div class="bg-slate-300 w-full h-full">&nbsp;</div>
+      </div>
+      <div data-type="you-may-like-skeleton" class="w-full md:w-[291px] lg:w-[350px] h-[500px] animate-pulse">
+        <div class="bg-slate-300 w-full h-full">&nbsp;</div>
+      </div>
+      <div data-type="you-may-like-skeleton" class="w-full md:w-[291px] lg:w-[350px] h-[500px] animate-pulse">
+        <div class="bg-slate-300 w-full h-full">&nbsp;</div>
+      </div>
+      <div data-type="you-may-like-skeleton" class="w-full md:w-[291px] lg:w-[350px] h-[500px] animate-pulse">
+        <div class="bg-slate-300 w-full h-full">&nbsp;</div>
+      </div>
+    </section>
+  {% else %}
+    <section
+      data-display-products="default"
+      data-product-types="you-may-like"
+      data-err-heading="{{ settings.error_cart_item_text }}"
+      data-btn-text="{{ settings.redirect_btn_text }}"
+      data-btn-url="{{ settings.redirect_btn_url }}"
+      data-show-discount-badge="{% if settings.show_discount_badge %}1{%else%}0{%endif%}"
+      style="column-gap:4%;"
+      class="mb-12 grid justify-items-center gap-2 sm:gap-3 md:gap-4 lg:gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 "
+    >
+      {% for product in default_coll.products %}
+        {%-
+          render 'card-product',
+          product: product;
+          variant: '',
+          front_image: product.featured_image,
+          back_image: product.images[1],
+          extraclass: "[&:not(:first-child)]:ml-[15px]",
+          data_coll_type: "FEATURED_BRAND",
+          show_discount_badge: settings.show_discount_badge,
+          show_quickview: false
+        -%}
+      {% endfor %}
+    </section>
+  {% endif %}
+</section>

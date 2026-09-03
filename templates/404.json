@@ -1,0 +1,48 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "main-404",
+      "settings": {
+        "heading": "Oops! A page has gone missing in London's fog.",
+        "text": "Don't worry, we'll get you back on track. The page you're looking for might have been moved, deleted, or never existed."
+      }
+    },
+    "one-click-nav": {
+      "type": "one-click-nav",
+      "settings": {}
+    },
+    "heading": {
+      "type": "heading",
+      "settings": {
+        "heading_type": "h2",
+        "heading": "You may like",
+        "font_size": 16,
+        "padding_inline": 16,
+        "padding_block": 16,
+        "color": "#222222"
+      }
+    },
+    "featured-brand": {
+      "type": "featured-brand",
+      "settings": {
+        "featured-collection": "newin",
+        "shuffleActive": true
+      }
+    }
+  },
+  "order": [
+    "main",
+    "one-click-nav",
+    "heading",
+    "featured-brand"
+  ]
+}

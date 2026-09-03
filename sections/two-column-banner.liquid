@@ -1,0 +1,428 @@
+<section
+  class="grid grid-cols-2 gap-1 md:gap-4 row-auto w-full mb-0 md:mb-20"
+  style="min-height: 200px;"
+>
+  {% for block in section.blocks %}
+    <section
+      class="relative md:border border-gray-100 cursor-pointer"
+      data-elem="two-col-bnr-container"
+      data-link="{{ block.settings.url }}"
+      role="link"
+    >
+      <section class="hidden md:!block">
+        <section class="max-img-h overflow-hidden">
+          {% if block.settings.banner_image != blank %}
+            <div class="h-full">
+              {% if block.settings.banner_image.alt %}
+                {{-
+                  block.settings.banner_image
+                  | image_url: width: 2000
+                  | image_tag:
+                    class: 'w-full h-full object-cover',
+                    preload: true,
+                    widths: '1400, 1500, 1600, 1700, 1800, 1900, 2000'
+                -}}
+              {% else %}
+                {{-
+                  block.settings.banner_image
+                  | image_url: width: 2000
+                  | image_tag:
+                    class: 'w-full h-full object-cover',
+                    alt: 'Banner',
+                    preload: true,
+                    widths: '1400, 1500, 1600, 1700, 1800, 1900, 2000'
+                -}}
+              {% endif %}
+            </div>
+          {% else %}
+            <div class="h-full">
+              {{ 'lifestyle-1' | placeholder_svg_tag: 'placeholder-svg w-full h-full' }}
+            </div>
+          {% endif %}
+        </section>
+        <div class="w-full flex items-center justify-center mt-2">
+          <div class="two-col-bnr-cta">
+            {% render 'cta-button', id: section.id, full_width: true, link: block.settings.url %}
+          </div>
+        </div>
+      </section>
+
+      <section class="block md:hidden">
+        <section class="max-img-h-sm overflow-hidden">
+          {% if block.settings.banner_image_mobile != blank %}
+            <div class="h-full">
+              {% if block.settings.banner_image_mobile.alt %}
+                {{-
+                  block.settings.banner_image_mobile
+                  | image_url: width: 500
+                  | image_tag: class: 'w-full h-full object-cover', preload: true, widths: '400, 500, 600, 700, 800'
+                -}}
+              {% else %}
+                {{-
+                  block.settings.banner_image_mobile
+                  | image_url: width: 500
+                  | image_tag:
+                    class: 'w-full h-full object-cover',
+                    alt: 'Banner',
+                    preload: true,
+                    widths: '400, 500, 600, 700, 800'
+                -}}
+              {% endif %}
+            </div>
+          {% else %}
+            <div class="h-full">
+              {% if block.settings.banner_image != blank %}
+                {{-
+                  block.settings.banner_image
+                  | image_url: width: 500
+                  | image_tag: class: 'w-full h-full object-cover', preload: true, widths: '400, 500, 600, 700, 800'
+                -}}
+              {% else %}
+                {{ 'lifestyle-1' | placeholder_svg_tag: 'placeholder-svg w-full h-full' }}
+              {% endif %}
+            </div>
+          {% endif %}
+        </section>
+        <div class="w-full flex items-center justify-center mt-2">
+          <div class="w-full md:w-max">
+            {% render 'cta-button', id: section.id, full_width: true, link: block.settings.url %}
+          </div>
+        </div>
+      </section>
+      <!--
+        <section class="flex flex-col justify-center items-center absolute top-[50%] left-[50%] w-[90%] px-4 translate-x-[-50%] translate-y-[-50%] md:w-[60%]">
+          <h2
+            class="text-md leading-[150%] md:text-2xl md:leading-[150%] lg:text-4xl lg:leading-[180%] mb-3 text-center uppercase tracking-[1px] md:tracking-[2px] lg:tracking-[4px]"
+            style="color:{{- block.settings.font_color -}}; text-shadow: 1px 2px 3px #666;"
+          >
+            {{- block.settings.heading -}}
+          </h2>
+          {% if block.settings.subheading != blank %}
+            <p class="text-sm leading-[130%] md:text-xl md:leading-[130%] lg:text-3xl lg:leading-[150%] mb-3 text-center inline-block uppercase">
+              {{- block.settings.subheading -}}
+            </p>
+          {% endif %}
+          <div class="w-full flex justify-center items-center mt-[20px]">
+            {%- if block.settings.btn_link != blank -%}
+              <a
+                style="padding-inline:{{ block.settings.btn_px }}px;line-height:150%;"
+                href="{{- block.settings.btn_link -}}"
+                class="text-xs md:text-base mx-1 min-w-[100px] bg-slate-100/90 text-center rounded-[2px] m-0 leading-[100%] pt-[8px] pb-[10px] uppercase two-col-bnr-cta"
+              >
+                {{- block.settings.btn_text | downcase -}}
+              </a>
+            {%- endif -%}
+          </div>
+        </section>
+      -->
+      {% capture heading_styles %}
+        color:{{ block.settings.heading_color }};font-size:{{ block.settings.heading_size }}rem;font-style:{{ block.settings.heading_style }};font-weight:{{ block.settings.heading_weight }};text-transform:{{ block.settings.heading_case }};
+      {% endcapture %}
+      {% capture cta_styles %}
+        color:{{ block.settings.url_color }};font-size:{{ block.settings.url_size }}rem;font-style:{{ block.settings.url_style }};font-weight:{{ block.settings.url_weight }};text-transform:{{ block.settings.url_case }};{% if block.settings.is_url_underlined %}border-bottom:1px solid #000000;{% endif %}
+      {% endcapture %}
+      {% render 'banner-caption',
+        heading: block.settings.heading,
+        cta_label: block.settings.url_label,
+        cta_link: block.settings.url,
+        heading_styles: heading_styles,
+        cta_styles: cta_styles
+      %}
+    </section>
+  {% endfor %}
+</section>
+
+<style>
+  /*.max-img-h-sm{
+    max-height:400px;
+  }
+  .max-img-h{
+    max-height:120dvh;
+  }*/
+   .two-col-bnr-margin-b {
+    margin-bottom: 3rem;
+  }
+  .two-col-bnr-cta {
+    min-width:100px;
+  }
+  .two-col-bnr-cta {
+    width:100%;
+  }
+  @media (min-width: 500px) {
+    .two-col-bnr-cta {
+      width:50%;
+    }
+  }
+  @media (min-width: 768px) {
+
+    .two-col-bnr-margin-b {
+      margin-bottom: 5rem;
+    }
+    .two-col-bnr-margin-x {
+      /*margin-left: 1rem;
+      margin-right: 1rem;*/
+    }
+    .two-col-bnr-cta {
+      min-width:150px;
+    }
+    .two-col-bnr-cta {
+      width:40%;
+    }
+  }
+</style>
+
+{% javascript %}
+  const selectectTwoColBnrElem = Array.prototype.slice.call(
+    document.querySelectorAll('[data-elem = "two-col-bnr-container"]')
+  );
+
+  selectectTwoColBnrElem.forEach(function (colElement) {
+    //console.log(colElement);
+    const url = colElement.dataset.link;
+    colElement.addEventListener('click', function () {
+      window.location.href = url;
+    });
+  });
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "two-column-banner",
+  "class": "two-col-bnr-margin-x two-col-bnr-margin-b",
+  "tag": "section",
+  "max_blocks": 8,
+  "blocks": [
+    {
+      "name": "two-column-banner",
+      "type": "two-col-banner",
+      "settings": [
+        {
+          "type": "header",
+          "content": "Image Settings"
+        },
+        {
+          "type": "image_picker",
+          "id": "banner_image",
+          "label": "Banner Image",
+          "info": "Banner image for large screens"
+        },
+        {
+          "type": "image_picker",
+          "id": "banner_image_mobile",
+          "label": "Banner Image Mobile",
+          "info": "Banner image for mobile screens"
+        },
+        {
+          "type": "text",
+          "label": "Heading",
+          "id": "heading"
+        },
+        {
+          "type": "range",
+          "label": "Heading size",
+          "id": "heading_size",
+          "min": 0,
+          "max": 10,
+          "step": 0.1,
+          "unit": "rem",
+          "default": 2
+        },
+        {
+          "type": "select",
+          "id": "heading_case",
+          "label": "Heading Case",
+          "options": [
+            {
+              "label": "Normal",
+              "value": "none"
+            },
+            {
+              "label": "Uppercase",
+              "value": "uppercase"
+            },
+            {
+              "label": "Lowercase",
+              "value": "lowercase"
+            },
+            {
+              "label": "Capitalize",
+              "value": "capitalize"
+            }
+          ],
+          "default": "uppercase"
+        },
+        {
+          "type": "select",
+          "id": "heading_weight",
+          "label": "Heading Weight",
+          "options": [
+            {
+              "label": "Bold",
+              "value": "bold"
+            },
+            {
+              "label": "Bolder",
+              "value": "bolder"
+            },
+            {
+              "label": "Lighter",
+              "value": "lighter"
+            },
+            {
+              "label": "Normal",
+              "value": "normal"
+            }
+          ],
+          "default": "normal"
+        },
+        {
+          "type": "select",
+          "id": "heading_style",
+          "label": "Heading Style",
+          "options": [
+            {
+              "label": "Italic",
+              "value": "italic"
+            },
+            {
+              "label": "Normal",
+              "value": "normal"
+            },
+            {
+              "label": "Oblique",
+              "value": "oblique"
+            }
+          ],
+          "default": "normal"
+        },
+        {
+          "type": "color",
+          "label": "Heading color",
+          "id": "heading_color",
+          "default": "#000000"
+        },
+        {
+          "type": "header",
+          "content": "URL Settings"
+        },
+        {
+          "type": "text",
+          "label": "Link Label",
+          "id": "url_label",
+          "default": "shop"
+        },
+        {
+          "type": "url",
+          "label": "Link",
+          "id": "url",
+          "info": "Collections, menus or pages link."
+        },
+        {
+          "type": "checkbox",
+          "id": "is_url_underlined",
+          "label": "Link Label Underline",
+          "default": true
+        },
+        {
+          "type": "range",
+          "label": "Link Label size",
+          "id": "url_size",
+          "min": 0,
+          "max": 10,
+          "step": 0.1,
+          "unit": "rem",
+          "default": 0.9
+        },
+        {
+          "type": "select",
+          "id": "url_case",
+          "label": "Link Label Case",
+          "options": [
+            {
+              "label": "Normal",
+              "value": "none"
+            },
+            {
+              "label": "Uppercase",
+              "value": "uppercase"
+            },
+            {
+              "label": "Lowercase",
+              "value": "lowercase"
+            },
+            {
+              "label": "Capitalize",
+              "value": "capitalize"
+            }
+          ],
+          "default": "uppercase"
+        },
+        {
+          "type": "select",
+          "id": "url_weight",
+          "label": "Link Label Weight",
+          "options": [
+            {
+              "label": "Bold",
+              "value": "bold"
+            },
+            {
+              "label": "Bolder",
+              "value": "bolder"
+            },
+            {
+              "label": "Lighter",
+              "value": "lighter"
+            },
+            {
+              "label": "Normal",
+              "value": "normal"
+            }
+          ],
+          "default": "normal"
+        },
+        {
+          "type": "select",
+          "id": "url_style",
+          "label": "Link Label Style",
+          "options": [
+            {
+              "label": "Italic",
+              "value": "italic"
+            },
+            {
+              "label": "Normal",
+              "value": "normal"
+            },
+            {
+              "label": "Oblique",
+              "value": "oblique"
+            }
+          ],
+          "default": "normal"
+        },
+        {
+          "type": "color",
+          "label": "Link Label color",
+          "id": "url_color",
+          "default": "#000000"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Two Column Banner",
+      "category": "Banners",
+      "blocks": [
+        {
+          "type": "two-col-banner"
+        },
+        {
+          "type": "two-col-banner"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

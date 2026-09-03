@@ -1,0 +1,39 @@
+<section class="flex items-center justify-center mt-[72px] lg:mt-0 lg:mb-[20px]" style="background: {{ section.settings.announcement-bg }}; color:{{ section.settings.text-color }};">
+  <div>
+    <p class="uppercase text-[11px] text-center  p-2.5"style="font-weight:400; letter-spacing: 1.1px; word-spacing:1px;">{{- section.settings.announcement -}}&nbsp;
+      {%- if section.settings.order_limit != blank -%}
+        €<span data-type="order-limit">{{- section.settings.order_limit -}}</span>
+        <span data-type="local-hidden"> / £<span data-type="order-limit">60</span></span>
+      {%- endif -%}
+    </p>
+  </div>
+</section>
+
+{% schema %}
+  {
+    "name": "announcement-bar",
+    "settings": [
+      {
+        "type": "text",
+        "id": "announcement",
+        "label": "Announcement",
+        "default": "Free shipping <span data-location='worldwide'>worldwide</span>on orders over"
+      }, {
+        "type": "number",
+        "id": "order_limit",
+        "label": "Order Limit",
+        "default": 70
+      }, {
+        "type": "color",
+        "id": "announcement-bg",
+        "label": "Background Color",
+        "default": "#042365"
+      }, {
+        "type": "color",
+        "id": "text-color",
+        "label": "Text Color",
+        "default": "#ffffff"
+      }
+    ]
+  }
+{% endschema %}

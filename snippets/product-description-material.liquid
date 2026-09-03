@@ -1,0 +1,139 @@
+<section class="hidden" id="descriptions_HTML">
+  {{ description_material }}
+</section>
+
+<section>
+  {% render 'accordion',
+    fn: "toggleAccordion('product_description_toggler')",
+    id: 'product_description_info',
+    accordion_btn_id: 'product_description_toggler',
+    title: 'Description',
+    is_expanded:true
+  %}
+
+  {% render 'accordion',
+    fn: "toggleAccordion('product_material_toggler')",
+    id: 'product_material_info',
+    accordion_btn_id: 'product_material_toggler',
+    title: 'Material & Care Instructions'
+  %}
+
+  {% if faqs_page %}
+    {% render 'accordion',
+      fn: "toggleAccordion('faqs_info_toggler')",
+      id: 'faqs_info',
+      accordion_btn_id: 'faqs_info_toggler',
+      title: 'FAQS',
+      content: faqs_page
+    %}
+  {% endif %}
+
+  <div data-type="global-text">
+    {% render 'accordion',
+      fn: "toggleAccordion('shipping_policy_toggler')",
+      id: 'shipping_policy',
+      accordion_btn_id: 'shipping_policy_toggler',
+      title: 'Shipping',
+      content: shipping_policy_page
+    %}
+  </div>
+  <div data-type="local-text" class="hidden">
+    {% render 'accordion',
+      fn: "toggleAccordion('local_shipping_policy_toggler')",
+      id: 'local_shipping_policy',
+      accordion_btn_id: 'local_shipping_policy_toggler',
+      title: 'Shipping',
+      content: local_shipping_policy_page
+    %}
+  </div>
+</section>
+
+<script>
+  // function to toggle accordion
+  function toggleAccordion(id, isExpanded=false) {
+    // get accordion clicked
+    const targetElement = document.querySelector(`[data-accordion-of="${id}"]`);
+
+    Array.prototype.slice
+      .call(document.querySelectorAll('.accordion-icon'))
+      .forEach((element) => element.classList.add('display_content--icon'));
+
+    // loop over all accordion and hide all their content
+    Array.prototype.slice
+      .call(document.querySelectorAll('[data-accordion-content="accordion-content"]'))
+      .forEach((element) => element.classList.add('accordion--hide'));
+
+    // check if accordion clicked is already opened then hide content else show content
+    if (targetElement.classList.contains('accordion--show')) {
+      targetElement.classList.add('accordion--hide');
+      targetElement.classList.remove('accordion--show');
+      event.target.firstElementChild.classList.add('display_content--icon');
+    } else {
+      targetElement.classList.remove('accordion--hide');
+      Array.prototype.slice
+        .call(document.querySelectorAll('[data-accordion-content="accordion-content"]'))
+        .forEach((element) => element.classList.remove('accordion--show'));
+      targetElement.classList.add('accordion--show');
+      event.target.firstElementChild.classList.remove('display_content--icon');
+    }
+
+    const accordionParentElement = Array.prototype.slice
+      .call(document.querySelectorAll('[data-accordion-content="accordion-content"]'))
+      .filter((elem) => elem.classList.contains('accordion--show'))[0];
+
+    if (accordionParentElement) {
+      accordionParentElement.parentElement.firstElementChild.firstElementChild.firstElementChild.classList.remove(
+        'display_content--icon'
+      );
+    }
+  }
+
+  // skeleton to show before document is loaded
+  const loadingSkeleton = `<div class="description-skeleton flex flex-col justify-evenly w-full h-[100px] animate-pulse">
+     <div class="bg-slate-400 h-[15px] w-full rounded">&nbsp;</div>
+     <div class="bg-slate-400 h-[15px] w-full rounded">&nbsp;</div>
+     <div class="bg-slate-400 h-[15px] w-full rounded">&nbsp;</div>
+     <div class="bg-slate-400 h-[15px] w-full rounded">&nbsp;</div>
+     <div class="bg-slate-400 h-[15px] w-full rounded">&nbsp;</div>
+  </div>`;
+
+  // select accordions and add skeleton to accordion content
+  const productDescriptionInfo = document.getElementById('product_description_info');
+  const productMaterailInfo = document.getElementById('product_material_info');
+
+  productDescriptionInfo.insertAdjacentHTML('beforeend', loadingSkeleton);
+  productMaterailInfo.insertAdjacentHTML('beforeend', loadingSkeleton);
+
+  // triger when dom is loaded
+  window.addEventListener('load', (event) => {
+    // remove loading skeletons
+    productDescriptionInfo.removeChild(document.querySelector('.description-skeleton'));
+    productMaterailInfo.removeChild(document.querySelector('.description-skeleton'));
+
+    // get p elements in description section of product description  (shopify product descriotion)
+    const descriptionsPElem = document.querySelector('#descriptions_HTML>.descriptionProduct > p');
+
+    // get ul elements in description  section of product description (shopify product descriotion)
+
+    const descriptionsUlElem = document.querySelector('#descriptions_HTML>.descriptionProduct > ul');
+
+    // get ul elements in material section of product description (shopify product descriotion)
+
+    const materialUlElem = document.querySelector('#descriptions_HTML>.material>ul');
+    //console.log(descriptionsPElem, descriptionsUlElem, materialUlElem);
+
+    // add description info to description accordion
+    if (descriptionsPElem) {
+      productDescriptionInfo.insertAdjacentElement('beforeend', descriptionsPElem);
+    }
+
+    if (descriptionsUlElem) {
+      productDescriptionInfo.insertAdjacentElement('beforeend', descriptionsUlElem);
+    }
+
+    // add material info to materail accordion
+    if (materialUlElem) {
+      productMaterailInfo.insertAdjacentElement('beforeend', materialUlElem);
+    }
+  });
+</script>

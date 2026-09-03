@@ -1,0 +1,20 @@
+{% assign is_collection_filtered = false %}
+<section class="sa-applied-filters">
+  {% for filter in collection.filters %}
+    {% if filter.active_values.size > 0 %}
+      {% assign is_collection_filtered = true %}
+    {% endif %}
+    {% for filter_value in filter.active_values %}
+      <button class="sa-applied-filters-btn" onclick="removeFilter('{{ filter_value.url_to_remove }}')">
+        <span>{{ filter_value.label }}</span>
+        <span>X</span>
+      </button>
+    {% endfor %}
+  {% endfor %}
+  {% if is_collection_filtered %}
+    <button class="sa-applied-filters-btn btn-remove-all" onclick="clearFilter('{{ collection.url }}')">
+      <span>clear all</span>
+      <span>X</span>
+    </button>
+  {% endif %}
+</section>

@@ -1,0 +1,255 @@
+<!--
+  {% if cart.item_count > 0 %}
+    {% comment %} view for medium to large screen sizes {% endcomment %}
+    <section class="sm:hidden md:block mx-6">
+      <h1 class="font-bold text-center w-full text-2xl lg:text-4xl my-10 uppercase">Shopping cart</h1>
+      {% form 'cart', cart %}
+        <section class="flex space-x-10 items-start justify-between">
+
+          <section>
+            {% for item in cart.items %}
+              <section class="grid grid-cols-11 gap-4 items-center justify-between">
+
+                <a class="col-span-1 space-x-2 items-center" href="{{ item.url | within: collections.all }}">
+                  {% if item.image != blank %}
+                    {{- item | image_url: width: 100 | image_tag:
+                      preload: true, alt: item.title -}}
+                  {% endif %}
+                </a>
+                <div class="col-span-4">
+                  <strong>{{- item.title | split: '-' | first -}}</strong>
+                  <p class="my-2">{{- item.title | split: '-' | last -}}</p>
+                  <a class="inline-block" href="/cart/change?line={{ forloop.index }}&amp;quantity=0">
+                    <small class="text-red-500 capitalize font-medium">remove</small>
+                  </a>
+                </div>
+
+                <p class="col-span-2 text-center">{{- item.variant.price | money -}}</p>
+                <input
+                  class="col-span-2 border border-gray-300 p-2 w-full"
+                  type="number"
+                  name="updates[]"
+                  id="updates_{{ item.key }}"
+                  value="{{ item.quantity }}"
+                  min="0"
+                  max="{{- item.variant.inventory_quantity -}}"
+                  aria-label="item quantity">
+
+                <p class="col-span-2 text-right">{{- item.line_price | money -}}</p>
+              </section>
+            {%- endfor -%}
+          </section>
+          {% render 'cart-handle', total_price: cart.total_price | money %}
+
+        </section>
+      {% endform %}
+
+    </section>
+
+
+    {% comment %} view for small screen sizes {% endcomment %}
+    {% form 'cart', cart %}
+      <section class="grid grid-cols-1 items-center mx-6 mt-14 gap-6 md:hidden">
+        {%- for item in cart.items -%}
+          <section class="border border-black p-3">
+            <section class="flex flex-col items-center py-4 mx-2 space-y-4 border-b border-gray-300">
+              <a href="{{ item.url | within: collections.all }}">
+                {% if item.image != blank %}
+                  {{- item | image_url: width: 200 | image_tag:
+                    preload: true, alt: item.title -}}
+                {% endif %}
+              </a>
+
+              <p class="text-center">
+                <strong>{{- item.title | split: '-' | first -}}</strong>
+              </p>
+              <p class="text-center">
+                <strong>{{- item.title | split: '-' | last -}}</strong>
+              </p>
+            </section>
+            <section class="flex flex-col items-center py-4 mx-2 space-y-4 border-b border-gray-300">
+              <strong>Price</strong>
+              <p>{{- item.variant.price | money -}}</p>
+            </section>
+            <section class="flex flex-col items-center py-4 mx-2 space-y-4 border-b border-gray-300">
+              <strong>Quantity</strong>
+              <input
+                class="col-span-2 border border-gray-300 p-2 w-full"
+                type="number"
+                name="updates[]"
+                id="updates_{{ item.key }}"
+                value="{{ item.quantity }}"
+                min="0"
+                max="{{- item.variant.inventory_quantity -}}"
+                aria-label="item quantity">
+            </section>
+            <section class="flex flex-col items-center py-4 mx-2 space-y-4 border-b border-gray-300">
+              <strong>Total</strong>
+              <p>{{- item.line_price | money -}}</p>
+            </section>
+            <section class="flex flex-col items-center py-4 mx-2 space-y-4">
+              <a href="/cart/change?line={{ forloop.index }}&amp;quantity=0" class="py-1 px-3 bg-red-500 text-white text-sm rounded">remove</a>
+            </section>
+          </section>
+        {%- endfor -%}
+        <section class="border border-black p-3">
+          {% render 'cart-handle', total_price: cart.total_price | money %}
+        </section>
+      </section>
+    {%- endform -%}
+  {% endif %}
+-->
+
+<div class="mb-2 md:mb-20">
+  <h1 class="s-cart-header uppercase text-center md:text-left">{{ section.settings.heading }}</h1>
+  
+  {% if cart.item_count > 0 %}
+    <div class="s-cart-page-container flex flex-col md:flex-row w-full">
+      {% assign first_cart_product = cart.items | first %}
+      {% assign first_cart_product_id = first_cart_product.product_id %}
+      <div class="w-full md:w-1/2 md:border-r border-gray-300 px-2">
+        <div class="s-cart-items-list w-full">
+          <div class="flex justify-between items-center border-b border-gray-300 uppercase">
+            <h2>Product</h2>
+            <h2>Total</h2>
+          </div>
+
+          {% for item in cart.items %}
+            <div class="relative border-b border-gray-300 py-5">
+              {% render 'cart-list', item: item %}
+              {% render 'cart-item-loader', item: item %}
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+      <div class="cart-summary-container px-2 md:px-10 border-gray-300 w-full md:w-1/2">
+        {% render 'cart-summary', cart: cart %}
+        <div class="mt-14 hidden md:!block">
+          {% render 'cart-payment-icons' %}
+        </div>
+      </div>
+    </div>
+  {% else %}
+    <div class="s-cart-page-container flex flex-col md:flex-row w-full">
+      <div class="w-fulll md:w-1/2 flex flex-col items-center justify-center gap-6 py-20 md:border-r border-gray-300">
+        <h2 class="font-bold text-lg uppercase">Your Cart is Empty</h2>
+        <a
+          href="/collections/newin"
+          class="uppercase flex items-center text-[11px] justify-center mt-2 bg-black text-white px-8 border-black border-[1px] hover:bg-[#213a70] hover:border-[#213a70] hover:text-white h-[45px] transition delay-75 cursor-pointer"
+        >
+          continue shopping
+        </a>
+      </div>
+    </div>
+  {% endif %}
+  <div class="cart-related-products w-full md:w-1/2 md:border-r border-gray-300">
+    <div>
+      <h4 class="cart-h4 mb-6">You may also like</h4>
+      <div
+        class="cart-page-product-recommendations flex flex-wrap gap-4 "
+        data-product-id="{{ first_cart_product_id }}"
+      >
+        .
+      </div>
+    </div>
+    <div class="mt-8 md:hidden">
+      {% render 'cart-payment-icons' %}
+    </div>
+  </div>
+</div>
+{% render 'loader' %}
+{% style %}
+  .s-cart-header{
+    font-size: 20px;
+    margin-bottom:38px;
+    font-weight:700;
+  }
+  .s-cart-items-list > div,
+  .cart-summary-heading{
+    padding-bottom:18px;
+  }
+  .s-cart-items-list div h2,
+  .cart-summary-heading h2{
+    font-weight:700;
+    letter-spacing:1.3px;
+  }
+  .cart-text,
+  .s-cart-items-list div h2,
+  .cart-summary-heading h2{
+    font-size:10px;
+    text-transform:uppercase;
+  }
+  .cart-text-tc{
+    font-size:8px;
+    text-transform:uppercase;
+  }
+  .cart-text,
+  .cart-text-tc{
+    letter-spacing:0.6px;
+  }
+  .cart-h4{
+    font-size:14px;
+    font-weight:700;
+    letter-spacing:0.6px;
+    text-transform:uppercase;
+  }
+  .s-cart-item.loading{
+    opacity:0.3;
+  }
+
+  .spinner {
+    position:absolute;
+    top: calc(50% - 25px);
+    left: calc(50% - 25px);
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    border-top-color: #333;
+    border-radius: 50%;
+    visibility: hidden;
+    animation: animate-spinner 1s linear infinite;
+  }
+  .spinner.loading {
+    visibility: visible;
+  }
+  .cart-related-products{
+    padding-top:10px;
+  }
+  button.s-cart-btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+
+  @media (min-width:768px) {
+    .s-cart-items-list{
+      width:90%;
+    }
+
+    .cart-related-products{
+
+    }
+  }
+  @keyframes animate-spinner {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+{% endstyle %}
+{% javascript %}
+   //reloadCartContent();
+  bindCartPageEvents();
+{% endjavascript %}
+{% schema %}
+{
+  "name": "main-cart-items",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "default":"cart",
+      "label": "Heading"
+    }
+  ]
+}
+{% endschema %}

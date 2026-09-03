@@ -1,0 +1,793 @@
+<style>
+  .text-grid-heading-{{- section.id -}} {
+    font-weight: {{ section.settings.heading-font-weight }};
+    font-style:{{ section.settings.heading-font-style }};
+    font-size: {{ section.settings.heading-size }}px;
+    color: {{ section.settings.heading-color }};
+    padding-inline: {{ section.settings.heading-px }}px;
+    padding-block: {{ section.settings.heading-py }}px;
+    margin-top: {{ section.settings.heading-mt }}px;
+    margin-bottom: {{ section.settings.heading-mb }}px;
+  }
+  .text-grid-container {
+    display:grid;
+    grid-template-columns:repeat(6, 1fr);
+    gap: {{- section.settings.grid-gap -}}px;
+  }
+  .text-grid-container > a {
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:4px;
+  }
+  .text-grid-container > a:hover {
+    text-decoration: underline;
+  }
+  @media screen and (max-width:600px) {
+    .text-grid-container {
+      grid-template-columns:repeat(3, 1fr);
+    }
+  }
+  {% for block in section.blocks %}
+    .text-grid-text-{{-block.id-}} {
+      font-weight: {{ block.settings.text-font-weight }};
+      font-style:{{ block.settings.text-font-style }};
+      font-size: {{ block.settings.text-size }}px;
+      color: {{ block.settings.text-color }};
+      background-color: {{ block.settings.text-bg-color }};
+      padding-inline: {{ block.settings.px }}px;
+      padding-block: {{ block.settings.py }}px;
+    }
+  {% endfor %}}
+</style>
+<div style="padding-inline: {{ section.settings.section-px }}px; padding-block:{{ section.settings.section-py }}px;">
+  <h2 class="text-grid-heading-{{ section.id }}">{{ section.settings.heading }}</h2>
+  <div class="text-grid-container">
+    {% for block in section.blocks %}
+      {% if block.settings['category-link'] %}
+        <a class="text-grid-text-{{block.id}}" href="{{ block.settings.category-link }}">
+          <span class="uppercase">{{ block.settings.text }}</span>
+        </a>
+      {% endif %}
+    {% endfor %}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Text Grid",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section Customization"
+    },
+    {
+      "type": "range",
+      "id": "section-px",
+      "min": 10,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 20,
+      "label": "Section Horizontal Spacing"
+    },
+    {
+      "type": "range",
+      "id": "section-py",
+      "min": 10,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 20,
+      "label": "Section Vertical Spacing"
+    },
+    {
+      "type": "range",
+      "id": "grid-gap",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 5,
+      "label": "Grid Gap"
+    },
+    {
+      "type": "header",
+      "content": "Text Grid Customization"
+    },
+    {
+      "type": "color",
+      "id": "bg-color",
+      "default": "#ffffff",
+      "label": "Background Color"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading"
+    },
+    {
+      "type": "select",
+      "id": "heading-font-weight",
+      "label": "Heading Font Weight",
+      "options": [
+        {
+          "label": "Bold",
+          "value": "bold"
+        },
+        {
+          "label": "Bolder",
+          "value": "bolder"
+        },
+        {
+          "label": "Lighter",
+          "value": "lighter"
+        },
+        {
+          "label": "Normal",
+          "value": "normal"
+        }
+      ],
+      "default": "normal"
+    },
+    {
+      "type": "select",
+      "id": "heading-font-style",
+      "label": "Heading Font Style",
+      "options": [
+        {
+          "label": "Italic",
+          "value": "italic"
+        },
+        {
+          "label": "Normal",
+          "value": "normal"
+        },
+        {
+          "label": "Oblique",
+          "value": "oblique"
+        }
+      ],
+      "default": "normal"
+    },
+    {
+      "type": "color",
+      "id": "heading-color",
+      "default": "#000000",
+      "label": "Text Color"
+    },
+    {
+      "type": "range",
+      "id": "heading-size",
+      "min": 10,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 24,
+      "label": "Text Size"
+    },
+    {
+      "type": "range",
+      "id": "heading-mt",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 10,
+      "label": "Heading Margin Top"
+    },
+    {
+      "type": "range",
+      "id": "heading-mb",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 10,
+      "label": "Heading Margin Bottom"
+    },
+    {
+      "type": "range",
+      "id": "heading-py",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 5,
+      "label": "Vertical Spacing"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "text",
+      "name": "Text",
+      "settings": [
+        {
+          "type": "url",
+          "id": "category-link",
+          "label": "Category Link"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text"
+        },
+        {
+          "type": "select",
+          "id": "text-font-weight",
+          "label": "Text Font Weight",
+          "options": [
+            {
+              "label": "Bold",
+              "value": "bold"
+            },
+            {
+              "label": "Bolder",
+              "value": "bolder"
+            },
+            {
+              "label": "Lighter",
+              "value": "lighter"
+            },
+            {
+              "label": "Normal",
+              "value": "normal"
+            }
+          ],
+          "default": "normal"
+        },
+        {
+          "type": "select",
+          "id": "text-font-style",
+          "label": "Text Font Style",
+          "options": [
+            {
+              "label": "Italic",
+              "value": "italic"
+            },
+            {
+              "label": "Normal",
+              "value": "normal"
+            },
+            {
+              "label": "Oblique",
+              "value": "oblique"
+            }
+          ],
+          "default": "normal"
+        },
+        {
+          "type": "color",
+          "id": "text-color",
+          "default": "#333333",
+          "label": "Text Color"
+        },
+        {
+          "type": "color",
+          "id": "text-bg-color",
+          "default": "#f6f6f6",
+          "label": "Text Background Color"
+        },
+        {
+          "type": "range",
+          "id": "text-size",
+          "min": 10,
+          "max": 100,
+          "step": 1,
+          "unit": "px",
+          "default": 13,
+          "label": "Text Size"
+        },
+        {
+          "type": "range",
+          "id": "px",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "px",
+          "default": 5,
+          "label": "Horizontal Spacing"
+        },
+        {
+          "type": "range",
+          "id": "py",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "px",
+          "default": 5,
+          "label": "Vertical Spacing"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Text Grid - Category Navigation",
+      "category": "Navigation",
+      "settings": {
+        "section-px": 20,
+        "section-py": 40,
+        "grid-gap": 8,
+        "heading": "Shop By Category",
+        "heading-font-weight": "bold",
+        "heading-font-style": "normal",
+        "heading-color": "#000000",
+        "heading-size": 28,
+        "heading-mt": 0,
+        "heading-mb": 20,
+        "heading-py": 0
+      },
+      "blocks": [
+        {
+          "type": "text",
+          "settings": {
+            "text": "Men",
+            "text-font-weight": "normal",
+            "text-font-style": "normal",
+            "text-color": "#333333",
+            "text-bg-color": "#f8f9fa",
+            "text-size": 14,
+            "px": 15,
+            "py": 10
+          }
+        },
+        {
+          "type": "text",
+          "settings": {
+            "text": "Women",
+            "text-font-weight": "normal",
+            "text-font-style": "normal",
+            "text-color": "#333333",
+            "text-bg-color": "#f8f9fa",
+            "text-size": 14,
+            "px": 15,
+            "py": 10
+          }
+        },
+        {
+          "type": "text",
+          "settings": {
+            "text": "Kids",
+            "text-font-weight": "normal",
+            "text-font-style": "normal",
+            "text-color": "#333333",
+            "text-bg-color": "#f8f9fa",
+            "text-size": 14,
+            "px": 15,
+            "py": 10
+          }
+        },
+        {
+          "type": "text",
+          "settings": {
+            "text": "Accessories",
+            "text-font-weight": "normal",
+            "text-font-style": "normal",
+            "text-color": "#333333",
+            "text-bg-color": "#f8f9fa",
+            "text-size": 14,
+            "px": 15,
+            "py": 10
+          }
+        },
+        {
+          "type": "text",
+          "settings": {
+            "text": "Shoes",
+            "text-font-weight": "normal",
+            "text-font-style": "normal",
+            "text-color": "#333333",
+            "text-bg-color": "#f8f9fa",
+            "text-size": 14,
+            "px": 15,
+            "py": 10
+          }
+        },
+        {
+          "type": "text",
+          "settings": {
+            "text": "Sale",
+            "text-font-weight": "bold",
+            "text-font-style": "normal",
+            "text-color": "#ffffff",
+            "text-bg-color": "#e63946",
+            "text-size": 14,
+            "px": 15,
+            "py": 10
+          }
+        }
+      ]
+    },
+    {
+      "name": "Text Grid - Size Filter",
+      "category": "Navigation",
+      "settings": {
+        "section-px": 15,
+        "section-py": 30,
+        "grid-gap": 5,
+        "heading": "Filter By Size",
+        "heading-font-weight": "normal",
+        "heading-font-style": "normal",
+        "heading-color": "#333333",
+        "heading-size": 22,
+        "heading-mt": 0,
+        "heading-mb": 15,
+        "heading-py": 0
+      },
+      "blocks": [
+        {
+          "type": "text",
+          "settings": {
+            "text": "XS",
+            "text-font-weight": "normal",
+            "text-font-style": "normal",
+            "text-color": "#333333",
+            "text-bg-color": "#ffffff",
+            "text-size": 12,
+            "px": 10,
+            "py": 8
+          }
+        },
+        {
+          "type": "text",
+          "settings": {
+            "text": "S",
+            "text-font-weight": "normal",
+            "text-font-style": "normal",
+            "text-color": "#333333",
+            "text-bg-color": "#ffffff",
+            "text-size": 12,
+            "px": 10,
+            "py": 8
+          }
+        },
+        {
+          "type": "text",
+          "settings": {
+            "text": "M",
+            "text-font-weight": "normal",
+            "text-font-style": "normal",
+            "text-color": "#333333",
+            "text-bg-color": "#ffffff",
+            "text-size": 12,
+            "px": 10,
+            "py": 8
+          }
+        },
+        {
+          "type": "text",
+          "settings": {
+            "text": "L",
+            "text-font-weight": "normal",
+            "text-font-style": "normal",
+            "text-color": "#333333",
+            "text-bg-color": "#ffffff",
+            "text-size": 12,
+            "px": 10,
+            "py": 8
+          }
+        },
+        {
+          "type": "text",
+          "settings": {
+            "text": "XL",
+            "text-font-weight": "normal",
+            "text-font-style": "normal",
+            "text-color": "#333333",
+            "text-bg-color": "#ffffff",
+            "text-size": 12,
+            "px": 10,
+            "py": 8
+          }
+        },
+        {
+          "type": "text",
+          "settings": {
+            "text": "XXL",
+            "text-font-weight": "normal",
+            "text-font-style": "normal",
+            "text-color": "#333333",
+            "text-bg-color": "#ffffff",
+            "text-size": 12,
+            "px": 10,
+            "py": 8
+          }
+        }
+      ]
+    },
+    {
+      "name": "Text Grid - Brand Filter",
+      "category": "Navigation",
+      "settings": {
+        "section-px": 25,
+        "section-py": 35,
+        "grid-gap": 10,
+        "heading": "Shop By Brand",
+        "heading-font-weight": "bold",
+        "heading-font-style": "normal",
+        "heading-color": "#1d3557",
+        "heading-size": 26,
+        "heading-mt": 0,
+        "heading-mb": 25,
+        "heading-py": 0
+      },
+      "blocks": [
+        {
+          "type": "text",
+          "settings": {
+            "text": "Nike",
+            "text-font-weight": "normal",
+            "text-font-style": "normal",
+            "text-color": "#ffffff",
+            "text-bg-color": "#000000",
+            "text-size": 13,
+            "px": 12,
+            "py": 8
+          }
+        },
+        {
+          "type": "text",
+          "settings": {
+            "text": "Adidas",
+            "text-font-weight": "normal",
+            "text-font-style": "normal",
+            "text-color": "#ffffff",
+            "text-bg-color": "#000000",
+            "text-size": 13,
+            "px": 12,
+            "py": 8
+          }
+        },
+        {
+          "type": "text",
+          "settings": {
+            "text": "Puma",
+            "text-font-weight": "normal",
+            "text-font-style": "normal",
+            "text-color": "#ffffff",
+            "text-bg-color": "#000000",
+            "text-size": 13,
+            "px": 12,
+            "py": 8
+          }
+        },
+        {
+          "type": "text",
+          "settings": {
+            "text": "Under Armour",
+            "text-font-weight": "normal",
+            "text-font-style": "normal",
+            "text-color": "#ffffff",
+            "text-bg-color": "#000000",
+            "text-size": 13,
+            "px": 12,
+            "py": 8
+          }
+        },
+        {
+          "type": "text",
+          "settings": {
+            "text": "New Balance",
+            "text-font-weight": "normal",
+            "text-font-style": "normal",
+            "text-color": "#ffffff",
+            "text-bg-color": "#000000",
+            "text-size": 13,
+            "px": 12,
+            "py": 8
+          }
+        },
+        {
+          "type": "text",
+          "settings": {
+            "text": "Reebok",
+            "text-font-weight": "normal",
+            "text-font-style": "normal",
+            "text-color": "#ffffff",
+            "text-bg-color": "#000000",
+            "text-size": 13,
+            "px": 12,
+            "py": 8
+          }
+        }
+      ]
+    },
+    {
+      "name": "Text Grid - Color Filter",
+      "category": "Navigation",
+      "settings": {
+        "section-px": 20,
+        "section-py": 30,
+        "grid-gap": 6,
+        "heading": "Filter By Color",
+        "heading-font-weight": "normal",
+        "heading-font-style": "normal",
+        "heading-color": "#333333",
+        "heading-size": 24,
+        "heading-mt": 0,
+        "heading-mb": 18,
+        "heading-py": 0
+      },
+      "blocks": [
+        {
+          "type": "text",
+          "settings": {
+            "text": "Black",
+            "text-font-weight": "normal",
+            "text-font-style": "normal",
+            "text-color": "#ffffff",
+            "text-bg-color": "#000000",
+            "text-size": 12,
+            "px": 10,
+            "py": 6
+          }
+        },
+        {
+          "type": "text",
+          "settings": {
+            "text": "White",
+            "text-font-weight": "normal",
+            "text-font-style": "normal",
+            "text-color": "#333333",
+            "text-bg-color": "#ffffff",
+            "text-size": 12,
+            "px": 10,
+            "py": 6
+          }
+        },
+        {
+          "type": "text",
+          "settings": {
+            "text": "Blue",
+            "text-font-weight": "normal",
+            "text-font-style": "normal",
+            "text-color": "#ffffff",
+            "text-bg-color": "#1d3557",
+            "text-size": 12,
+            "px": 10,
+            "py": 6
+          }
+        },
+        {
+          "type": "text",
+          "settings": {
+            "text": "Red",
+            "text-font-weight": "normal",
+            "text-font-style": "normal",
+            "text-color": "#ffffff",
+            "text-bg-color": "#e63946",
+            "text-size": 12,
+            "px": 10,
+            "py": 6
+          }
+        },
+        {
+          "type": "text",
+          "settings": {
+            "text": "Green",
+            "text-font-weight": "normal",
+            "text-font-style": "normal",
+            "text-color": "#ffffff",
+            "text-bg-color": "#2a9d8f",
+            "text-size": 12,
+            "px": 10,
+            "py": 6
+          }
+        },
+        {
+          "type": "text",
+          "settings": {
+            "text": "Gray",
+            "text-font-weight": "normal",
+            "text-font-style": "normal",
+            "text-color": "#333333",
+            "text-bg-color": "#e9ecef",
+            "text-size": 12,
+            "px": 10,
+            "py": 6
+          }
+        }
+      ]
+    },
+    {
+      "name": "Text Grid - Collection Types",
+      "category": "Navigation",
+      "settings": {
+        "section-px": 30,
+        "section-py": 50,
+        "grid-gap": 12,
+        "heading": "Collection Types",
+        "heading-font-weight": "bold",
+        "heading-font-style": "normal",
+        "heading-color": "#2a9d8f",
+        "heading-size": 30,
+        "heading-mt": 0,
+        "heading-mb": 30,
+        "heading-py": 0
+      },
+      "blocks": [
+        {
+          "type": "text",
+          "settings": {
+            "text": "New Arrivals",
+            "text-font-weight": "bold",
+            "text-font-style": "normal",
+            "text-color": "#ffffff",
+            "text-bg-color": "#6a0572",
+            "text-size": 14,
+            "px": 20,
+            "py": 12
+          }
+        },
+        {
+          "type": "text",
+          "settings": {
+            "text": "Best Sellers",
+            "text-font-weight": "bold",
+            "text-font-style": "normal",
+            "text-color": "#ffffff",
+            "text-bg-color": "#e76f51",
+            "text-size": 14,
+            "px": 20,
+            "py": 12
+          }
+        },
+        {
+          "type": "text",
+          "settings": {
+            "text": "Sale Items",
+            "text-font-weight": "bold",
+            "text-font-style": "normal",
+            "text-color": "#ffffff",
+            "text-bg-color": "#e63946",
+            "text-size": 14,
+            "px": 20,
+            "py": 12
+          }
+        },
+        {
+          "type": "text",
+          "settings": {
+            "text": "Limited Edition",
+            "text-font-weight": "bold",
+            "text-font-style": "normal",
+            "text-color": "#ffffff",
+            "text-bg-color": "#1d3557",
+            "text-size": 14,
+            "px": 20,
+            "py": 12
+          }
+        },
+        {
+          "type": "text",
+          "settings": {
+            "text": "Summer Collection",
+            "text-font-weight": "bold",
+            "text-font-style": "normal",
+            "text-color": "#ffffff",
+            "text-bg-color": "#ff6b6b",
+            "text-size": 14,
+            "px": 20,
+            "py": 12
+          }
+        },
+        {
+          "type": "text",
+          "settings": {
+            "text": "Winter Collection",
+            "text-font-weight": "bold",
+            "text-font-style": "normal",
+            "text-color": "#ffffff",
+            "text-bg-color": "#4ecdc4",
+            "text-size": 14,
+            "px": 20,
+            "py": 12
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

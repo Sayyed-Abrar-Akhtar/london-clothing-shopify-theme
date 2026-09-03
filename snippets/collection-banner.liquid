@@ -1,0 +1,84 @@
+<section
+  style="
+    {% if top_margin > 0 %}
+      margin-top: {{ top_margin }}px;
+    {% endif %}
+    {% if bottom_margin > 0 %}
+      margin-bottom: {{ bottom_margin }}px;
+    {% endif %}
+    {% if padding > 0 %}
+    padding: {{ padding }}px
+    {% endif %}
+  "
+  class="relative mb-6 md:mb-20 md:mb-28"
+>
+  <div class="show-banner" style="height:{{- image_height -}}px;">
+    {%- if collection_img != blank -%}
+      {%- if collection_img.alt -%}
+        {{
+          collection_img
+          | image_url: width: 1500
+          | image_tag:
+            preload: true,
+            widths: '1200, 1300, 1400, 1500, 1600, 2000',
+            style: 'width:100%; height:100%; object-fit: cover;'
+        }}
+
+      {%- else -%}
+        {{
+          collection_img
+          | image_url: width: 1500
+          | image_tag:
+            alt: 'collection banner',
+            preload: true,
+            widths: '1200, 1300, 1400, 1500, 1600, 2000',
+            style: 'width:100%; height:100%; object-fit: cover;'
+        }}
+      {%- endif -%}
+    {%- else -%}
+      <div class="w-full aspect-video bg-gray-400">
+        {{ 'lifestyle-1' | placeholder_svg_tag: 'placeholder-svg' }}
+      </div>
+    {%- endif -%}
+  </div>
+  <div class="show-banner--mob" style="height:{{- image_height_mob -}}px;">
+    {%- if collection_img_mobile != blank -%}
+      {%- if collection_img_mobile.alt -%}
+        {{
+          collection_img_mobile
+          | image_url: width: 500
+          | image_tag: preload: true, widths: '400,500,600,700', style: 'width:100%; height:100%; object-fit: cover;'
+        }}
+
+      {%- else -%}
+        {{
+          collection_img_mobile
+          | image_url: width: 500
+          | image_tag:
+            alt: 'collection banner',
+            preload: true,
+            widths: '400,500,600,700',
+            style: 'width:100%; height:100%; object-fit: cover;'
+        }}
+      {%- endif -%}
+    {%- else -%}
+      {% if collection_img.alt %}
+        {{
+          collection_img
+          | image_url: width: 600
+          | image_tag: preload: true, widths: '400,500,600,700', style: 'width:100%; height:100%; object-fit: cover;'
+        }}
+      {%- else -%}
+        {{
+          collection_img
+          | image_url: width: 600
+          | image_tag:
+            alt: 'collection banner',
+            preload: true,
+            widths: '400,500,600,700',
+            style: 'width:100%; height:100%; object-fit: cover;'
+        }}
+      {%- endif -%}
+    {%- endif -%}
+  </div>
+</section>

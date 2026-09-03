@@ -1,0 +1,308 @@
+<section class="mb-12 md:mb-28">
+  <div class="flex flex-col items-center justify-center bg-sale-banner py-5 min-h-[180px]">
+    <h2 class="text-xl leading-[150%] md:text-2xl md:leading-[150%] lg:text-[44px] tracking-[2px] lg:leading-[180%] font-bold text-center uppercase text-white">
+      {{- section.settings.heading -}}
+    </h2>
+    <h4 class="text-lg font-semibold leading-[130%] md:text-xl md:leading-[130%] lg:text-[32px] lg:leading-[150%] text-center inline-block uppercase">
+      {{- section.settings.subheading -}}
+    </h4>
+    <div class="w-full flex justify-center items-center my-5">
+      {%- for block in section.blocks -%}
+        {%- if block.settings.btn_link != blank -%}
+          <a
+            href="{{- block.settings.btn_link -}}"
+            class="mx-1 min-w-[100px] text-center rounded-[2px] m-0 leading-[100%] pt-[8px] pb-[10px] uppercase text-[14px] tracking-[1px]"
+            style="padding-top:10px; min-width:{{- section.settings.btn_width -}}px; color:{{- section.settings.btn_color -}}; background-color:{{- section.settings.btn_bg_color -}}"
+          >
+            {{- block.settings.btn_text | downcase -}}
+          </a>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% style %}
+  .bg-sale-banner {
+    background: {{ section.settings.bg-color }};
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "sale-banner",
+  "settings": [
+    {
+      "type": "color",
+      "label": "Background Color",
+      "id": "bg-color",
+      "default": "#fb441f"
+    },
+    {
+      "type": "text",
+      "label": "Heading",
+      "id": "heading",
+      "info": "Sale Heading",
+      "default": "Last Chance"
+    },
+    {
+      "type": "text",
+      "label": "Subheading",
+      "id": "subheading",
+      "info": "Sale Subheading",
+      "default": "Save up to 50%"
+    },
+    {
+      "type": "range",
+      "label": "Button Width",
+      "id": "btn_width",
+      "unit": "px",
+      "step": 5,
+      "min": 100,
+      "max": 250,
+      "default": 100
+    },
+    {
+      "type": "color",
+      "label": "Button Color",
+      "id": "btn_color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "label": "Button Background Color",
+      "id": "btn_bg_color",
+      "default": "#000000"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "CTA",
+      "type": "cta",
+      "settings": [
+        {
+          "type": "text",
+          "label": "Tab Text",
+          "id": "btn_text",
+          "info": "men",
+          "default": "Men"
+        },
+        {
+          "type": "url",
+          "label": "Tab Link",
+          "id": "btn_link",
+          "info": "Collections, menus or pages link."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Sale Banner - Red Theme",
+      "category": "Promotional",
+      "settings": {
+        "bg-color": "#e63946",
+        "heading": "Summer Sale",
+        "subheading": "Up to 50% Off Everything",
+        "btn_width": 120,
+        "btn_color": "#ffffff",
+        "btn_bg_color": "#1d3557"
+      },
+      "blocks": [
+        {
+          "type": "cta",
+          "settings": {
+            "btn_text": "Shop Now"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Sale Banner - Clearance Event",
+      "category": "Promotional",
+      "settings": {
+        "bg-color": "#2a9d8f",
+        "heading": "Final Clearance",
+        "subheading": "Up to 70% Off Last Season",
+        "btn_width": 150,
+        "btn_color": "#ffffff",
+        "btn_bg_color": "#e76f51"
+      },
+      "blocks": [
+        {
+          "type": "cta",
+          "settings": {
+            "btn_text": "View Clearance"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Sale Banner - Black Friday",
+      "category": "Promotional",
+      "settings": {
+        "bg-color": "#000000",
+        "heading": "Black Friday",
+        "subheading": "Doorbuster Deals Live Now",
+        "btn_width": 140,
+        "btn_color": "#000000",
+        "btn_bg_color": "#ffd166"
+      },
+      "blocks": [
+        {
+          "type": "cta",
+          "settings": {
+            "btn_text": "Shop Deals"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Sale Banner - Holiday Special",
+      "category": "Promotional",
+      "settings": {
+        "bg-color": "#6a0572",
+        "heading": "Holiday Special",
+        "subheading": "Perfect Gifts Under $50",
+        "btn_width": 130,
+        "btn_color": "#ffffff",
+        "btn_bg_color": "#ff6b6b"
+      },
+      "blocks": [
+        {
+          "type": "cta",
+          "settings": {
+            "btn_text": "Shop Gifts"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Sale Banner - New Year",
+      "category": "Promotional",
+      "settings": {
+        "bg-color": "#1d3557",
+        "heading": "New Year Sale",
+        "subheading": "Fresh Start, Fresh Styles",
+        "btn_width": 160,
+        "btn_color": "#ffffff",
+        "btn_bg_color": "#a8dadc"
+      },
+      "blocks": [
+        {
+          "type": "cta",
+          "settings": {
+            "btn_text": "Shop New Arrivals"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Sale Banner - Dual CTA",
+      "category": "Promotional",
+      "settings": {
+        "bg-color": "#e76f51",
+        "heading": "Flash Sale",
+        "subheading": "24 Hours Only - Don't Miss Out",
+        "btn_width": 110,
+        "btn_color": "#ffffff",
+        "btn_bg_color": "#264653"
+      },
+      "blocks": [
+        {
+          "type": "cta",
+          "settings": {
+            "btn_text": "Shop Men"
+          }
+        },
+        {
+          "type": "cta",
+          "settings": {
+            "btn_text": "Shop Women"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Sale Banner - Minimal",
+      "category": "Promotional",
+      "settings": {
+        "bg-color": "#333333",
+        "heading": "Sale",
+        "subheading": "Limited Time Offers",
+        "btn_width": 100,
+        "btn_color": "#ffffff",
+        "btn_bg_color": "#666666"
+      },
+      "blocks": [
+        {
+          "type": "cta",
+          "settings": {
+            "btn_text": "Shop Now"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Sale Banner - Spring Cleaning",
+      "category": "Promotional",
+      "settings": {
+        "bg-color": "#a8dadc",
+        "heading": "Spring Cleaning",
+        "subheading": "Make Room for New Styles",
+        "btn_width": 180,
+        "btn_color": "#1d3557",
+        "btn_bg_color": "#f1faee"
+      },
+      "blocks": [
+        {
+          "type": "cta",
+          "settings": {
+            "btn_text": "Shop Clearance"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Sale Banner - Premium Offers",
+      "category": "Promotional",
+      "settings": {
+        "bg-color": "#d4a373",
+        "heading": "Premium Offers",
+        "subheading": "Exclusive Member Discounts",
+        "btn_width": 170,
+        "btn_color": "#ffffff",
+        "btn_bg_color": "#bc6c25"
+      },
+      "blocks": [
+        {
+          "type": "cta",
+          "settings": {
+            "btn_text": "Unlock Offers"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Sale Banner - Weekend Special",
+      "category": "Promotional",
+      "settings": {
+        "bg-color": "#ff6b6b",
+        "heading": "Weekend Special",
+        "subheading": "Extra 20% Off Sitewide",
+        "btn_width": 125,
+        "btn_color": "#ffffff",
+        "btn_bg_color": "#4ecdc4"
+      },
+      "blocks": [
+        {
+          "type": "cta",
+          "settings": {
+            "btn_text": "Shop Weekend Sale"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

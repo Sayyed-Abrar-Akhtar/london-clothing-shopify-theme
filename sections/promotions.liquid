@@ -1,0 +1,777 @@
+<style>
+  {% for block in section.blocks %}
+      .promotion-text-{{ block.id }} {
+        font-weight: {{ block.settings.text-font-weight }};
+        font-style:{{ block.settings.text-font-style }};
+        font-size: {{ block.settings.text-size }}px;
+        color: {{ block.settings.text-color }};
+      }
+  {% endfor %}
+  .promotion-heading-{{section.id}} {
+      font-weight: {{ section.settings.heading-font-weight }};
+      font-style:{{ section.settings.heading-font-style }};
+      font-size: {{ section.settings.heading-size }}px;
+      color: {{ section.settings.heading-color }};
+      margin-top: {{ section.settings.heading-mt }}px;
+      margin-bottom: {{ section.settings.heading-mb }}px;
+      padding-inline: {{ section.settings.heading-px }}px;
+      padding-block: {{ section.settings.heading-py }}px;
+  }
+  .promotion-url-label-{{section.id}} {
+      font-weight: {{ section.settings.url_label-font-weight }};
+      font-style:{{ section.settings.url_label-font-style }};
+      font-size: {{ section.settings.url_label-size }}px;
+      color: {{ section.settings.url_label-color }};
+      margin-top: {{ section.settings.url_label-mt }}px;
+      margin-bottom: {{ section.settings.url_label-mb }}px;
+      padding-inline: {{ section.settings.url_label-px }}px;
+      padding-block: {{ section.settings.url_label-py }}px;
+  }
+</style>
+<div style="padding-inline: {{ section.settings.section-px }}px; padding-block:{{ section.settings.section-py }}px; background-color:{{ section.settings.bg-color }};">
+  <div class="flex flex-col md:flex-row">
+    <div class="w-full md:w-1/2 flex items-end">
+      <div class="p-6">
+        <h2 class="promotion-heading-{{section.id}} uppercase">{{ section.settings.heading }}</h2>
+        <a href="{{ routes.account_register_url }} uppercase" class="promotion-url-label-{{section.id}} block">
+          <p>{{ section.settings.url_label }}</p>
+        </a>
+      </div>
+    </div>
+    <div class="p-6 w-full md:w-1/2">
+      <div
+        class="p-6 flex flex-col gap-4"
+        style="border: {{ section.settings.border-size }}px solid {{ section.settings.border-color }};"
+      >
+        {% for textblock in section.blocks %}
+          <p class="flex gap-6 items-center py-2 uppercase">
+            <svg
+              fill="{{ textblock.settings.text-color }}"
+              version="1.1"
+              id="Capa_1"
+              xmlns="http://www.w3.org/2000/svg"
+              xmlns:xlink="http://www.w3.org/1999/xlink"
+              width="20px"
+              height="20px"
+              viewBox="0 0 352.62 352.62"
+              xml:space="preserve"
+            >
+              <g id="SVGRepo_bgCarrier" stroke-width="0"/>
+
+              <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"/>
+
+              <g id="SVGRepo_iconCarrier"> <g> <path d="M337.222,22.952c-15.912-8.568-33.66,7.956-44.064,17.748c-23.867,23.256-44.063,50.184-66.708,74.664 c-25.092,26.928-48.348,53.856-74.052,80.173c-14.688,14.688-30.6,30.6-40.392,48.96c-22.032-21.421-41.004-44.677-65.484-63.648 c-17.748-13.464-47.124-23.256-46.512,9.18c1.224,42.229,38.556,87.517,66.096,116.28c11.628,12.24,26.928,25.092,44.676,25.704 c21.42,1.224,43.452-24.48,56.304-38.556c22.645-24.48,41.005-52.021,61.812-77.112c26.928-33.048,54.468-65.485,80.784-99.145 C326.206,96.392,378.226,44.983,337.222,22.952z M26.937,187.581c-0.612,0-1.224,0-2.448,0.611 c-2.448-0.611-4.284-1.224-6.732-2.448l0,0C19.593,184.52,22.653,185.132,26.937,187.581z"/> </g> </g>
+            </svg>
+            <span class="promotion-text-{{ textblock.id }}">
+              {{ textblock.settings.text }}
+            </span>
+          </p>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+
+{
+  "name": "Promotion",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section Customization"
+    },
+    {
+      "type": "range",
+      "id": "section-px",
+      "min": 10,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 20,
+      "label": "Section Horizontal Spacing"
+    },
+    {
+      "type": "range",
+      "id": "section-py",
+      "min": 10,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 20,
+      "label": "Section Vertical Spacing"
+    },
+    {
+      "type": "header",
+      "content": "Promotion Customization"
+    },
+    {
+      "type": "color",
+      "id": "bg-color",
+      "label": "Background Color",
+      "default": "#f6f6f6"
+    },
+    {
+      "type": "header",
+      "content": "Heading Customization"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading"
+    },
+    {
+      "type": "select",
+      "id": "heading-font-weight",
+      "label": "Heading Font Weight",
+      "options": [
+        {
+          "label": "Bold",
+          "value": "bold"
+        },
+        {
+          "label": "Bolder",
+          "value": "bolder"
+        },
+        {
+          "label": "Lighter",
+          "value": "lighter"
+        },
+        {
+          "label": "Normal",
+          "value": "normal"
+        }
+      ],
+      "default": "normal"
+    },
+    {
+      "type": "select",
+      "id": "heading-font-style",
+      "label": "Heading Font Style",
+      "options": [
+        {
+          "label": "Italic",
+          "value": "italic"
+        },
+        {
+          "label": "Normal",
+          "value": "normal"
+        },
+        {
+          "label": "Oblique",
+          "value": "oblique"
+        }
+      ],
+      "default": "normal"
+    },
+    {
+      "type": "color",
+      "id": "heading-color",
+      "default": "#000000",
+      "label": "Heading Color"
+    },
+    {
+      "type": "range",
+      "id": "heading-size",
+      "min": 10,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 13,
+      "label": "Heading Size"
+    },
+    {
+      "type": "range",
+      "id": "heading-mt",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 5,
+      "label": "Heading Margin Top"
+    },
+    {
+      "type": "range",
+      "id": "heading-mb",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 5,
+      "label": "Heading Margin Bottom"
+    },
+    {
+      "type": "range",
+      "id": "heading-px",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 5,
+      "label": "Heading Horizontal Spacing"
+    },
+    {
+      "type": "range",
+      "id": "heading-py",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 5,
+      "label": "Heading Vertical Spacing"
+    },
+    {
+      "type": "header",
+      "content": "URL Customization"
+    },
+    {
+      "type": "text",
+      "id": "url_label",
+      "label": "URL Label",
+      "default": "Shop new arrivals"
+    },
+    {
+      "type": "select",
+      "id": "url_label-font-weight",
+      "label": "URL label Font Weight",
+      "options": [
+        {
+          "label": "Bold",
+          "value": "bold"
+        },
+        {
+          "label": "Bolder",
+          "value": "bolder"
+        },
+        {
+          "label": "Lighter",
+          "value": "lighter"
+        },
+        {
+          "label": "Normal",
+          "value": "normal"
+        }
+      ],
+      "default": "normal"
+    },
+    {
+      "type": "select",
+      "id": "url_label-font-style",
+      "label": "URL label Font Style",
+      "options": [
+        {
+          "label": "Italic",
+          "value": "italic"
+        },
+        {
+          "label": "Normal",
+          "value": "normal"
+        },
+        {
+          "label": "Oblique",
+          "value": "oblique"
+        }
+      ],
+      "default": "normal"
+    },
+    {
+      "type": "color",
+      "id": "url_label-color",
+      "default": "#000000",
+      "label": "URL Label Color"
+    },
+    {
+      "type": "range",
+      "id": "url_label-size",
+      "min": 10,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 13,
+      "label": "URL Label Size"
+    },
+    {
+      "type": "range",
+      "id": "url_label-mt",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 5,
+      "label": "URL Label Margin Top"
+    },
+    {
+      "type": "range",
+      "id": "url_label-mb",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 5,
+      "label": "URL Label Margin Bottom"
+    },
+    {
+      "type": "range",
+      "id": "url_label-px",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 5,
+      "label": "URL Label Horizontal Spacing"
+    },
+    {
+      "type": "range",
+      "id": "url_label-py",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 5,
+      "label": "URL Label Vertical Spacing"
+    },
+    {
+      "type": "header",
+      "content": "Border Customization"
+    },
+    {
+      "type": "color",
+      "id": "border-color",
+      "label": "Border Color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "border-size",
+      "min": 0,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 1,
+      "label": "Border Size"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "promotion",
+      "name": "Promotion",
+      "settings": [
+        {
+          "type": "header",
+          "content": "Text Customizations"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text"
+        },
+        {
+          "type": "select",
+          "id": "text-font-weight",
+          "label": "Text Font Weight",
+          "options": [
+            {
+              "label": "Bold",
+              "value": "bold"
+            },
+            {
+              "label": "Bolder",
+              "value": "bolder"
+            },
+            {
+              "label": "Lighter",
+              "value": "lighter"
+            },
+            {
+              "label": "Normal",
+              "value": "normal"
+            }
+          ],
+          "default": "normal"
+        },
+        {
+          "type": "select",
+          "id": "text-font-style",
+          "label": "Text Font Style",
+          "options": [
+            {
+              "label": "Italic",
+              "value": "italic"
+            },
+            {
+              "label": "Normal",
+              "value": "normal"
+            },
+            {
+              "label": "Oblique",
+              "value": "oblique"
+            }
+          ],
+          "default": "normal"
+        },
+        {
+          "type": "color",
+          "id": "text-color",
+          "default": "#000000",
+          "label": "Text Color"
+        },
+        {
+          "type": "range",
+          "id": "text-size",
+          "min": 10,
+          "max": 100,
+          "step": 1,
+          "unit": "px",
+          "default": 13,
+          "label": "Text Size"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Promotion - Benefits Section",
+      "category": "Promotional",
+      "settings": {
+        "section-px": 20,
+        "section-py": 40,
+        "bg-color": "#f8f9fa",
+        "heading": "Why Shop With Us",
+        "heading-font-weight": "bold",
+        "heading-font-style": "normal",
+        "heading-color": "#000000",
+        "heading-size": 28,
+        "heading-mt": 0,
+        "heading-mb": 10,
+        "heading-px": 0,
+        "heading-py": 0,
+        "url_label": "Discover Our Collection",
+        "url_label-font-weight": "normal",
+        "url_label-font-style": "normal",
+        "url_label-color": "#2a9d8f",
+        "url_label-size": 16,
+        "url_label-mt": 15,
+        "url_label-mb": 0,
+        "url_label-px": 0,
+        "url_label-py": 0,
+        "border-color": "#dee2e6",
+        "border-size": 1
+      },
+      "blocks": [
+        {
+          "type": "promotion",
+          "settings": {
+            "text": "Free shipping on orders over $50",
+            "text-font-weight": "normal",
+            "text-font-style": "normal",
+            "text-color": "#333333",
+            "text-size": 16
+          }
+        },
+        {
+          "type": "promotion",
+          "settings": {
+            "text": "30-day hassle-free returns",
+            "text-font-weight": "normal",
+            "text-font-style": "normal",
+            "text-color": "#333333",
+            "text-size": 16
+          }
+        },
+        {
+          "type": "promotion",
+          "settings": {
+            "text": "Premium quality materials",
+            "text-font-weight": "normal",
+            "text-font-style": "normal",
+            "text-color": "#333333",
+            "text-size": 16
+          }
+        },
+        {
+          "type": "promotion",
+          "settings": {
+            "text": "24/7 customer support",
+            "text-font-weight": "normal",
+            "text-font-style": "normal",
+            "text-color": "#333333",
+            "text-size": 16
+          }
+        }
+      ]
+    },
+    {
+      "name": "Promotion - Premium Features",
+      "category": "Promotional",
+      "settings": {
+        "section-px": 30,
+        "section-py": 50,
+        "bg-color": "#1d3557",
+        "heading": "Premium Features",
+        "heading-font-weight": "bolder",
+        "heading-font-style": "normal",
+        "heading-color": "#ffffff",
+        "heading-size": 32,
+        "heading-mt": 0,
+        "heading-mb": 15,
+        "heading-px": 0,
+        "heading-py": 0,
+        "url_label": "Explore Premium Collection",
+        "url_label-font-weight": "normal",
+        "url_label-font-style": "italic",
+        "url_label-color": "#a8dadc",
+        "url_label-size": 18,
+        "url_label-mt": 20,
+        "url_label-mb": 0,
+        "url_label-px": 0,
+        "url_label-py": 0,
+        "border-color": "#457b9d",
+        "border-size": 2
+      },
+      "blocks": [
+        {
+          "type": "promotion",
+          "settings": {
+            "text": "Handcrafted with attention to detail",
+            "text-font-weight": "normal",
+            "text-font-style": "normal",
+            "text-color": "#f1faee",
+            "text-size": 16
+          }
+        },
+        {
+          "type": "promotion",
+          "settings": {
+            "text": "Sustainable and eco-friendly materials",
+            "text-font-weight": "normal",
+            "text-font-style": "normal",
+            "text-color": "#f1faee",
+            "text-size": 16
+          }
+        },
+        {
+          "type": "promotion",
+          "settings": {
+            "text": "Lifetime warranty included",
+            "text-font-weight": "normal",
+            "text-font-style": "normal",
+            "text-color": "#f1faee",
+            "text-size": 16
+          }
+        },
+        {
+          "type": "promotion",
+          "settings": {
+            "text": "Exclusive member benefits",
+            "text-font-weight": "normal",
+            "text-font-style": "normal",
+            "text-color": "#f1faee",
+            "text-size": 16
+          }
+        }
+      ]
+    },
+    {
+      "name": "Promotion - Sale Benefits",
+      "category": "Promotional",
+      "settings": {
+        "section-px": 25,
+        "section-py": 35,
+        "bg-color": "#fff0f0",
+        "heading": "Sale Benefits",
+        "heading-font-weight": "bold",
+        "heading-font-style": "normal",
+        "heading-color": "#e63946",
+        "heading-size": 26,
+        "heading-mt": 0,
+        "heading-mb": 8,
+        "heading-px": 0,
+        "heading-py": 0,
+        "url_label": "Shop The Sale",
+        "url_label-font-weight": "bold",
+        "url_label-font-style": "normal",
+        "url_label-color": "#e63946",
+        "url_label-size": 16,
+        "url_label-mt": 12,
+        "url_label-mb": 0,
+        "url_label-px": 0,
+        "url_label-py": 0,
+        "border-color": "#e63946",
+        "border-size": 1
+      },
+      "blocks": [
+        {
+          "type": "promotion",
+          "settings": {
+            "text": "Up to 70% off retail prices",
+            "text-font-weight": "normal",
+            "text-font-style": "normal",
+            "text-color": "#333333",
+            "text-size": 15
+          }
+        },
+        {
+          "type": "promotion",
+          "settings": {
+            "text": "Limited time offers",
+            "text-font-weight": "normal",
+            "text-font-style": "italic",
+            "text-color": "#333333",
+            "text-size": 15
+          }
+        },
+        {
+          "type": "promotion",
+          "settings": {
+            "text": "Free returns on sale items",
+            "text-font-weight": "normal",
+            "text-font-style": "normal",
+            "text-color": "#333333",
+            "text-size": 15
+          }
+        },
+        {
+          "type": "promotion",
+          "settings": {
+            "text": "Same quality, better prices",
+            "text-font-weight": "normal",
+            "text-font-style": "normal",
+            "text-color": "#333333",
+            "text-size": 15
+          }
+        }
+      ]
+    },
+    {
+      "name": "Promotion - Minimal Style",
+      "category": "Promotional",
+      "settings": {
+        "section-px": 15,
+        "section-py": 30,
+        "bg-color": "#ffffff",
+        "heading": "Our Promise",
+        "heading-font-weight": "normal",
+        "heading-font-style": "normal",
+        "heading-color": "#000000",
+        "heading-size": 24,
+        "heading-mt": 0,
+        "heading-mb": 5,
+        "heading-px": 0,
+        "heading-py": 0,
+        "url_label": "Learn More",
+        "url_label-font-weight": "normal",
+        "url_label-font-style": "normal",
+        "url_label-color": "#666666",
+        "url_label-size": 14,
+        "url_label-mt": 10,
+        "url_label-mb": 0,
+        "url_label-px": 0,
+        "url_label-py": 0,
+        "border-color": "#e0e0e0",
+        "border-size": 1
+      },
+      "blocks": [
+        {
+          "type": "promotion",
+          "settings": {
+            "text": "Quality guaranteed",
+            "text-font-weight": "lighter",
+            "text-font-style": "normal",
+            "text-color": "#555555",
+            "text-size": 14
+          }
+        },
+        {
+          "type": "promotion",
+          "settings": {
+            "text": "Fast delivery",
+            "text-font-weight": "lighter",
+            "text-font-style": "normal",
+            "text-color": "#555555",
+            "text-size": 14
+          }
+        },
+        {
+          "type": "promotion",
+          "settings": {
+            "text": "Easy returns",
+            "text-font-weight": "lighter",
+            "text-font-style": "normal",
+            "text-color": "#555555",
+            "text-size": 14
+          }
+        }
+      ]
+    },
+    {
+      "name": "Promotion - Luxury Appeal",
+      "category": "Promotional",
+      "settings": {
+        "section-px": 40,
+        "section-py": 60,
+        "bg-color": "#2a2a2a",
+        "heading": "The Luxury Experience",
+        "heading-font-weight": "bolder",
+        "heading-font-style": "normal",
+        "heading-color": "#ffffff",
+        "heading-size": 36,
+        "heading-mt": 0,
+        "heading-mb": 20,
+        "heading-px": 0,
+        "heading-py": 0,
+        "url_label": "Experience Luxury",
+        "url_label-font-weight": "normal",
+        "url_label-font-style": "italic",
+        "url_label-color": "#d4af37",
+        "url_label-size": 18,
+        "url_label-mt": 25,
+        "url_label-mb": 0,
+        "url_label-px": 0,
+        "url_label-py": 0,
+        "border-color": "#d4af37",
+        "border-size": 2
+      },
+      "blocks": [
+        {
+          "type": "promotion",
+          "settings": {
+            "text": "Expert craftsmanship",
+            "text-font-weight": "normal",
+            "text-font-style": "normal",
+            "text-color": "#e0e0e0",
+            "text-size": 16
+          }
+        },
+        {
+          "type": "promotion",
+          "settings": {
+            "text": "Premium materials sourced globally",
+            "text-font-weight": "normal",
+            "text-font-style": "normal",
+            "text-color": "#e0e0e0",
+            "text-size": 16
+          }
+        },
+        {
+          "type": "promotion",
+          "settings": {
+            "text": "Personalized concierge service",
+            "text-font-weight": "normal",
+            "text-font-style": "normal",
+            "text-color": "#e0e0e0",
+            "text-size": 16
+          }
+        },
+        {
+          "type": "promotion",
+          "settings": {
+            "text": "Exclusive limited editions",
+            "text-font-weight": "normal",
+            "text-font-style": "normal",
+            "text-color": "#e0e0e0",
+            "text-size": 16
+          }
+        }
+      ]
+    }
+  ]
+}  

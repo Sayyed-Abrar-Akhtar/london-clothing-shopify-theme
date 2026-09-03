@@ -1,0 +1,357 @@
+<style>
+  {{ section.settings.heading-font | font_face }}
+  .about-indeep-heading-{{- section.id -}} {
+    font-family: {{ section.settings.heading-font.family }}, {{ section.settings.heading-font.fallback_families }};
+    font-weight: {{ section.settings.heading-font.weight }};
+    font-style:{{ section.settings.heading-font.style }};
+    font-size: {{ section.settings.heading-size }}px;
+    color: {{ section.settings.heading-color }};
+    padding-inline: {{ section.settings.heading-px }}px;
+    padding-block: {{ section.settings.heading-py }}px;
+    margin-top: {{ section.settings.heading-mt }}px;
+    margin-bottom: {{ section.settings.heading-mb }}px;
+  }
+  .about-indeep-text-box {
+    display:flex;
+    flex-direction:column;
+    gap:{{ section.settings.gap }}px;
+  }
+  {% for block in section.blocks %}
+    {{ block.settings.title-font | font_face }}
+    {{ block.settings.text-font | font_face }}
+    .about-indeep-paragraph-title-{{- block.id -}} {
+      font-family: {{ block.settings.title-font.family }}, {{ block.settings.title-font.fallback_families }};
+      font-weight: {{ block.settings.title-font.weight }};
+      font-style:{{ block.settings.title-font.style }};
+      font-size: {{ block.settings.title-size }}px;
+      color: {{ block.settings.title-color }};
+      padding-inline: {{ block.settings.title-px }}px;
+      padding-block: {{ block.settings.title-py }}px;
+      margin-top: {{ block.settings.title-mt }}px;
+      margin-bottom: {{ block.settings.title-mb }}px;
+    }
+    .about-indeep-paragraph-text-{{- block.id -}} {
+      font-family: {{ block.settings.text-font.family }}, {{ block.settings.text-font.fallback_families }};
+      font-weight: {{ block.settings.text-font.weight }};
+      font-style:{{ block.settings.text-font.style }};
+      font-size: {{ block.settings.text-size }}px;
+      color: {{ block.settings.text-color }};
+      padding-inline: {{ block.settings.text-px }}px;
+      padding-block: {{ block.settings.text-py }}px;
+      margin-top: {{ block.settings.text-mt }}px;
+      margin-bottom: {{ block.settings.text-mb }}px;
+    }
+  {% endfor %}}
+</style>
+<div
+  class="w-full"
+  style="padding-inline: {{ section.settings.section-px }}px; padding-block:{{ section.settings.section-py }}px;"
+>
+  <div class="w-full">
+    {% if section.settings.image %}
+      {% if section.settings.image.alt %}
+        {{
+          section.settings.image
+          | image_url: width: 2000
+          | image_tag: style: 'width:100%; height:400px; object-fit:cover;'
+        }}
+      {% else %}
+        {{
+          section.settings.image
+          | image_url: width: 2000
+          | image_tag: alt:'New Indeep Collection', style: 'width:100%; height:400px; object-fit:cover;'
+        }}
+      {% endif %}
+    {% endif %}
+  </div>
+  <div class="w-full">
+    <h1 class="about-indeep-heading-{{ section.id }}">
+      {{ section.settings.heading }}
+    </h1>
+    <div class="about-indeep-text-box">
+      {% for textblock in section.blocks %}
+        <div>
+          {% if textblock.settings.title %}
+            <h2 class="about-indeep-paragraph-title-{{ textblock.id }}">{{ textblock.settings.title }}</h2>
+          {% endif %}
+          {% if textblock.settings.text %}
+            <p class="about-indeep-paragraph-text-{{ textblock.id }}">{{ textblock.settings.text }}</p>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "About Indeep",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section Customization"
+    },
+    {
+      "type": "range",
+      "id": "section-px",
+      "min": 10,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 20,
+      "label": "Section Horizontal Spacing"
+    },
+    {
+      "type": "range",
+      "id": "section-py",
+      "min": 10,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 20,
+      "label": "Section Vertical Spacing"
+    },
+    {
+      "type": "range",
+      "id": "gap",
+      "min": 10,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 16,
+      "label": "Text Gap"
+    },
+    {
+      "type": "header",
+      "content": "Component Customization"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Banner Image"
+    },
+    {
+      "type": "header",
+      "content": "Heading Customization"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading"
+    },
+    {
+      "type": "font_picker",
+      "id": "heading-font",
+      "label": "Heading Font",
+      "default": "helvetica_n4"
+    },
+    {
+      "type": "color",
+      "id": "heading-color",
+      "default": "#000000",
+      "label": "Heading Color"
+    },
+    {
+      "type": "range",
+      "id": "heading-size",
+      "min": 10,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 36,
+      "label": "Heading Size"
+    },
+    {
+      "type": "range",
+      "id": "heading-mt",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 5,
+      "label": "Heading Margin Top"
+    },
+    {
+      "type": "range",
+      "id": "heading-mb",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 5,
+      "label": "Heading Margin Bottom"
+    },
+    {
+      "type": "range",
+      "id": "heading-px",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 5,
+      "label": "Heading Horizontal Spacing"
+    },
+    {
+      "type": "range",
+      "id": "heading-py",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 5,
+      "label": "Heading Vertical Spacing"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "Paragraph",
+      "type": "text",
+      "settings": [
+        {
+          "type": "header",
+          "content": "Title Customization"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title"
+        },
+        {
+          "type": "font_picker",
+          "id": "title-font",
+          "label": "Title Font",
+          "default": "helvetica_n4"
+        },
+        {
+          "type": "color",
+          "id": "title-color",
+          "default": "#000000",
+          "label": "Title Color"
+        },
+        {
+          "type": "range",
+          "id": "title-size",
+          "min": 10,
+          "max": 100,
+          "step": 1,
+          "unit": "px",
+          "default": 13,
+          "label": "Title Size"
+        },
+        {
+          "type": "range",
+          "id": "title-mt",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "px",
+          "default": 5,
+          "label": "Title Margin Top"
+        },
+        {
+          "type": "range",
+          "id": "title-mb",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "px",
+          "default": 5,
+          "label": "Title Margin Bottom"
+        },
+        {
+          "type": "range",
+          "id": "title-px",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "px",
+          "default": 5,
+          "label": "Title Horizontal Spacing"
+        },
+        {
+          "type": "range",
+          "id": "title-py",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "px",
+          "default": 5,
+          "label": "Title Vertical Spacing"
+        },
+        {
+          "type": "header",
+          "content": "Text Customization"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text"
+        },
+        {
+          "type": "font_picker",
+          "id": "text-font",
+          "label": "Text Font",
+          "default": "helvetica_n4"
+        },
+        {
+          "type": "color",
+          "id": "text-color",
+          "default": "#000000",
+          "label": "Text Color"
+        },
+        {
+          "type": "range",
+          "id": "text-size",
+          "min": 10,
+          "max": 100,
+          "step": 1,
+          "unit": "px",
+          "default": 13,
+          "label": "Text Size"
+        },
+        {
+          "type": "range",
+          "id": "text-mt",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "px",
+          "default": 5,
+          "label": "Text Margin Top"
+        },
+        {
+          "type": "range",
+          "id": "text-mb",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "px",
+          "default": 5,
+          "label": "Text Margin Bottom"
+        },
+        {
+          "type": "range",
+          "id": "text-px",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "px",
+          "default": 5,
+          "label": "Text Horizontal Spacing"
+        },
+        {
+          "type": "range",
+          "id": "text-py",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "px",
+          "default": 5,
+          "label": "Text Vertical Spacing"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

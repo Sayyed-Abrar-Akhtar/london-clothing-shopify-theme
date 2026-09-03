@@ -1,0 +1,45 @@
+<div class="flex flex-col gap-3" style="width:110px;">
+  <a href="{{ product.url }}?variant={{ product.first_available_variant }}">
+    {{ product.featured_image | image_url: width: 110 | image_tag: alt: product.title, width: 110 }}
+  </a>
+
+  <a href="{{ product.url }}?variant={{ product.first_available_variant }}" class="cart-text font-bold">
+    {{- product.title -}}
+  </a>
+  <span class="cart-text">{{ product.price | money_with_currency }}</span>
+  <button
+    data-elem-type="cart-related-product-size-selector"
+    class="text-[9px] uppercase bg-black text-white w-full border-black border-[1px] px-1 py-2"
+  >
+    Select Size
+  </button>
+  {% form 'product', product, class: 'flex flex-col gap-3' %}
+    <!-- Variant selector -->
+    <select name="id" class="cart-text border border-black px-1 py-2 hidden">
+      {% for variant in product.variants %}
+        <option
+          value="{{ variant.id }}"
+          {% if variant == current_variant %}
+            selected="selected"
+          {% endif %}
+        >
+          {{ variant.title }}
+        </option>
+      {% endfor %}
+      {% for option in product.options %}
+        <option
+          value="{{ variant.id }}"
+        >
+          {{ option }}
+        </option>
+      {% endfor %}
+    </select>
+    <input type="text" name="quantity" min="1" value="1" class="hidden">
+    <button
+      type="submit"
+      class="hidden text-[9px] uppercase bg-black text-white w-full border-black border-[1px] px-1 py-2"
+    >
+      Add
+    </button>
+  {% endform %}
+</div>

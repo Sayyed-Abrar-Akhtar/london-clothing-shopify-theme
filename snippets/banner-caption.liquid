@@ -1,0 +1,13 @@
+<div class="flex justify-between items-center mt-4">
+  {% if heading %}
+    {% case heading_type %}
+      {% when 'h1' %}
+        <h1 style="line-height:100%; {{ heading_styles}}">{{ heading }}</h1>
+      {% else %}
+        <h2 style="line-height:100%; {{ heading_styles}}">{{ heading }}</h2>
+    {% endcase %}
+  {% endif %}
+  {% if cta_link and cta_label %}
+    <a style="{{ cta_styles }}" href="{{ cta_link }}">{{ cta_label }}</a>
+  {% endif %}
+</div>

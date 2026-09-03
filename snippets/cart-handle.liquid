@@ -1,0 +1,27 @@
+<section class="md: min-w-[250px] lg:min-w-[350px] text-center">
+  <p>
+    <strong class="tracking-wide">
+      Subtotal
+      <span>{{ total_price }}</span>
+    </strong>
+  </p>
+  <p class="tracking-wider mt-5 mb-3">
+    Shipping & taxes calculated at checkout
+  </p>
+
+
+  <div class="mt-4 mb-1 text-left">
+    <label for="cartInstructionNote">Special instructions for seller</label>
+    <textarea
+      name="note"
+      id="cartInstructionNote"
+      cols="30"
+      rows="5"
+      class="resize-none border border-gray-300 w-full p-2 mt-2">{{ cart.note }}</textarea>
+  </div>
+
+  <div class="flex space-x-1">
+    <button class="mt-5 bg-black text-white w-full border-black border-[1px] hover:bg-[#213a70] hover:border-[#213a70] hover:text-white h-[46px] transition delay-75 cursor-pointer" name="update">update</button>
+    <button class="mt-5 bg-black text-white w-full border-black border-[1px] hover:bg-[#213a70] hover:border-[#213a70] hover:text-white h-[46px] transition delay-75 cursor-pointer" name="checkout">checkout</button>
+  </div>
+</section>

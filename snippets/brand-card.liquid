@@ -1,0 +1,19 @@
+<div class="brand_img_contianer">
+  {% if collection.url != blank %}
+    <a href="{{ collection.url }}">
+      {{-
+        image
+        | image_url: width: 400, height: 300
+        | image_tag: preload: true, style: 'width:100%; height:100%;
+    object-fit: cover;'
+      -}}
+    </a>
+  {% else %}
+    {{
+      image
+      | image_url: width: 400, height: 300
+      | image_tag: preload: true, style: 'width:100%; height:100%;
+    object-fit: cover;'
+    }}
+  {% endif %}
+</div>

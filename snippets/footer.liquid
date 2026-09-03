@@ -1,0 +1,235 @@
+<div class="{{ container_classes }}">
+  <div class="row-1 flex flex-col justify-between lg:flex-row">
+    <div class="col-1 about-company w-full md:w-[350px]">
+      <div class="row-1 social-media" style="margin-block:20px;">
+        <div class="flex items-center gap-4">
+          {%- if facebook_link != blank -%}
+            <a
+              href="{{- facebook_link -}}"
+              aria-label="Visit London Clothing facebook page"
+              target="_blank"
+              class="w-[20px] h-[20px] flex justify-center items-center"
+            >
+              {%- render 'icon-facebook' -%}
+            </a>
+          {%- endif -%}
+          {%- if twitter_link != blank -%}
+            <a
+              href="{{- twitter_link -}}"
+              aria-label="Visit London Clothing twitter page"
+              target="_blank"
+              class="w-[20px] h-[20px] flex justify-center items-center"
+            >
+              {%- render 'icon-twitter' -%}
+            </a>
+          {%- endif -%}
+          {%- if instagram_link != blank -%}
+            <a
+              href="{{- instagram_link -}}"
+              aria-label="Visit London Clothing Instagram page"
+              target="_blank"
+              class="w-[20px] h-[20px] flex justify-center items-center"
+            >
+              {%- render 'icon-instagram' -%}
+            </a>
+          {%- endif -%}
+
+          {%- if pinterest_link != blank -%}
+            <a
+              href="{{- pinterest_link -}}"
+              aria-label="Visit London Clothing pinterest page"
+              target="_blank"
+              class="w-[20px] h-[20px] flex justify-center items-center"
+            >
+              {%- render 'icon-pinterest' -%}
+            </a>
+          {%- endif -%}
+          {%- if snapchat_link != blank -%}
+            <a
+              href="{{- snapchat_link -}}"
+              aria-label="Visit London Clothing snapchat page"
+              target="_blank"
+              class="w-[20px] h-[20px] flex justify-center items-center"
+            >
+              {%- render 'icon-snapchat' -%}
+            </a>
+          {%- endif -%}
+          {%- if tiktok_link != blank -%}
+            <a
+              href="{{- tiktok_link -}}"
+              aria-label="Visit London Clothing tiktok page"
+              target="_blank"
+              class="w-[20px] h-[20px] flex justify-center items-center"
+            >
+              {%- render 'icon-tiktok' -%}
+            </a>
+          {%- endif -%}
+          {%- if tumblr_link != blank -%}
+            <a
+              href="{{- tumblr_link -}}"
+              aria-label="Visit London Clothing tumblr page"
+              target="_blank"
+              class="w-[20px] h-[20px] flex justify-center items-center"
+            >
+              {%- render 'icon-tumblr' -%}
+            </a>
+          {%- endif -%}
+          {%- if youtube_link != blank -%}
+            <a
+              href="{{- youtube_link -}}"
+              aria-label="Visit London Clothing youtube page"
+              target="_blank"
+              class="w-[20px] h-[20px] flex justify-center items-center"
+            >
+              {%- render 'icon-youtube' -%}
+            </a>
+          {%- endif -%}
+          {%- if vimeo_link != blank -%}
+            <a
+              href="{{- vimeo_link -}}"
+              aria-label="Visit London Clothing vimeo page"
+              target="_blank"
+              class="w-[20px] h-[20px] flex justify-center items-center"
+            >
+              {%- render 'icon-vimeo' -%}
+            </a>
+          {%- endif -%}
+        </div>
+      </div>
+      <p
+        class="text-[11px] md:text-sm uppercase"
+        style="margin-block:11px;letter-spacing:0.6px;line-height:200% !important;"
+      >
+        {% if shop_description != blank %}
+          {{ shop_description }}
+        {% else %}
+          {{ shop.description }}
+        {% endif %}
+      </p>
+    </div>
+    <div class="col-2 accordions">
+      <section class="hidden lg:!grid grid-cols-3 gap-1 md:gap-2 justify-center align-start ml-3 md:mx-10">
+        {%- for link in section.settings['footer-menu'].links -%}
+          <section class="mx-auto">
+            <h3
+              class="mb-2 font-semibold text-xs md:text-[18px] md:font-black uppercase leading-tight"
+              style="margin-block:20px;"
+            >
+              {{- link.title -}}
+            </h3>
+            <ul>
+              {%- for child_link in link.links -%}
+                <li class="uppercase my-4 text-xs md:text-sm">
+                  <a href="{{- child_link.url -}}">{{- child_link.title -}}</a>
+                </li>
+              {% endfor %}
+            </ul>
+          </section>
+        {%- endfor -%}
+      </section>
+      <section class="lg:hidden" style="margin-bottom:30px;">
+        {%- for link in section.settings['footer-menu'].links -%}
+          <section class="accordion footer-menu mx-auto">
+            <h3
+              style="margin-block:20px;font-size:13px;"
+              class="flex justify-between items-center font-semibold uppercase leading-tight"
+            >
+              <span>{{- link.title -}}</span>
+              <svg
+                class="footer-menu-icon"
+                width="20px"
+                height="20px"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path d="M6 9L12 15L18 9" stroke="#777" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </h3>
+            <ul style="display:none;color:rgba(18, 18, 18, 0.75);font-size:12px;" class="flex flex-col gap-4">
+              {%- for child_link in link.links -%}
+                <li class="uppercase">
+                  <a href="{{- child_link.url -}}">{{- child_link.title -}}</a>
+                </li>
+              {% endfor %}
+            </ul>
+          </section>
+        {%- endfor -%}
+      </section>
+    </div>
+    <div class="flex flex-col w-full md:w-[350px] hidden">
+      <h3
+        class="font-semibold text-[16px] md:text-[18px] md:font-black uppercase leading-tight"
+        style="margin-block:20px;"
+      >
+        {{ app_heading }}
+      </h3>
+      <div class="hidden md:!flex gap-4">
+        {% if app_qr_code %}
+          {{
+            app_qr_code
+            | image_url: width: 100, height: 100
+            | image_tag: width: 100, height: 100, alt: 'APP Download Links QR Code'
+          }}
+        {% endif %}
+        <p
+          class="text-[11px] md:text-sm uppercase"
+          style="letter-spacing:0.6px;line-height:200% !important;"
+        >
+          {{ app_info_desktop }}
+        </p>
+      </div>
+      <div class="md:hidden">
+        <p
+          class="text-[11px] md:text-sm uppercase"
+          style="letter-spacing:0.6px;line-height:200% !important;margin-bottom:15px;"
+        >
+          {{ app_info_mobile }}
+        </p>
+        <div class="flex justify-start items-center gap-6">
+          {% if app_store_image %}
+            <a target="_blank" rel="noopener noreferer" href="{{ app_store_link }}">
+              {{
+                app_store_image
+                | image_url: width: 120, height: 41
+                | image_tag: width: 120, height: 41, class: 'rounded-md', alt: 'app store icon image'
+              }}
+            </a>
+          {% endif %}
+          {% if play_store_image %}
+            <a target="_blank" rel="noopener noreferer" href="{{ play_store_link }}">
+              {{
+                play_store_image
+                | image_url: width: 120, height: 41
+                | image_tag: width: 120, height: 41, class: 'rounded-md', alt: 'play store icon image'
+              }}
+            </a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="flex flex-col-reverse pb-4 pt-[30px] md:pb-5 md:pt-[80px] md:flex-row md:justify-between md:items-end">
+    <div class="mt-8 md:m-0">
+      <ul class="flex w-full items-center flex-wrap space-x-4">
+        {%- for block in section.blocks -%}
+          <li class="" title=" {{- block.settings.payment_option_name -}}">
+            {%- if block.settings.payment_option_img != blank -%}
+              {{
+                block.settings.payment_option_img
+                | image_url: width: 35
+                | image_tag: loading: 'lazy', alt: block.settings.payment_option_name
+              }}
+            {%- endif -%}
+          </li>
+        {%- endfor -%}
+      </ul>
+    </div>
+    <div class="flex flex-col">
+      <h3 class="font-bold text-xl uppercase">{{ shop.name }}</h3>
+      <p style="font-size:10px;margin-top:13px;letter-spacing:0.7px;">
+        Copyright &copy; {{ 'now' | date: '%Y' }}. All Rights Reserved
+      </p>
+    </div>
+  </div>
+</div>

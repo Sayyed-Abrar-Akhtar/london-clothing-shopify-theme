@@ -1,0 +1,216 @@
+<div style="margin: {{ section.settings.top_margin }}px 0 {{ section.settings.bottom_margin }}px 0">
+  {% if section.settings.image or section.settings.mobile_image %}
+    {% if section.settings.link_url %}
+      <a
+        href="{{ section.settings.link_url }}"
+        {% if section.settings.open_in_new_tab %}
+          target="_blank"
+        {% endif %}
+      >
+    {% endif %}
+
+    
+    {% if section.settings.image %}
+      <div class="hidden md:!block">
+        {% if section.settings.image.alt %}
+          {{
+            section.settings.image
+            | image_url: width: '1900'
+            | image_tag: alt: section.settings.image.alt, class: 'image-link__image'
+          }}
+        {% else %}
+          {{ section.settings.image | image_url: width: '1900' | image_tag: alt: 'Indeep', class: 'image-link__image' }}
+        {% endif %}
+      </div>
+    {% endif %}
+
+    
+    {% if section.settings.mobile_image %}
+      <div class="block md:hidden">
+        {% if section.settings.mobile_image.alt %}
+          {{
+            section.settings.mobile_image
+            | image_url: width: '1000'
+            | image_tag: alt: section.settings.mobile_image.alt, class: 'image-link__image'
+          }}
+        {% else %}
+          {{ section.settings.mobile_image | image_url: width: '1000' | image_tag: alt: 'Indeep', class: 'image-link__image' }}
+        {% endif %}
+      </div>
+    {% else %}
+      {# Fallback to desktop image on mobile if no mobile image is set #}
+      {% if section.settings.image %}
+        <div class="block md:hidden">
+          {% if section.settings.image.alt %}
+            {{
+              section.settings.image
+              | image_url: width: '1000'
+              | image_tag: alt: section.settings.image.alt, class: 'image-link__image'
+            }}
+          {% else %}
+            {{ section.settings.image | image_url: width: '1000' | image_tag: alt: 'Indeep', class: 'image-link__image' }}
+          {% endif %}
+        </div>
+      {% endif %}
+    {% endif %}
+
+    {% if section.settings.link_url %}
+      </a>
+    {% endif %}
+  {% endif %}
+</div>
+
+<style>
+  .image-link__image {
+    display: block;
+    width: 100%;
+    height: auto;
+    transition: opacity 0.3s ease;
+  }
+
+  .image-link__image:hover {
+    opacity: 0.9;
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Image Link List",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Desktop Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "mobile_image",
+      "label": "Mobile Image (Optional)",
+      "info": "If not set, the desktop image will be used on mobile"
+    },
+    {
+      "type": "url",
+      "id": "link_url",
+      "label": "Link URL"
+    },
+    {
+      "type": "checkbox",
+      "id": "open_in_new_tab",
+      "label": "Open in new tab",
+      "default": false
+    },
+    {
+      "type": "range",
+      "label": "Top margin",
+      "id": "top_margin",
+      "min": -25,
+      "max": 75,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "label": "Bottom margin",
+      "id": "bottom_margin",
+      "min": -25,
+      "max": 75,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "Image Link - Standard",
+      "category": "Image",
+      "settings": {
+        "top_margin": 0,
+        "bottom_margin": 0,
+        "open_in_new_tab": false
+      }
+    },
+    {
+      "name": "Image Link - Promotional Banner",
+      "category": "Image",
+      "settings": {
+        "top_margin": 20,
+        "bottom_margin": 20,
+        "open_in_new_tab": false
+      }
+    },
+    {
+      "name": "Image Link - Navigation Tile",
+      "category": "Image",
+      "settings": {
+        "top_margin": 10,
+        "bottom_margin": 10,
+        "open_in_new_tab": false
+      }
+    },
+    {
+      "name": "Image Link - External Promotion",
+      "category": "Image",
+      "settings": {
+        "top_margin": 15,
+        "bottom_margin": 15,
+        "open_in_new_tab": true
+      }
+    },
+    {
+      "name": "Image Link - Seamless Integration",
+      "category": "Image",
+      "settings": {
+        "top_margin": -10,
+        "bottom_margin": -10,
+        "open_in_new_tab": false
+      }
+    },
+    {
+      "name": "Image Link - Section Break",
+      "category": "Image",
+      "settings": {
+        "top_margin": 40,
+        "bottom_margin": 40,
+        "open_in_new_tab": false
+      }
+    },
+    {
+      "name": "Image Link - Compact Spacing",
+      "category": "Image",
+      "settings": {
+        "top_margin": 5,
+        "bottom_margin": 5,
+        "open_in_new_tab": false
+      }
+    },
+    {
+      "name": "Image Link - Featured Link",
+      "category": "Image",
+      "settings": {
+        "top_margin": 25,
+        "bottom_margin": 25,
+        "open_in_new_tab": false
+      }
+    },
+    {
+      "name": "Image Link - External Resource",
+      "category": "Image",
+      "settings": {
+        "top_margin": 30,
+        "bottom_margin": 30,
+        "open_in_new_tab": true
+      }
+    },
+    {
+      "name": "Image Link - Minimal Margin",
+      "category": "Image",
+      "settings": {
+        "top_margin": 8,
+        "bottom_margin": 8,
+        "open_in_new_tab": false
+      }
+    }
+  ]
+}
+{% endschema %}

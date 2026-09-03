@@ -1,0 +1,84 @@
+<section
+  class="hidden md:hidden bg-gray-100 pt-[8px]"
+  id="install-our-app"
+  style="z-index:90001; width:100%; height: max-content;"
+>
+  {% render 'app-modal',
+    icon: section.settings['app-icon-img'],
+    info: section.settings['modal-info'],
+    ios: section.settings['ios-url'],
+    ios-btn: section.settings['ios-button-img'],
+    android: section.settings['android-url'],
+    android-btn: section.settings['android-button-img']
+  %}
+</section>
+
+{% schema %}
+{
+  "name": "App Modal",
+  "class":"app-modal border-gray-300 border-t-2",
+  "settings": [
+    {
+      "type":"text",
+      "label":"Modal Info",
+      "id":"modal-info",
+      "default":"Available in the App Store and Play store"
+    },
+    {
+      "type":"image_picker",
+      "label":"App Icon",
+      "id":"app-icon-img"
+    },
+     {
+      "type":"url",
+      "label":"IOS link",
+      "id":"ios-url"
+    },
+     {
+      "type":"image_picker",
+      "label":"IOS Button",
+      "id":"ios-button-img"
+    },
+     {
+      "type":"url",
+      "label":"Android link",
+      "id":"android-url"
+    },
+     {
+      "type":"image_picker",
+      "label":"Android Button",
+      "id":"android-button-img"
+    }
+  ]
+}
+{% endschema %}
+
+{% stylesheet %}
+  .app-modal {
+    position: fixed;
+    bottom: 0;
+    left:0;
+    width: 100%;
+    z-index: 90001;
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  let timeout;
+  let appModal = document.querySelector("#install-our-app");
+  window.addEventListener("load", (event) => {
+    timeout =setTimeout(function(){
+     appModal.classList.remove('hidden');
+    }, 2500)
+
+  });
+
+  const modalCloseBtn = document.getElementById("modal-close-btn");
+
+  modalCloseBtn.addEventListener('click',
+    function () {
+      appModal.classList.add('hidden');
+      clearTimeout(timeout)
+    }
+  )
+{% endjavascript %}

@@ -1,0 +1,563 @@
+<style>
+  {{ section.settings.heading_font | font_face }}
+</style>
+<input type="checkbox" id="hamburger-icon" data-btn-role="toggle-hamburger-menu">
+<nav class="nav-smenu" id="hamburgerMenuContainer">
+  <div class="nav-smenu--close">
+    {% render 'hamburger-icon', type: 'close' %}
+  </div>
+
+  <div class="smenu">
+    <div class="hamburger-menu">
+      <div style="padding-top:50px;">
+        <form action="{{ routes.search_url }}" class="relative">
+          <div class="relative">
+            <input
+              style="border-color:black; color:black; font-size:10px;padding-bottom:8px;"
+              class="uppercase w-full mx-auto border-b-[1px] font-normal"
+              type="text"
+              placeholder="Search our store"
+              name="q"
+              value="{{ search.terms | escape }}"
+              id="search-input-hamburger-menu"
+            >
+          </div>
+          <button class="absolute right-0 bottom-[11px]">
+            {%- render 'icon-search-thin', class: 'w-[13px] h-[13px]' -%}
+          </button>
+        </form>
+        <ul class="pt-8">
+          {%- for link in section.settings.menu.links -%}
+            {% render 'hamburger-menu',
+              link: link,
+              blocks: section.blocks,
+              lists-bottom-padding: section.settings['lists-bottom-padding'],
+              lists-font-size: section.settings['lists-font-size']
+            %}
+
+            {% comment %}
+              <li class="smenu-list">
+                <span class="smenu-title">{{ link.title }}</span>
+                <ul class="smenu-sublist ssublist--hidden">
+                  {% for sublink in link.links %}
+                    <li class="smenu-subitem {% if sublink.active %}smenu--selected{% endif %}">
+                      <a href="{{ sublink.url }}" class="block">{{ sublink.title }}</a>
+                    </li>
+                  {% endfor %}
+                </ul>
+              </li>
+            {% endcomment %}
+          {%- endfor -%}
+        </ul>
+      </div>
+    </div>
+
+    <div class="marketing">
+      <div class="marketing--blur">&nbsp;</div>
+      {% if section.settings.collection.products.size %}
+        <div class="marketing-products">
+          <div class="marketing__heading">
+            <h2 style="font-size:{{ section.settings.heading_size }}rem; color:{{ section.settings.heading_color }}; font-family: {{ section.settings.heading_font.family }}, {{ section.settings.heading_font.fallback_families }};">
+              {{- section.settings.heading -}}
+            </h2>
+          </div>
+          <div class="marketing-products__container">
+            {% for product in section.settings.collection.products %}
+              {% render 'card-product',
+                product: product,
+                variant: '',
+                front_image: product.featured_image,
+                back_image: product.images[1],
+                extraclass: '[&:not(:first-child)]:ml-[15px]',
+                data_coll_type: 'FEATURED_PRODUCT',
+                show_discount_badge: settings.show_discount_badge,
+                show_quickview: false
+              %}
+            {% endfor %}
+          </div>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</nav>
+
+<script>
+  function jQueryListToggle(btnSelector = '.smenu-title', sublistSelector = '.smenu-sublist') {
+    $(btnSelector).on('click', function (e) {
+      if ($(this).hasClass('smenu--selected')) {
+        $(this).siblings(sublistSelector).slideToggle(300);
+      } else {
+        $(sublistSelector).each(function () {
+          $(this).css('display', 'none');
+        });
+        $(this).siblings(sublistSelector).slideToggle(300);
+      }
+    });
+
+    $(window).on('load', function () {
+      if ($(btnSelector).hasClass('smenu--selected')) {
+        $(btnSelector + '.smenu--selected')
+          .siblings(sublistSelector)
+          .css('display', 'block');
+      }
+    });
+  }
+
+  // Wait for jQuery to be available
+  if (window.jQuery) {
+    jQueryListToggle('.smenu-title', '.smenu-sublist');
+    jQueryListToggle('.snestedmenu-title', '.snestedmenu-sublist');
+  } else {
+    // Fallback if jQuery loads later
+    document.addEventListener('DOMContentLoaded', function () {
+      if (window.jQuery) {
+        jQueryListToggle('.smenu-title', '.smenu-sublist');
+        jQueryListToggle('.snestedmenu-title', '.snestedmenu-sublist');
+      }
+    });
+  }
+</script>
+
+{% stylesheet %}
+    .smenu-subitem.menu--red{
+       color:red;
+    }
+    .smenu-subitem.extra-padding{
+       padding:1.5rem 0 1.5rem 15px;
+    }
+    .smenu-subitem.extra-paddingB{
+       padding-bottom:1.5rem;
+    }
+    .smenu-subitem.extra-paddingT{
+       padding-top:1.5rem;
+    }
+    #hamburger-icon {
+      position:absolute;
+      opacity: 0;
+      visibility:hidden;
+    }
+
+    #hamburger-icon:checked + .nav-smenu {
+      opacity: 1;
+      visibility:visible;
+    }
+
+    .hamburger-search-icon {
+      width:10px;
+      height:10px;
+    }
+    .nav-smenu {
+      display: none;
+      opacity:0;
+      visibility: hidden;
+      position: fixed;
+      inset:0;
+      z-index: 1005;
+      overflow:hidden;
+      /*transition: opacity 1s ease-in-out, visibility 1s ease-in-out;*/
+    }
+
+    #hamburger-icon:checked + .nav-smenu .nav-smenu--close {
+      opacity: 1;
+      visibility:visible;
+      transform: translateY(0);
+      /*transition: transform 1s ease-in-out;*/
+    }
+
+    .nav-smenu--close {
+      position: absolute;
+      z-index: 1005;
+      top: 10px;
+      left:400px;
+      width: 40px;
+      height: 40px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      border-radius: 50%;
+      transform: translateY(-100%);
+      opacity:0;
+      visibility:hidden;
+      /*transition-property: opacity, visibility;
+      transition-delay:0.5s;*/
+    }
+
+    .smenu {
+      display:flex;
+    }
+
+    #hamburger-icon:checked + .nav-smenu .smenu .hamburger-menu {
+      transform: translateX(0);
+    }
+
+    .hamburger-menu {
+      height: 100dvh;
+      width: 450px;
+      padding: 20px 30px;
+      background: #fff;
+      position: relative;
+      transform: translateX(-100%);
+      /*transition-property: transform;*/
+      overflow: initial scroll;
+      scrollbar-width: none;
+    }
+
+    #hamburger-icon:checked + .nav-smenu .smenu .marketing {
+      transform: translateX(0);
+    }
+
+    .padding-bottom {
+      padding-bottom:33px;
+    }
+
+    .smenu-title,
+    .snestedmenu-title,
+    .smenu-list,
+    .smenu-subitem {
+      text-transform:capitalize;
+      font-weight:400 !important;
+      color:rgb(0 0 0);
+      cursor:pointer;
+    }
+
+
+    .snestedmenu-sublist .smenu-font-light {
+      font-weight: 400 !important;
+    }
+
+
+    .snestedmenu-sublist .smenu-subitem {
+      color:#3d3d3d;
+    }
+
+
+    .smenu-list {
+      /*padding-top:10px;*/
+    }
+
+    .ssublist--hidden {
+      display:none;
+    }
+
+    .smenu-sublist {
+      -ms-overflow-style: none; /* IE and Edge */
+      scrollbar-width: none; /* Firefox */
+      /*height: calc(100dvh - 250px);*/
+      margin-bottom: 30px;
+      overflow-y: scroll;
+      transform: translateY(-15px);
+      /*padding-top:3px;
+      visibility: hidden;
+      max-*/
+      transition:transform 300ms ease-out;
+    }
+
+    .smenu-sublist::-webkit-scrollbar {
+      display: none;
+    }
+
+    .smenu-title {
+      /*padding-bottom:1rem;*/
+    }
+
+     .menu-icon {
+      width:15px;
+      height:15px;
+      transition: transform 0.5s ease-in-out;
+    }
+
+    .snestedmenu-title {
+      display:flex;
+      justify-content: space-between;
+      align-items:center;
+    }
+
+    .snestedmenu-title.smenu--selected > .menu-icon {
+      transform:rotate(-180deg);
+    }
+
+    .smenu-title{
+      display:block;
+    }
+
+    .snestedmenu-sublist {
+      /*padding-top:10px;
+      padding-bottom:10px;
+      padding-left:15px;*/
+    }
+
+    /*.smenu-sublist > .smenu-subitem > a,
+    .snestedmenu-sublist > .smenu-subitem > a{
+      font-weight:normal;
+    }*/
+
+    .smenu-sublist > .smenu-subitem.smenu--selected > a,
+    .snestedmenu-sublist > .smenu-subitem.smenu--selected > a{
+      font-weight:500;
+    }
+
+    ul.snestedmenu-sublist.ssublist--hidden {
+      overflow-y: scroll;
+      height: 100px;
+    
+    }
+
+     ul.snestedmenu-sublist::-webkit-scrollbar {
+      width: 2px;
+      height: 2px;
+    }
+
+     ul.snestedmenu-sublist::-webkit-scrollbar-button {
+      display: none;
+      width: 0;
+      height: 0;
+    }
+
+     ul.snestedmenu-sublist::-webkit-scrollbar-track {
+      background: transparent;  /* No visible track */
+    }
+
+     ul.snestedmenu-sublist::-webkit-scrollbar-thumb {
+      background: #888;
+    }
+
+     ul.snestedmenu-sublist::-webkit-scrollbar-thumb:hover {
+      background: #555;
+    }
+
+     ul.snestedmenu-sublist::-webkit-scrollbar-corner {
+      background: transparent;
+    }
+
+    .smenu-title.smenu--selected + .smenu-sublist {
+      transform: translateY(0);
+      /*padding-top:3px;
+      visibility: visible;
+      max-height:100dvh;*/
+    }
+
+    .smenu-subitem {
+      padding-left:2px;
+      /*padding:2px 0 2px 15px;*/
+      /*padding-bottom:33px;*/
+    }
+
+    .smenu--selected{
+      font-weight:600 !important;
+      color: rgb(0 0 0);
+    }
+
+    .marketing {
+      position:relative;
+      flex:1;
+      transform: translateX(100%);
+      /*transition-property: transform;*/
+    }
+
+    .hamburger-btn {
+      position: absolute;
+      top: 5px;
+      right: 5px
+    }
+
+    .marketing--blur {
+      width:100%;
+      height: 100%;
+      position:absolute;
+      inset:0;
+      z-index: 1000;
+      /*background: rgba(0, 0, 0, 0.5); /* Transparent white background */
+      /*border-radius: 10px;
+      box-shadow: 0 8px 2px rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(3px);
+      -webkit-backdrop-filter: blur(3px);
+      transition-property: all;*/
+    }
+
+    .marketing-products {
+      width:100%;
+      height: 100%;
+      position:absolute;
+      inset:0;
+      z-index: 1001;
+    }
+
+    .marketing__heading{
+      height:15%;
+      width:100%;
+      display: flex;
+      align-items: center;
+      justify-content:center;
+    }
+
+    .marketing-products__container {
+      height: 85%;
+      padding: 10px;
+      border-radius: 4px;
+      background-color: rgba(255, 255, 255, 0.5);
+      display: flex;
+      justify-content:center;
+      column-gap:30px;
+      flex-wrap: wrap;
+      overflow:hidden scroll;
+      scrollbar-width: none;
+    }
+
+    /*.hamburger-menu,
+    .marketing,
+    .marketing--blur,
+    .nav-smenu--close,
+    .smenu-sublist {
+      transition-behavior: normal;
+      transition-duration: 1s;
+      transition-timing-function: ease-in-out;
+    }*/
+    @media (min-width: 450px) {
+      nav.nav-smenu{
+        display:block;
+      }
+    }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "hamburger-menu",
+  "class": "relative",
+  "blocks": [
+    {
+      "type": "Settings",
+      "name": "Settings",
+      "settings": [
+        {
+          "type": "textarea",
+          "id": "filter",
+          "label": "Settings applied to:",
+          "info": "Input menu names for which the settings are to be applied. All in lowercase separated by comma."
+        },
+        {
+          "type": "color",
+          "id": "text-color",
+          "label": "Text Color",
+          "default": "#000000"
+        },
+        {
+          "type": "range",
+          "id": "text-size",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "px",
+          "default": 0,
+          "label": "Text Size"
+        },
+        {
+          "type": "range",
+          "id": "padding-top",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "px",
+          "default": 0,
+          "label": "Padding Top"
+        },
+        {
+          "type": "range",
+          "id": "padding-right",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "px",
+          "default": 0,
+          "label": "Padding Right"
+        },
+        {
+          "type": "range",
+          "id": "padding-bottom",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "px",
+          "default": 0,
+          "label": "Padding Bottom"
+        },
+        {
+          "type": "range",
+          "id": "padding-left",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "px",
+          "default": 0,
+          "label": "Padding Left"
+        },
+        {
+          "type": "font_picker",
+          "default": "helvetica_n4",
+          "id": "font",
+          "label": "Font"
+        }
+      ]
+    }
+  ],
+  "settings": [
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Select Menu"
+    },
+    {
+      "type": "range",
+      "id": "lists-bottom-padding",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 33,
+      "label": "Lists Bottom Padding"
+    },
+    {
+      "type": "range",
+      "id": "lists-font-size",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 12,
+      "label": "Lists Font Size"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection"
+    },
+    {
+      "type": "text",
+      "label": "Heading",
+      "id": "heading",
+      "default": "You May Like"
+    },
+    {
+      "type": "color",
+      "label": "Heading Color",
+      "id": "heading_color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "font_picker",
+      "id": "heading_font",
+      "label": "Heading font",
+      "default": "lato_n4"
+    },
+    {
+      "type": "range",
+      "label": "Heading size",
+      "id": "heading_size",
+      "min": 0,
+      "max": 20,
+      "step": 1,
+      "unit": "rem",
+      "default": 2
+    }
+  ]
+}
+{% endschema %}

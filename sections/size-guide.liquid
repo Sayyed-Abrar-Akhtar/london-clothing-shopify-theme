@@ -1,0 +1,114 @@
+<div data-elem-type="size-measurement-container" class="fixed top-0 right-0 z-[160] md:z-[80] h-[100vh] w-full md:w-[60%] lg:w-[40%] bg-white border-l border-gray-300 translate-x-[100%] transition-all duration-500">
+   
+  <section class="size-guide">  
+    <section class="flex justify-between items-center p-6">
+      <h4 class="w-[93%] uppercase text-center font-semibold tracking-wider">Size Guide</h4>
+      <button class="w-[7%]" onclick="closeSizeModal()">
+        
+        <svg  class="w-5 h-5" aria-hidden="true" focusable="false" role="presentation" class="icon icon-cart-close" viewBox="0 0 17 14"><path d="M10.626.488l-.522.515L15.62 6.45H0v.766h15.595l-5.49 5.422.519.516 6.404-6.333z" fill="#000" fill-rule="nonzero"></path></svg>
+      </button>
+    </section>
+        
+    <div class="grid grid-cols-2 grid-rows-5 row-auto gap-1 px-10 h-[275px]">
+        {% for block in section.blocks %}
+        <div data-index="{{- forloop.index -}}" class="flex items-center justify-center lowercase tracking-widest text-xs hover:bg-black hover:text-white text-center p-2.5 border border-black cursor-pointer {% if forloop.first %}bg-black text-white{% endif %}" data-size="size-guide__{{ block.settings.name | handle }}" onclick="showSizeMeasurements(event)">{{ block.settings.name }}</div>
+        {% endfor %}
+    </div>
+    
+
+
+    <div class="size-guide__body overflow-y-scroll pl-10 pr-6  h-[60vh]">
+      {% for block in section.blocks %}
+      <div data-measurement-index="{{- forloop.index -}}" class="size-guide__measurement size-guide__{{ block.settings.name | handle }} {% if forloop.first %}{% else %}hidden{% endif %}">
+          {{ pages[block.settings.page].content }}
+      </div>
+      
+      {% endfor %}
+    </div>
+  </section>
+</div>
+
+<style>
+
+  .size-guide__body > .size-guide__measurement > p{
+      margin-bottom: 30px;
+  }
+
+  .size-guide__body table {
+    font-size: 13px;
+    width: 100%;
+    border-collapse: collapse;
+    border: 2px solid #000;
+    margin-bottom: 30px;
+    font-family: inherit;
+    table-layout: fixed;
+    width: 100%;
+  }
+
+  .size-guide__body table thead{
+    background: #f5f5f5;
+    
+  }
+
+  .size-guide__body table thead tr{
+    height: 54.5px;
+  }
+
+  .size-guide__body table tbody tr{
+    height: 60px;
+  }
+
+ 
+
+  .size-guide__body table thead tr th,
+  .size-guide__body table tbody tr th,
+  .size-guide__body table tbody tr td {
+    border: 1px solid #e0e0e0;;
+  }
+</style>
+
+<script>
+  function showSizeMeasurements(event) {
+    const index = Number(event.target.dataset.index);
+    hideAllSizeMeasurement();
+    const elemToShow = document.querySelector(`[data-measurement-index="${index}"]`);
+    elemToShow.classList.remove('hidden');
+  }
+
+  function hideAllSizeMeasurement() {
+    const elems = Array.prototype.slice.call(document.querySelectorAll('.size-guide__measurement'))
+    elems.forEach(elem=> elem.classList.add('hidden'))
+  }
+
+  function closeSizeModal() {
+      document.querySelector('[data-elem-type="size-measurement-container"]').classList.add('translate-x-[100%]')
+  }
+
+  function openSizeModal(event) {
+    event.preventDefault();
+    document.querySelector('[data-elem-type="size-measurement-container"]').classList.remove('translate-x-[100%]')
+  }
+</script>
+{% schema %}
+{
+  "name" : "size-guide",
+  "blocks" : [
+    {
+      "type" : "measurement",
+      "name" : "Measurement",
+      "settings" : [
+        {
+          "type" : "page",
+          "id" : "page",
+          "label" : "Content page"
+        },
+        {
+          "type" : "text",
+          "label" : "Name",
+          "id" : "name"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

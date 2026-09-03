@@ -1,0 +1,228 @@
+<li class="smenu-list">
+  {% if link.levels > 0 %}
+    <span
+      class="smenu-title  {% if link.child_active or link.active %}smenu--selected {% endif %}"
+      style="
+        padding-bottom: {{- lists-bottom-padding -}}px;
+        font-size:{{-lists-font-size-}}px;
+        {% assign menu = link.title | downcase %}
+        {%- for block in blocks -%}
+           {%- assign filter_text = block.settings.filter | replace: ', ', ',' -%}
+           {%- assign filter_arr = filter_text | split:',' -%}
+           {%- if filter_arr contains menu or filter_arr == menu -%}
+             font-weight: {{- block.settings.font-weight -}};
+             font-style:{{ block.settings.font-style }};
+             {%- if block.settings.text-size > 0 -%}
+               font-size: {{- block.settings.text-size -}}px !important;
+             {%- endif -%}
+             {%- if block.settings.padding-top > 0 -%}
+               padding-top: {{- block.settings.padding-top -}}px;
+             {%- endif -%}
+             {%- if block.settings.padding-right > 0 -%}
+               padding-right: {{- block.settings.padding-right -}}px;
+             {%- endif -%}
+             {%- if block.settings.padding-bottom > 0 -%}
+               padding-bottom: {{- block.settings.padding-bottom -}}px !important;
+             {%- endif -%}
+             {%- if block.settings.padding-left > 0 -%}
+               padding-left: {{- block.settings.padding-left -}}px;
+             {%- endif -%}
+             {%- if block.settings.text-color != '#000000' -%}
+               color: {{- block.settings.text-color -}};
+             {%- endif -%}
+           {%- endif -%}
+        {%- endfor -%}
+      "
+    >
+      {{- link.title -}}
+    </span>
+    <ul class="smenu-sublist ssublist--hidden">
+      {% for sublink in link.links %}
+        {% if sublink.links.size > 0 %}
+          <li
+            class="smenu-subitem"
+          >
+            <span
+              class="snestedmenu-title {% if sublink.active or sublink.child_active %}smenu--selected{% endif %}"
+              style="
+                padding-bottom: {{- lists-bottom-padding -}}px;
+                font-size:{{-lists-font-size-}}px;
+                {% assign chlidmenu = sublink.title | downcase %}
+                {%- for block in blocks -%}
+                   {%- assign child_filter_text = block.settings.filter | replace: ', ', ',' -%}
+                   {%- assign child_filter_arr = child_filter_text | split:',' -%}
+                   {%- if child_filter_arr contains chlidmenu or child_filter_arr == chlidmenu -%}
+                     font-weight: {{- block.settings.font-weight -}};
+                     font-style:{{ block.settings.font-style }};
+                     {%- if block.settings.text-size > 0 -%}
+                       font-size: {{- block.settings.text-size -}}px !important;
+                     {%- endif -%}
+                     {%- if block.settings.padding-top > 0 -%}
+                       padding-top: {{- block.settings.padding-top -}}px;
+                     {%- endif -%}
+                     {%- if block.settings.padding-right > 0 -%}
+                       padding-right: {{- block.settings.padding-right -}}px;
+                     {%- endif -%}
+                     {%- if block.settings.padding-bottom > 0 -%}
+                       padding-bottom: {{- block.settings.padding-bottom -}}px !important;
+                     {%- endif -%}
+                     {%- if block.settings.padding-left > 0 -%}
+                       padding-left: {{- block.settings.padding-left -}}px;
+                     {%- endif -%}
+                     {%- if block.settings.text-color != '#000000' -%}
+                       color: {{- block.settings.text-color -}};
+                     {%- endif -%}
+                   {%- endif -%}
+                {%- endfor -%}
+              "
+            >
+              {{- sublink.title -}}
+
+              <svg
+                class="menu-icon h-6 w-6"
+                width="800px"
+                height="800px"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 50 50"
+                stroke-width="1.5"
+                stroke="currentColor"
+              >
+                  <defs>
+                  <style>
+                    .st0 {
+                      fill: none;
+                      stroke: #000;
+                      stroke-miterlimit: 10;
+                      stroke-width: 1.5px;
+                    }
+                  </style>
+                </defs>
+                <polyline class="st0" points="10.4 20.2 25 29.8 39.6 20.2"/>
+              </svg>
+            </span>
+            <ul class="snestedmenu-sublist ssublist--hidden">
+              {% for nLink in sublink.links %}
+                <li
+                  class="smenu-font-light smenu-subitem"
+                  style="
+                    padding-bottom: {{- lists-bottom-padding -}}px;
+                    font-size:{{-lists-font-size-}}px;
+                    {% assign grandchlidmenu = nLink.title | downcase %}
+                    {%- for block in blocks -%}
+                       {%- assign grand_child_filter_text = block.settings.filter | replace: ', ', ',' -%}
+                       {%- assign grand_child_filter_arr = grand_child_filter_text | split:',' -%}
+                       {%- if grand_child_filter_arr contains grandchlidmenu or grand_child_filter_arr == grandchlidmenu -%}
+                         font-weight: {{- block.settings.font-weight -}};
+                         font-style: {{- block.settings.font-style -}};
+                         {%- if block.settings.text-size > 0 -%}
+                           font-size: {{- block.settings.text-size -}}px;
+                         {%- endif -%}
+                         {%- if block.settings.padding-top > 0 -%}
+                           padding-top: {{- block.settings.padding-top -}}px;
+                         {%- endif -%}
+                         {%- if block.settings.padding-right > 0 -%}
+                           padding-right: {{- block.settings.padding-right -}}px;
+                         {%- endif -%}
+                         {%- if block.settings.padding-bottom > 0 -%}
+                           padding-bottom: {{- block.settings.padding-bottom -}}px !important;
+                         {%- endif -%}
+                         {%- if block.settings.padding-left > 0 -%}
+                           padding-left: {{- block.settings.padding-left -}}px;
+                         {%- endif -%}
+                         {%- if block.settings.text-color != '#000000' -%}
+                           color: {{- block.settings.text-color -}};
+                         {%- endif -%}
+                       {%- endif -%}
+                    {%- endfor -%}
+                  "
+                >
+                  <a href="{{ nLink.url }}" class="block  {% if nLink.active %}smenu--selected{% endif %}" style="">
+                    {{- nLink.title -}}
+                  </a>
+                </li>
+              {% endfor %}
+            </ul>
+          </li>
+        {% else %}
+          <li
+            class="smenu-subitem"
+            style="
+                        padding-bottom: {{- lists-bottom-padding -}}px;font-size:{{-lists-font-size-}}px;
+              {% assign chlidmenutwo = sublink.title | downcase %}
+              {%- for block in blocks -%}
+                 {%- assign child_filter_text_two = block.settings.filter | replace: ', ', ',' -%}
+                 {%- assign child_filter_arr_two = child_filter_text_two | split:',' -%}
+                 {%- if child_filter_arr_two contains chlidmenutwo or child_filter_arr_two == chlidmenutwo -%}
+                   font-weight: {{- block.settings.font-weight -}};
+                   font-style: {{- block.settings.font-style -}};
+                   {%- if block.settings.text-size > 0 -%}
+                     font-size: {{- block.settings.text-size -}}px;
+                   {%- endif -%}
+                   {%- if block.settings.padding-top > 0 -%}
+                     padding-top: {{- block.settings.padding-top -}}px;
+                   {%- endif -%}
+                   {%- if block.settings.padding-right > 0 -%}
+                     padding-right: {{- block.settings.padding-right -}}px;
+                   {%- endif -%}
+                   {%- if block.settings.padding-bottom > 0 -%}
+                     padding-bottom: {{- block.settings.padding-bottom -}}px !important;
+                   {%- endif -%}
+                   {%- if block.settings.padding-left > 0 -%}
+                     padding-left: {{- block.settings.padding-left -}}px;
+                   {%- endif -%}
+                   {%- if block.settings.text-color != '#000000' -%}
+                     color: {{- block.settings.text-color -}};
+                   {%- endif -%}
+                 {%- endif -%}
+              {%- endfor -%}
+            "
+          >
+            <a href="{{ sublink.url }}" class="block  {% if sublink.active %}smenu--selected{% endif %}" style="">
+              {{- sublink.title -}}
+            </a>
+          </li>
+        {% endif %}
+      {% endfor %}
+    </ul>
+  {% else %}
+    <a href="{{ link.url }}" class="block  {% if link.active %}smenu--selected{% endif %}" style="">
+      <span
+        class="smenu-title  {% if link.child_active or link.active %}smenu--selected {% endif %}"
+        style="
+          padding-bottom: {{- lists-bottom-padding -}}px;
+          font-size:{{-lists-font-size-}}px;
+          {% assign menu = link.title | downcase %}
+          {%- for block in blocks -%}
+             {%- assign filter_text = block.settings.filter | replace: ', ', ',' -%}
+             {%- assign filter_arr = filter_text | split:',' -%}
+             {%- if filter_arr contains menu or filter_arr == menu -%}
+               font-weight: {{- block.settings.font-weight -}};
+               font-style:{{ block.settings.font-style }};
+               {%- if block.settings.text-size > 0 -%}
+                 font-size: {{- block.settings.text-size -}}px !important;
+               {%- endif -%}
+               {%- if block.settings.padding-top > 0 -%}
+                 padding-top: {{- block.settings.padding-top -}}px;
+               {%- endif -%}
+               {%- if block.settings.padding-right > 0 -%}
+                 padding-right: {{- block.settings.padding-right -}}px;
+               {%- endif -%}
+               {%- if block.settings.padding-bottom > 0 -%}
+                 padding-bottom: {{- block.settings.padding-bottom -}}px !important;
+               {%- endif -%}
+               {%- if block.settings.padding-left > 0 -%}
+                 padding-left: {{- block.settings.padding-left -}}px;
+               {%- endif -%}
+               {%- if block.settings.text-color != '#000000' -%}
+                 color: {{- block.settings.text-color -}};
+               {%- endif -%}
+             {%- endif -%}
+          {%- endfor -%}
+        "
+      >
+        {{- link.title -}}
+      </span>
+    </a>
+  {% endif %}
+</li>

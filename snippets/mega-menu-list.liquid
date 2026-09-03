@@ -1,0 +1,30 @@
+ <ul class="flex">
+  {%- assign imageUrl = '' -%}
+  {% for link in links %}
+    <li class="z-[60]">
+      {%- if link.title == '_' -%}
+        <p class="h-0">&nbsp;</p>
+      {%- else -%} 
+          {% if section.settings.bold-text contains link.title %}
+            <p class="font-bold min-h-[30px] flex justify-start items-center">{{ link.title }}</p>
+          {%else%}
+            <a class="min-h-[30px] flex justify-start items-center" href="{{ link.url }}">
+              {{ link.title }}
+            </a>  
+          {%endif%}
+            
+      {%- endif -%}
+      {% if link.links.size > 0 %}
+        <ul class="pr-10">
+          {% for child_link in link.links %}
+            <li class="min-h-[30px] flex justify-start items-center">
+              <a class="{% if section.settings.bold-text contains child_link.title %}font-bold{% endif  %}" href="{{ child_link.url }}">
+                {{- child_link.title -}}
+              </a>
+            </li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    </li>
+  {% endfor %}
+</ul>

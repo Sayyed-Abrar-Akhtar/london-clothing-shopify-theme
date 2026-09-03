@@ -1,0 +1,275 @@
+<section style="background-color: {{section.settings.background_color}};" class="h-[175px] flex items-center justify-center flex-col uppercase text-center">
+  <section class="mb-[15px]">
+    <h2 class="font-black text-[20px] mb-1 tracking-[2px]">
+      <em>{{ section.settings.heading }}</em>
+    </h2>
+    <h3 class="font-black text-[50px] leading-[83%] tracking-[1px] mt-1">{{ section.settings.subheading }}</h3>
+  </section>
+  <section class="flex items-center mt-3 space-x-4 md:space-x-9">
+    {% for block in section.blocks %}
+      <a href="{{block.settings.btn_link}}" class="sale-_banner--icon flex items-center font-black text-sm md:text-[18px]">
+        {% if block.settings.icon_position == "beforetext" %}
+          <span class="right--icon mr-5 md:mr-10">
+            {{ block.settings.icon | image_url: width: 50 | image_tag: 
+             preload: true, alt: "Left icon" }}
+          </span>
+        {% endif %}
+        {{ block.settings.btn_text }}
+        {% if block.settings.icon_position == "aftertext" %}
+          <span class="left--icon font-black ml-5 md:ml-10">
+            {{ block.settings.icon | image_url: width: 50 | image_tag: 
+             preload: true, alt: "Left icon" }}
+          </span>
+        {% endif %}
+
+      </a>
+    {% endfor %}
+  </section>
+</section>
+
+<style>
+  .sale-_banner--icon > .left--icon > img {
+    animation: arr-icon-slide-left 2s ease-in-out infinite;
+  }
+
+  .sale-_banner--icon > .right--icon > img {
+    animation: arr-icon-slide-right 2s ease-in-out infinite;
+  }
+
+  @keyframes arr-icon-slide-left {
+    from {
+      transform: translateX(0);
+    }
+    50% {
+      transform: translateX(-8px);
+    }
+    to {
+      transform: translateX(0);
+
+    }
+  }
+  @keyframes arr-icon-slide-right {
+    from {
+      transform: translateX(0);
+    }
+    50% {
+      transform: translateX(8px);
+    }
+    to {
+      transform: translateX(0);
+
+    }
+  }
+  .margin-xy {
+    margin-top: 3rem;
+    margin-bottom: 28px;
+  }
+  @media (min-width: 768px) {
+    .margin-xy {
+      margin-top: 5rem;
+      margin-bottom: 5rem;
+    }
+  }
+</style>
+
+
+{% schema %}
+{
+  "name": "color-banner",
+  "class": "margin-xy",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#d2a4df"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "Button",
+      "type": "button",
+      "settings": [
+        {
+          "type": "text",
+          "label": "Button Text",
+          "id": "btn_text",
+          "info": "men",
+          "default": "Men"
+        },
+        {
+          "type": "url",
+          "label": "Button Link",
+          "id": "btn_link",
+          "info": "Collections, menus or pages link."
+        },
+        {
+          "type": "image_picker",
+          "id": "icon",
+          "label": "Icon"
+        },
+        {
+          "type": "color",
+          "id": "icon_color",
+          "label": "Icon color",
+          "default": "#000000"
+        },
+        {
+          "type": "select",
+          "id": "icon_position",
+          "label": "Icon position",
+          "options": [
+            {
+              "value": "beforetext",
+              "label": "Before"
+            },
+            {
+              "value": "aftertext",
+              "label": "After"
+            }
+          ],
+          "default": "aftertext"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Color Banner - Gender Categories",
+      "category": "Promotional",
+      "settings": {
+        "background_color": "#d2a4df",
+        "heading": "Shop",
+        "subheading": "By Category"
+      },
+      "blocks": [
+        {
+          "type": "button",
+          "settings": {
+            "btn_text": "Men",
+            "icon_position": "aftertext"
+          }
+        },
+        {
+          "type": "button",
+          "settings": {
+            "btn_text": "Women",
+            "icon_position": "aftertext"
+          }
+        },
+        {
+          "type": "button",
+          "settings": {
+            "btn_text": "Kids",
+            "icon_position": "aftertext"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Color Banner - Seasonal Sale",
+      "category": "Promotional",
+      "settings": {
+        "background_color": "#ff6b6b",
+        "heading": "Summer",
+        "subheading": "Sale"
+      },
+      "blocks": [
+        {
+          "type": "button",
+          "settings": {
+            "btn_text": "Shop Now",
+            "icon_position": "aftertext"
+          }
+        },
+        {
+          "type": "button",
+          "settings": {
+            "btn_text": "View Deals",
+            "icon_position": "aftertext"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Color Banner - New Collection",
+      "category": "Promotional",
+      "settings": {
+        "background_color": "#4ecdc4",
+        "heading": "New",
+        "subheading": "Collection"
+      },
+      "blocks": [
+        {
+          "type": "button",
+          "settings": {
+            "btn_text": "Explore",
+            "icon_position": "beforetext"
+          }
+        },
+        {
+          "type": "button",
+          "settings": {
+            "btn_text": "Shop All",
+            "icon_position": "aftertext"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Color Banner - Clearance",
+      "category": "Promotional",
+      "settings": {
+        "background_color": "#ffd166",
+        "heading": "Final",
+        "subheading": "Clearance"
+      },
+      "blocks": [
+        {
+          "type": "button",
+          "settings": {
+            "btn_text": "Up to 70% Off",
+            "icon_position": "aftertext"
+          }
+        },
+        {
+          "type": "button",
+          "settings": {
+            "btn_text": "Shop Sale",
+            "icon_position": "aftertext"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Color Banner - Minimal",
+      "category": "Promotional",
+      "settings": {
+        "background_color": "#6a0572",
+        "heading": "Discover",
+        "subheading": "Our Store"
+      },
+      "blocks": [
+        {
+          "type": "button",
+          "settings": {
+            "btn_text": "Shop All",
+            "icon_position": "aftertext"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

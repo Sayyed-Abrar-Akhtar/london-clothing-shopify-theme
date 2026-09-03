@@ -1,0 +1,918 @@
+{% assign has_negative_stock = false %}
+
+{% comment %}
+  {% for variant in product.variants %}
+    {% if variant.inventory_quantity < 0 %}
+      {% assign has_negative_stock = true %}
+    {% endif %}
+  {% endfor %}
+{% endcomment %}
+
+{% if has_negative_stock == true %}
+  <h2 class="font-black text-center md:mt-[30px] uppercase pt-8">Sorry! Product is not available.</h2>
+{% else %}
+  {% if product.selected_variant %}
+    {% assign selected_product = product.selected_variant %}
+  {% else %}
+    {% assign selected_product = product.first_available_variant %}
+  {% endif %}
+
+  {% assign selected_product_image_type = selected_product.image.alt | split: ',' | first | strip %}
+  {% assign selected_product_image_color = selected_product.image.alt | split: ',' | last | strip %}
+  {% capture selected_product_image_alternate_text %}
+    {{selected_product_image_type  | replace: 'of a product', '' | replace: 'of product', '' | capitalize }}{% if selected_product_image_type contains "model" %} wearing{% else %} of{% endif %} {{product.title|capitalize}} in {{selected_product_image_color | downcase}}, by brand {{product.vendor|capitalize}}
+  {% endcapture %}
+  {% assign selected_product_image_alt_text = selected_product_image_alternate_text | strip %}
+
+  {% assign images = '' %}
+
+  {% assign full_size_second_image_arr = images[0] %}
+  {% for image in product.images %}
+    {% assign image_type = image.alt | split: ',' | first | strip %}
+    {% assign image_color = image.alt | split: ',' | last | strip %}
+    {% capture image_alternate_text %}
+    {{image_type  | replace: 'of a product', '' | replace: 'of product', '' | capitalize }}{% if image_type contains "model" %} wearing{% else %} of{% endif %} {{product.title | capitalize}} in {{image_color | downcase}}, by brand {{product.vendor|capitalize}}
+    {% endcapture %}
+    {% assign image_alt_text = image_alternate_text | strip %}
+
+    {% if image_color == selected_product_image_color and image.src != selected_product.featured_image.src %}
+      {% assign image_tag = image.src
+        | image_url: width: 1200, height: 1776
+        | image_tag: alt: image_alt_text, loading: 'lazy', width: 1200, height: 1776, sizes: '352, 437'
+      %}
+      {% assign second_image_tag = image.src
+        | image_url: width: 1200
+        | image_tag:
+          alt: image_alt_text,
+          loading: 'lazy',
+          width: 1200,
+          height: 1776,
+          sizes: '1200, 1800, 2400, 3000',
+          widths: '1200, 1800, 2400, 3000'
+      %}
+      {% assign images = images | append: image_tag | append: '*splitter*' %}
+      {% assign full_size_second_image_arr = full_size_second_image_arr
+        | append: second_image_tag
+        | append: '*splitter*'
+      %}
+    {% endif %}
+  {% endfor %}
+
+  {% assign images = images | split: '*splitter*' %}
+  {% assign full_size_second_image_arr = full_size_second_image_arr | split: '*splitter*' %}
+
+  <script src="{{ 'swiper.js' | asset_url }}" defer="defer"></script>
+  <!-- <script src="{{ 'cart-items.js' | asset_url }}"></script> -->
+  <script src="{{ 'pair-product-items.js' | asset_url }}" defer></script>
+
+  {% comment %}
+    {%- render 'cart-drawer', id: 'cart_drawer', container_id: "cart_drawer_container" display: 'drawer--inactive' -%}
+  {% endcomment %}
+  <!-- main product -->
+  <section class="overflow-hidden">
+    <section
+      class="product-image-section-sm justify-between gap-2 transition-transform md:mt-[30px] mb-0 main-container-mx lg:mx-auto swiper-container-{{  section.id  }} space-x-6"
+      id="swiper-container-{{section.id}}"
+    >
+      <section class="self-stretch w-[291px] rounded-sm product {{ extraclass }} min-h-[450px] mt-5 mb-2">
+        {% if selected_product.featured_image %}
+          {{
+            selected_product.featured_image.src
+            | image_url: width: 291, height: 430
+            | image_tag: alt: selected_product_image_alt_text, preload: true, width: 291, height: 430
+          }}
+        {% else %}
+          {{
+            product.featured_image.src
+            | image_url: width: 291, height: 430
+            | image_tag: alt: selected_product_image_alt_text, preload: true, width: 291, height: 430
+          }}
+        {% endif %}
+      </section>
+      {% for image in images %}
+        <section class="self-stretch w-[291px] rounded-sm product {{ extraclass }} min-h-[450px] mt-5 mb-2">
+          {{ image }}
+        </section>
+      {% endfor %}
+    </section>
+
+    <section class="my-10 lg:my-20">
+      <section class="flex flex-col items-top md:flex-row md:justify-between">
+        <section class="product-image-section-lg w-full gap-6 md:w-[55%]">
+          <div class="flex flex-col gap-2 h-full">
+            {% assign thumbnailidx = 1 %}
+            {% for media in product.media %}
+              {% assign media_thumb_color_variant = media.alt | split: ',' | last | strip %}
+              {% assign media_alt = media.alt | split: ',' | first | strip %}
+              {% if media.media_type == 'video' and media_thumb_color_variant == selected_product_image_color %}
+                <div
+                  class="w-full image-thumbnail image--active relative"
+                  data-index="{{ thumbnailidx }}"
+                  onclick="scrollToImg(event)"
+                >
+                  <span class="absolute block top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2">
+                    {%- render 'play-icon', width: '20px', height: '20px', color: '#333333' -%}
+                  </span>
+                  {{
+                    media.preview_image.src
+                    | image_url: width: 60, height: 90
+                    | image_tag: alt: media_alt, preload: true, width: 60, height: 90
+                  }}
+                </div>
+                {% assign thumbnailidx = thumbnailidx | plus: 1 %}
+              {% endif %}
+            {% endfor %}
+            {% if selected_product.featured_image %}
+              <div
+                class="w-full image-thumbnail {% if thumbnailidx == 1 %}image--active{% endif %}"
+                data-index="{{ thumbnailidx }}"
+                onclick="scrollToImg(event)"
+              >
+                {{
+                  selected_product.featured_image
+                  | image_url: width: 60, height: 90
+                  | image_tag: alt: selected_product_image_alt_text, preload: true, width: 60, height: 90
+                }}
+              </div>
+            {% endif %}
+            {%- if product.images.size > 1 -%}
+              {% for image in product.images %}
+                {% assign t_image_type = image.alt | split: ',' | first | strip %}
+                {% assign t_image_color = image.alt | split: ',' | last | strip %}
+                {% capture t_image_alternate_text %}
+                {{t_image_type  | replace: 'of a product', '' | replace: 'of product', ''  | capitalize }}{% if t_image_type contains 'model' %} wearing{% else %} of{% endif %} the {{product.title | capitalize}} in {{t_image_color | downcase}}, by brand {{product.vendor | capitalize}}
+                {% endcapture %}
+                {% assign t_image_alt_text = t_image_alternate_text | strip %}
+                {% if t_image_color == selected_product_image_color
+                  and image.src != selected_product.featured_image.src
+                %}
+                  {% assign thumbnailidx = thumbnailidx | plus: 1 %}
+                  <div class="w-full image-thumbnail" data-index="{{ thumbnailidx }}" onclick="scrollToImg(event)">
+                    {{
+                      image.src
+                      | image_url: width: 60, height: 90
+                      | image_tag: alt: t_image_alt_text, preload: true, width: 60, height: 90
+                    }}
+                  </div>
+                {% endif %}
+              {% endfor %}
+            {%- endif -%}
+          </div>
+          <div class="overflow-y-scroll images-box">
+            {% assign idx = 1 %}
+            {% for media in product.media %}
+              {% assign media_poster_color_variant = media.alt | split: ',' | last | strip %}
+
+              {% if media.media_type == 'video' and media_poster_color_variant == selected_product_image_color %}
+                <section class="w-full h-full overflow-hidden mb-[10px] invisible video-wrapper" data-index="{{ idx }}">
+                  {% assign poster = media.preview_image.src | image_url: width: 626 %}
+                  {{ media | video_tag: autoplay: true, poster: poster, controls: true, class: 'product_video' }}
+                </section>
+                {% assign idx = idx | plus: 1 %}
+              {% endif %}
+            {% endfor %}
+            <section class="overflow-hidden mb-[10px]" data-index="{{ idx }}">
+              {% if selected_product.featured_image %}
+                {{
+                  selected_product.featured_image.src
+                  | image_url: width: 1200
+                  | image_tag: alt: selected_product_image_alt_text, preload: true, width: 1200
+                }}
+              {% else %}
+                {{
+                  product.featured_image.src
+                  | image_url: width: 1200
+                  | image_tag: alt: selected_product_image_alt_text, preload: true, width: 1200
+                }}
+              {% endif %}
+            </section>
+            {% for image in product.images %}
+              {% assign main_image_type = image.alt | split: ',' | first | strip %}
+              {% assign main_image_color = image.alt | split: ',' | last | strip %}
+              {% capture main_image_alternate_text %}
+                {{main_image_type  | replace: 'of a product', '' | replace: 'of product', '' | capitalize }}{% if main_image_type contains "model" %} wearing{% else %} of{% endif %} {{product.title | capitalize}} in {{main_image_color | downcase}}, by brand {{product.vendor | capitalize}}
+                {% endcapture %}
+              {% assign main_image_alt_text = main_image_alternate_text | strip %}
+
+              {% if main_image_color == selected_product_image_color
+                and image.src != selected_product.featured_image.src
+              %}
+                {% assign idx = idx | plus: 1 %}
+                <section class="overflow-hidden mb-[10px] invisible" data-index="{{ idx }}">
+                  {{
+                    image.src
+                    | image_url: width: 1200
+                    | image_tag: alt: main_image_alt_text, preload: true, width: 1200
+                  }}
+                </section>
+              {% endif %}
+            {% endfor %}
+          </div>
+          <!--
+            <section class="grid grid-rows-1 grid-cols-2 auto-rows-fr auto-cols-fr">
+            {% for image in product.images %}
+            {% if image.alt == selected_product.featured_image.alt and image.src != selected_product.featured_image.src %}
+            <section class="mt-[10px] even:ml-[5px] odd:mr-[5px]">
+            {{ image.src
+            | image_url: width: 900
+            | image_tag: alt:product.title, loading: 'lazy' , width: 900 , height: 1400 , sizes: sizes , widths: '900, 1200, 1500' }}
+            </section>
+            {% endif %}
+            {% endfor %}
+            </section>
+          -->
+
+          {% comment %}
+            {%- if images.size > 1 -%}
+              <section class="grid grid-rows-1 grid-cols-2 auto-rows-fr auto-cols-fr">
+                {% for image in images %}
+                  <section class="mt-[10px] even:ml-[5px] odd:mr-[5px]">
+                    {{ image }}
+                  </section>
+                {% endfor %}
+              </section>
+            {%- else -%}
+              <section class="mb-[10px]">
+                {{ full_size_second_image_arr }}
+              </section>
+            {%- endif -%}
+          {% endcomment %}
+        </section>
+        <section class="product-detail-section mx-2 sm:mx-4 md:mx-12">
+          <h1 class=" font-bold">{{ product.title }}</h1>
+          {% if product.available %}
+            <p class="mb-3 text-sm my-5 pb-6">
+              <span>{{ product.price | money_with_currency }}</span>
+              {% if product.compare_at_price > product.price %}
+                <!--
+                  <span class="ml-2 relative before:content-[''] before:absolute before:top-[50%] before:left-0 before:w-full before:h-[1px] before:-rotate-12 before:bg-red-600 before:translate-y-[50%] after:content-[''] after:absolute after:top-[50%] after:left-0 after:w-full after:h-[1px] after:rotate-12 after:bg-red-600 after:translate-y-[50%]">{{ product.compare_at_price | money_with_currency }}</span>
+                -->
+                <s class="ml-2">{{ product.compare_at_price | money_with_currency }}</s>
+              {% endif %}
+            </p>
+
+            <div class="flex justify-start items-center mb-5 border-t-[1px] pt-8  w-full">
+              <p class="min-w-[65px]">Colour:</p>
+              <div class="flex item-center justify-start space-x-2">
+                {% comment %} Get the color option {% endcomment %}
+                {% assign color_option = '' %}
+                {% for option in product.options_with_values %}
+                  {% if option.name contains 'Color' or option.name contains 'Colour' or option.name == 'COLOR' %}
+                    {% assign color_option = option %}
+                    {% break %}
+                  {% endif %}
+                {% endfor %}
+
+                {% comment %} Render color swatches based on variants, not alt text {% endcomment %}
+                {% if color_option != '' %}
+                  {% for value in color_option.values %}
+                    {% comment %} Find first variant with this color {% endcomment %}
+                    {% assign color_variant = product.variants | where: 'option1', value | first %}
+
+                    {% if color_variant.image %}
+                      {% comment %} Check if any variant with this color is available {% endcomment %}
+                      {% assign variant_available = false %}
+                      {% for prod_variant in product.variants %}
+                        {% if prod_variant.option1 == value and prod_variant.available %}
+                          {% assign variant_available = true %}
+                          {% break %}
+                        {% endif %}
+                      {% endfor %}
+
+                      {% comment %} Generate alt text {% endcomment %}
+                      {% capture pt_image_alternate_text %}
+        Image of {{product.title}} in {{value | downcase}}, by brand {{product.vendor}}
+        {% endcapture %}
+                      {% assign pt_image_alt_text = pt_image_alternate_text | strip %}
+
+                      <div
+                        title="{{- pt_image_alt_text -}}"
+                        class="rounded-[2px] cursor-pointer {% if color_variant.image.src == selected_product.featured_image.src and variant_available %} variant--active{% else %} variant{% endif %} {% if variant_available %}variant-available {% else %}variant-unavailable{% endif %}"
+                        data-variant-option1="{{ value }}"
+                      >
+                        {{
+                          color_variant.image.src
+                          | image_url: width: 90
+                          | image_tag:
+                            alt: pt_image_alt_text,
+                            loading: 'lazy',
+                            width: 60,
+                            height: 90,
+                            widths: '60, 80, 100'
+                        }}
+                      </div>
+                    {% endif %}
+                  {% endfor %}
+                {% endif %}
+              </div>
+            </div>
+            <div class="flex justify-start items-start">
+              <p class="min-w-[65px] flex items-center my-auto">Size:</p>
+              <div class="flex justify-between w-full">
+                <div id="variantSizes" class="flex flex-wrap item-center justify-start w-full">
+                  {% for variant in product.variants %}
+                    {% if product.selected_variant %}
+                      {% if product.selected_variant.option1 == variant.option1 %}
+                        <div
+                          title="{% if variant.available %}{% else %}Size sold out!{% endif %}"
+                          class="{% if variant.available %}size-available{% else %}size-unavailable{% endif %} flex items-center justify-center rounded text-xs w-10 h-10 {{variant.option1 | replace: ' ', '-' | replace: '/', '-'}}-sizes"
+                          data-size-id="{{ variant.id }}"
+                        >
+                          {{ variant.option2 }}
+                        </div>
+                      {% endif %}
+                    {% else %}
+                      {% if product.first_available_variant.option1 == variant.option1 %}
+                        <div
+                          title="{% if variant.available %}{% else %}Size sold out!{% endif %}"
+                          class="{% if variant.available %}size-available{% else %}size-unavailable{% endif %} flex items-center justify-center rounded text-xs w-10 h-10 {{variant.option1 | replace: ' ', '-'| replace: '/', '-'}}-sizes"
+                          data-size-id="{{ variant.id }}"
+                        >
+                          {{ variant.option2 }}
+                        </div>
+                      {% endif %}
+                    {% endif %}
+                  {% endfor %}
+                </div>
+                <!--
+                  <div id="variantSizes" class="flex flex-wrap item-center justify-start w-full">
+
+                      <div class="animate-load-product w-8 h-8 bg-slate-200 my-2 mr-1">&nbsp;</div>
+                      <div class="animate-load-product w-8 h-8 bg-slate-200 my-2 mr-1">&nbsp;</div>
+                      <div class="animate-load-product w-8 h-8 bg-slate-200 my-2 mr-1">&nbsp;</div>
+                      <div class="animate-load-product w-8 h-8 bg-slate-200 my-2 mr-1">&nbsp;</div>
+                      <div class="animate-load-product w-8 h-8 bg-slate-200 my-2">&nbsp;</div>
+
+                  </div>
+                -->
+                <button class="underline  min-w-[80px]" onclick="openSizeModal(event)">size guide</button>
+              </div>
+            </div>
+
+            {% form 'product', product, id: 'custom-id', class: 'custom-class', data-example: '100' %}
+              <!-- form content -->
+              <input
+                type="text"
+                name="quantity"
+                min="1"
+                value="1"
+                class="hidden"
+              >
+              <select name="id" class="hidden">
+                {% for variant in product.variants %}
+                  <option
+                    id="{{ variant.id }}"
+                    class="productVariants"
+                    value="{{ variant.id }}"
+                    {% unless variant.available %}
+                      disabled
+                    {% endunless %}
+                    data-featured-variant="{{ variant.id }}"
+                    data-available-quantity="{{ variant.inventory_quantity }}"
+                    data-variant-color="{{ variant.option1 }}"
+                    data-variant="{{ variant.option1 }}$-${{ variant.id }}$-${{ variant.available }}$-${{ variant.option2 }}"
+                  >
+                    {{ variant.title }} - {{ variant.price | money }}
+                  </option>
+                {% endfor %}
+              </select>
+
+              <input
+                type="button"
+                value="{{- section.settings.btn_text -}}"
+                class="mt-5 bg-black text-white w-full border-black border-[1px] hover:bg-[#213a70] hover:border-[#213a70] hover:text-white h-[46px] transition delay-75 cursor-pointer"
+                onclick="formSubmitHandler()"
+              >
+            {% endform %}
+            {% comment %}{% endcomment %}
+            {% render 'swym-custom-button', btn_text: section.settings.wishlist_btn_text %}
+          {% else %}
+            <p class="mb-3 text-sm my-5 pb-6">SOLD OUT</p>
+          {% endif %}
+          <div class="w-full flex justify-center align-center border-[1px] border-black my-2 py-4 text-xs tracking-[1px] lowercase font-semibold">
+            {% render 'shipping_info',
+              text: section.settings.shipping_info,
+              order_price: section.settings.order_price_limit
+            %}
+          </div>
+
+          {% comment %} description content {% endcomment %}
+          {% comment %}
+            {% render 'product-description-material',
+              description_material: product.description,
+              faqs_page: section.settings.faqs,
+              shipping_policy_page: section.settings.shipping_policy
+            %}
+          {% endcomment %}
+
+          {% render 'product-description-material',
+            description_material: product.description,
+            shipping_policy_page: section.settings.shipping_policy,
+            local_shipping_policy_page: section.settings.local_shipping_policy
+          %}
+          <div>
+            <h2 class="tracking-[2px] font-semibold !text-[0.75rem] my-6">Pairs perfectly with</h2>
+            {% for comp_prod in product.metafields['shopify--discovery--product_recommendation'].complementary_products.value limit: 2 %}
+              {% render 'pairs-perfectly-with', product:comp_prod %}
+            {% endfor %}
+          </div>
+        </section>
+      </section>
+    </section>
+  </section>
+  {% if product.metafields.custom.faqs.value.size > 0 %}
+    <h2 class="text-center font-bold">Frequently Asked Questions</h2>
+    <section class="my-10 lg:my-20 flex flex-col gap-4">
+      {% for faq in product.metafields.custom.faqs.value %}
+        {% render 'faq-item', question: faq.question, answer: faq.answer %}
+      {% endfor %}
+    </section>
+  {% endif %}
+{% endif %}
+
+<div class="zoom-image-overlay">
+  <span class="zoom-image-close">{% render 'icon-close' %}</span>
+  {% assign zoomed_idx = 0 %}
+  {% for media in product.media %}
+    {% assign zoomed_media_poster_color_variant = media.alt | split: ',' | last | strip %}
+    {% if media.media_type == 'video' and zoomed_media_poster_color_variant == selected_product_image_color %}
+      {% assign zoomed_idx = zoomed_idx | plus: 1 %}
+      <div
+        class="zoomed-image-{{ zoomed_idx }} video-wrapper"
+      >
+        {% assign poster = media.preview_image.src | image_url: width: 2000 %}
+        {{ media | video_tag: controls: true, autoplay: true, poster: poster, class: 'w-full product_zoom_video' }}
+      </div>
+    {% endif %}
+  {% endfor %}
+  {% for image in product.images %}
+    {% assign zoom_image_type = image.alt | split: ',' | first | strip %}
+    {% assign zoom_image_color = image.alt | split: ',' | last | strip %}
+    {% capture zoom_image_alternate_text %}
+    {{zoom_image_type | replace: 'of a product', '' | replace: 'of product', '' | capitalize }}{% if zoom_image_type contains "model" %} wearing{% else %} of{% endif %} {{product.title | capitalize}} in {{zoom_image_color | downcase}}, by brand {{product.vendor | capitalize}}
+    {% endcapture %}
+    {% assign zoom_image_alt_text = zoom_image_alternate_text | strip %}
+    {% if zoom_image_color == selected_product_image_color %}
+      {% assign zoomed_idx = zoomed_idx | plus: 1 %}
+      <div class="zoomed-image-{{ zoomed_idx }}">
+        {{ image.src | image_url: width: 3600 | image_tag: alt: zoom_image_alt_text, preload: true }}
+      </div>
+    {% endif %}
+  {% endfor %}
+</div>
+<script>
+  const formSubmitHandler = () => {
+    let addToCartForm = document.querySelector('form[action$="/cart/add"]');
+    let formData = new FormData(addToCartForm);
+    //console.log("addToCartForm", addToCartForm)
+    /*for (const pair of formData.entries()) {
+        //console.log(`${
+          pair[0]
+        }, ${
+          pair[1]
+        }`);
+      }*/
+    //console.log(variantObj)
+    addItemToCart(formData, 'cart_drawer_container', 'cart_drawer');
+  };
+  window.first_available_or_selected_variant = '{{- product.selected_or_first_available_variant.id -}}';
+  window.selected_product = {
+    id: '{{ selected_product.id }}',
+  };
+  window.section = {
+    id: '{{- section.id -}}',
+  };
+</script>
+{% javascript %}
+  // Object to store varaint data
+  const variantObj = {};
+  /** generate html of sizes available for particular
+    color to replace on variant click event
+    */
+  const variantElement = (data) => {
+    let html = '';
+
+    data.forEach(
+      (item, index) =>
+        (html += `<div title="${!item.available ? 'size is not available' : ''}" class="${
+          item.available ? 'size-available' : 'size-unavailable'
+        } flex items-center justify-center rounded text-xs w-10 h-10
+        ${formatColorVariant(item.color)}-sizes" data-size-id=${item.id}>${item.size}</div>`)
+    );
+
+    return html;
+  };
+
+  /** add variant sizes based on the selected varaint (trigger in onload and onclick event)
+   */
+  const addVariantSizes = (data) => {
+    const variantSizeElement = document.getElementById('variantSizes');
+    variantSizeElement.replaceChildren();
+    variantSizeElement.insertAdjacentHTML('beforeend', variantElement(data));
+  };
+
+  /** format option variant name to appropriate selector
+   */
+  const formatColorVariant = (color) => {
+    return color.includes(' ') ? color.split(' ').join('-') : color.includes('/') ? color.split('/').join('-') : color;
+  };
+
+  /** get all sizes that are available of particular color and add click listener
+   */
+
+  const getAvailableColorSizes = (color) => {
+    return Array.prototype.slice
+      .call(document.querySelectorAll(`.${formatColorVariant(color)}-sizes`))
+      .filter((item) => item.classList[0] === 'size-available');
+  };
+
+  const selectColorSizeHandler = (color) => {
+    //console.log(" selectColorSizeHandler called");
+
+    getAvailableColorSizes(color).forEach((item) => {
+      item.addEventListener('click', (e) => {
+        // 1. Remove class "size-active" from all colors
+        getAvailableColorSizes(color).forEach((color) => color.classList.remove('size--active'));
+
+        // 2. Add class "size--active" to the item clicked
+        item.classList.add('size--active');
+
+        // 3. Select the correct option (hidden select form element) on item click
+        document.getElementById(`${e.target.dataset.sizeId}`).selected = 'selected';
+      });
+    });
+  };
+
+  window.addEventListener('load', function () {
+    //console.log('section id from window object', window.section.id);
+    productSwiper(`${window.section.id}`);
+
+    const splitter = '$-$';
+    const variantObj = {};
+
+    // get all variant elements
+    const variantOptions = Array.prototype.slice.call(document.querySelectorAll('.productVariants'));
+
+    // build variant object
+    variantOptions.forEach((item) => {
+      const [color, id, available, size] = item.dataset.variant.split(splitter);
+
+      if (!variantObj[color]) variantObj[color] = [];
+
+      variantObj[color].push({
+        color,
+        id,
+        available: available === 'true',
+        size,
+        inventory: item.dataset.availableQuantity,
+      });
+    });
+
+    const productVariantURL = `${window.location.origin}${window.location.pathname}?variant=`;
+
+    // -------------------------------
+    // ✅ HANDLE FIRST PAGE LOAD
+    // -------------------------------
+    const urlParams = new URLSearchParams(window.location.search);
+    const variantFromURL = urlParams.get('variant');
+
+    if (!variantFromURL) {
+      // get first available variant id
+      const firstColorKey = Object.keys(variantObj)[0];
+      const firstAvailableVariant = variantObj[firstColorKey].find((v) => v.available);
+
+      if (firstAvailableVariant) {
+        window.location.replace(`${productVariantURL}${firstAvailableVariant.id}`);
+        return; // stop further execution to avoid flicker
+      }
+    }
+
+    // -------------------------------
+    // EXISTING LOGIC CONTINUES
+    // -------------------------------
+    const selectedVariantId = variantFromURL || window.first_available_or_selected_variant;
+
+    const selectedVariantElem = document.querySelector(`[data-featured-variant="${selectedVariantId}"]`);
+
+    if (!selectedVariantElem) return;
+
+    const selectedVariant = selectedVariantElem.dataset.variantColor;
+
+    // color click behaviour (UNCHANGED)
+    Array.prototype.slice
+      .call(document.querySelectorAll('[data-variant-option1].variant-available'))
+      .forEach((item) => {
+        item.addEventListener('click', () => {
+          window.location.href = `${productVariantURL}${variantObj[item.dataset.variantOption1][0].id}`;
+        });
+      });
+
+    // select first available size
+    const firstAvailableColorSize = getAvailableColorSizes(selectedVariant)[0];
+
+    if (firstAvailableColorSize) {
+      firstAvailableColorSize.classList.add('size--active');
+      document.getElementById(firstAvailableColorSize.dataset.sizeId).selected = 'selected';
+    }
+
+    selectColorSizeHandler(selectedVariant);
+  });
+{% endjavascript %}
+
+{% style %}
+  .video-wrapper{
+    background:gray;
+  }
+  .product_video,
+  .product_zoom_video{
+    aspect-ratio: 1080 / 1916;
+    max-width:800px;
+    margin-inline:auto;
+    object-fit:contain;
+    width:100%;
+  }
+  .product_video {
+    max-height:927px;
+  }
+  .zoom-image-overlay{
+    display:none;
+    background:white;
+  }
+  .zoom-image-close {
+    display:none;
+  }
+  .image-thumbnail{
+    width: 64px;
+    padding:2px;
+    cursor:pointer;
+  }
+  .images-box section img {
+    object-fit: cover;
+    scroll-snap-align: start;
+  }
+  .image-thumbnail img:hover,
+  .image-thumbnail.image--active img{
+    opacity:0.6;
+  }
+  .images-box{
+    cursor:crosshair;
+    width:calc(100% - 64px);
+    height:100%;
+    scrollbar-width: none;       /* Firefox */
+    -ms-overflow-style: none;
+    scroll-snap-type: y mandatory;
+    scroll-behavior: smooth;
+  }
+  .product-image-section-sm{
+    display:inline-flex;
+  }
+  .product-image-section-lg{
+    display:none;
+  }
+  @media (min-width:767px) {
+    .product-detail-section{
+      width:500px;
+    }
+    .zoom-image-close{
+      width:28px;
+      height:28px;
+      position:fixed;
+      right: 30px;
+      top:133px;
+      z-index:1004;
+      display:block;
+      cursor:pointer;
+    }
+    .zoom-image-overlay{
+      display:flex;
+      flex-direction:column;
+      gap: 10px;
+      position:fixed;
+      top:133px;
+      left:25px;
+      width:calc(100% - 50px);
+      height:calc(100dvh - 10px);
+      overflow:scroll;
+      z-index:1003;
+      scrollbar-width: none;       /* Firefox */
+      -ms-overflow-style: none;
+      visibility:hidden;
+      opacity:0;
+    }
+    .zoom-image-overlay.reveal{
+      visibility:visible;
+      opacity:1;
+    }
+    .zoom-image-overlay::-webkit-scrollbar{
+       display: none;
+    }
+  }
+  @media (min-width:1000px) {
+    .product-image-section-sm{
+      display:none;
+    }
+    .product-image-section-lg{
+      display:flex;
+      max-height:950px;
+    }
+    .product-detail-section{
+      width:35%;
+    }
+  }
+  .images-box::-webkit-scrollbar {
+    display: none;
+  }
+  .variant {
+    border: 2px solid transparent;
+  }
+  .variant--active {
+    border: 2px solid black;
+  }
+
+  .size--active {
+    background: black;
+    color: white
+  }
+
+  .variant-available:hover {
+    border-color: black;
+  }
+
+  .variant-unavailable {
+    position: relative;
+  }
+  .variant-unavailable:hover {
+    cursor: no-drop;
+  }
+
+  .variant-unavailable:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #fff;
+    border-radius: 2px;
+    opacity: 0.5;
+  }
+
+  .size-available {
+    cursor: pointer;
+  }
+
+
+  .size-unavailable {
+    cursor: no-drop;
+    color: #bbb;
+  }
+
+  .carousel {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .carousel-inner {
+    display: flex;
+    flex-wrap: nowrap;
+    width: 300%; /* The width of the carousel will be 300% of the width of each slide */
+    height: 100%;
+    transition: transform 0.5s ease;
+  }
+
+  .carousel-item {
+    flex: 1 0 100%;
+    height: 100%;
+    position: relative;
+  }
+
+  .carousel-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "main-product",
+  "tag": "section",
+  "class": "main",
+  "blocks": [
+    {
+      "type": "@app"
+    },
+    {
+      "type": "text",
+      "name": "t:sections.main-product.blocks.text.name"
+    },
+    {
+      "type": "title",
+      "name": "t:sections.main-product.blocks.title.name",
+      "limit": 1
+    },
+    {
+      "type": "price",
+      "name": "t:sections.main-product.blocks.price.name",
+      "limit": 1
+    },
+    {
+      "type": "inventory",
+      "name": "t:sections.main-product.blocks.inventory.name",
+      "limit": 1
+    },
+    {
+      "type": "quantity_selector",
+      "name": "t:sections.main-product.blocks.quantity_selector.name",
+      "limit": 1
+    },
+    {
+      "type": "variant_picker",
+      "name": "t:sections.main-product.blocks.variant_picker.name",
+      "limit": 1
+    },
+    {
+      "type": "buy_buttons",
+      "name": "t:sections.main-product.blocks.buy_buttons.name",
+      "limit": 1
+    },
+    {
+      "type": "description",
+      "name": "t:sections.main-product.blocks.description.name",
+      "limit": 1
+    },
+    {
+      "type": "share",
+      "name": "t:sections.main-product.blocks.share.name",
+      "limit": 1
+    },
+    {
+      "type": "custom_liquid",
+      "name": "t:sections.main-product.blocks.custom_liquid.name"
+    },
+    {
+      "type": "collapsible_tab",
+      "name": "t:sections.main-product.blocks.collapsible_tab.name"
+    },
+    {
+      "type": "popup",
+      "name": "t:sections.main-product.blocks.popup.name"
+    },
+    {
+      "type": "rating",
+      "name": "t:sections.main-product.blocks.rating.name"
+    },
+    {
+      "type": "complementary",
+      "name": "t:sections.main-product.blocks.complementary_products.name"
+    },
+    {
+      "type": "icon-with-text",
+      "name": "t:sections.main-product.blocks.icon_with_text.name"
+    }
+  ],
+  "settings": [
+    {
+      "type": "text",
+      "label": "Button Text",
+      "id": "btn_text",
+      "default": "add to cart"
+    },
+    {
+      "type": "text",
+      "label": "Wishlist Button Text",
+      "id": "wishlist_btn_text",
+      "default": "add to wishlist"
+    },
+    {
+      "type": "text",
+      "label": "Shipping Info",
+      "id": "shipping_info",
+      "default": "Free shipping over"
+    },
+    {
+      "type": "number",
+      "label": "Free Shipping Order Limit",
+      "id": "order_price_limit",
+      "default": 70
+    },
+    {
+      "type": "text",
+      "label": "FAQs",
+      "id": "faqs"
+    },
+    {
+      "type": "richtext",
+      "label": "Global Shipping Policy",
+      "id": "shipping_policy"
+    },
+    {
+      "type": "richtext",
+      "label": "Local Shipping Policy",
+      "id": "local_shipping_policy"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,340 @@
+<section class="relative mb-3 md:mb-28">
+  <section class="lg:pt-[25px] mb-2 md:mb-[50px]">
+    <section class="relative">
+      <div class="show-banner">
+        {%- if section.settings.hero_img != blank -%}
+          {%- if section.settings.hero_img.alt -%}
+            {{ section.settings.hero_img | image_url: width: 1500 | image_tag: preload: true }}
+
+          {%- else -%}
+            {{
+              section.settings.hero_img
+              | image_url: width: 1500
+              | image_tag: alt: section.settings.hero_heading, preload: true
+            }}
+          {%- endif -%}
+        {%- else -%}
+          <div class="w-full aspect-video bg-gray-400">
+            {{ 'lifestyle-1' | placeholder_svg_tag: 'placeholder-svg' }}
+          </div>
+        {%- endif -%}
+      </div>
+      <div class="show-banner--mob">
+        {%- if section.settings.hero_img_mobile != blank -%}
+          {%- if section.settings.hero_img_mobile.alt -%}
+            {{ section.settings.hero_img_mobile | image_url: width: 500 | image_tag: preload: true }}
+
+          {%- else -%}
+            {{
+              section.settings.hero_img_mobile
+              | image_url: width: 500
+              | image_tag: alt: section.settings.hero_heading, preload: true
+            }}
+          {%- endif -%}
+        {%- else -%}
+          <div class="w-full aspect-square bg-gray-400">{{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}</div>
+        {%- endif -%}
+      </div>
+      <div class="flex flex-col justify-center items-center absolute top-[50%] left-[50%] w-[90%] px-4 translate-x-[-50%] translate-y-[-50%] md:w-[80%]">
+        <h1
+          class="text-2xl leading-[150%] md:text-3xl md:leading-[150%] lg:text-[60px] lg:leading-[180%] mb-3 text-center uppercase spacing lg:spacing-[4px] tracking-[1px] md:tracking-[4px] lg:tracking-[8px]"
+          style="color:{{- section.settings.font_color -}}; text-shadow: 1px 2px 3px #666;"
+        >
+          {{- section.settings.hero_heading -}}
+        </h1>
+        {% if section.settings.hero_subheading != blank %}
+          <p class="text-lg leading-[130%] md:text-2xl md:leading-[130%] lg:text-4xl lg:leading-[150%] mb-3 text-center inline-block uppercase">
+            {{- section.settings.hero_subheading -}}
+          </p>
+        {% endif %}
+        <div class="w-full flex justify-center items-center mt-[20px] sm:space-x-4 md:space-x-6 lg:space-x-10">
+          {%- for block in section.blocks -%}
+            {%- if block.settings.btn_link != blank -%}
+              <a
+                href="{{- block.settings.btn_link -}}"
+                style="min-width:{{- section.settings.btn_width -}}px;"
+                class="mx-1 bg-slate-100/90 text-center rounded-[2px] m-0 leading-[100%] pt-[8px] pb-[10px] uppercase"
+              >
+                {{- block.settings.btn_text | downcase -}}
+              </a>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      </div>
+    </section>
+  </section>
+</section>
+
+
+{% stylesheet %}
+  @media only screen and (max-width: 400px) {
+    .show-banner--mob {
+      display: block;
+    }
+    .show-banner {
+      display: none;
+    }
+  }
+  @media only screen and (min-width: 400px) {
+    .show-banner {
+      display: block;
+    }
+    .show-banner--mob {
+      display: none;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "hero",
+  "settings": [
+    {
+      "type": "text",
+      "label": "Hero Heading",
+      "id": "hero_heading",
+      "info": "Main heading, promotion, title.",
+      "default": "New spring styles"
+    },
+    {
+      "type": "text",
+      "label": "Hero Subheading",
+      "id": "hero_subheading"
+    },
+    {
+      "type": "image_picker",
+      "label": "Hero Image",
+      "id": "hero_img",
+      "info": "Image for desktop view"
+    },
+    {
+      "type": "image_picker",
+      "label": "Hero Image Mobile",
+      "id": "hero_img_mobile",
+      "info": "Image for mobile view"
+    },
+    {
+      "type": "color",
+      "label": "font color",
+      "id": "font_color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "label": "Button Width",
+      "id": "btn_width",
+      "unit": "px",
+      "step": 5,
+      "min": 20,
+      "max": 200,
+      "default": 25
+    }
+  ],
+  "blocks": [
+    {
+      "name": "CTA",
+      "type": "cta",
+      "settings": [
+        {
+          "type": "text",
+          "label": "Tab Text",
+          "id": "btn_text",
+          "info": "men",
+          "default": "Men"
+        },
+        {
+          "type": "url",
+          "label": "Tab Link",
+          "id": "btn_link",
+          "info": "Collections, menus or pages link."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero - Seasonal Collection",
+      "category": "Hero",
+      "settings": {
+        "hero_heading": "Spring Collection",
+        "hero_subheading": "Discover Fresh Styles",
+        "font_color": "#ffffff",
+        "btn_width": 120
+      },
+      "blocks": [
+        {
+          "type": "cta",
+          "settings": {
+            "btn_text": "Shop Women",
+            "btn_link": ""
+          }
+        },
+        {
+          "type": "cta",
+          "settings": {
+            "btn_text": "Shop Men",
+            "btn_link": ""
+          }
+        }
+      ]
+    },
+    {
+      "name": "Hero - Sale Banner",
+      "category": "Hero",
+      "settings": {
+        "hero_heading": "Summer Sale",
+        "hero_subheading": "Up to 50% Off",
+        "font_color": "#ffffff",
+        "btn_width": 150
+      },
+      "blocks": [
+        {
+          "type": "cta",
+          "settings": {
+            "btn_text": "Shop Now",
+            "btn_link": ""
+          }
+        },
+        {
+          "type": "cta",
+          "settings": {
+            "btn_text": "View Deals",
+            "btn_link": ""
+          }
+        }
+      ]
+    },
+    {
+      "name": "Hero - New Arrivals",
+      "category": "Hero",
+      "settings": {
+        "hero_heading": "New Arrivals",
+        "hero_subheading": "Just Landed",
+        "font_color": "#ffffff",
+        "btn_width": 140
+      },
+      "blocks": [
+        {
+          "type": "cta",
+          "settings": {
+            "btn_text": "Explore",
+            "btn_link": ""
+          }
+        },
+        {
+          "type": "cta",
+          "settings": {
+            "btn_text": "Shop All",
+            "btn_link": ""
+          }
+        }
+      ]
+    },
+    {
+      "name": "Hero - Minimal Style",
+      "category": "Hero",
+      "settings": {
+        "hero_heading": "Elevate Your Style",
+        "hero_subheading": "",
+        "font_color": "#ffffff",
+        "btn_width": 100
+      },
+      "blocks": [
+        {
+          "type": "cta",
+          "settings": {
+            "btn_text": "Shop Now",
+            "btn_link": ""
+          }
+        }
+      ]
+    },
+    {
+      "name": "Hero - Clearance Event",
+      "category": "Hero",
+      "settings": {
+        "hero_heading": "Final Clearance",
+        "hero_subheading": "Last Chance Offers",
+        "font_color": "#ffffff",
+        "btn_width": 160
+      },
+      "blocks": [
+        {
+          "type": "cta",
+          "settings": {
+            "btn_text": "Shop Sale",
+            "btn_link": ""
+          }
+        },
+        {
+          "type": "cta",
+          "settings": {
+            "btn_text": "View Clearance",
+            "btn_link": ""
+          }
+        }
+      ]
+    },
+    {
+      "name": "Hero - Brand Launch",
+      "category": "Hero",
+      "settings": {
+        "hero_heading": "Welcome to Our Store",
+        "hero_subheading": "Premium Quality & Style",
+        "font_color": "#ffffff",
+        "btn_width": 130
+      },
+      "blocks": [
+        {
+          "type": "cta",
+          "settings": {
+            "btn_text": "Discover",
+            "btn_link": ""
+          }
+        },
+        {
+          "type": "cta",
+          "settings": {
+            "btn_text": "Our Story",
+            "btn_link": ""
+          }
+        }
+      ]
+    },
+    {
+      "name": "Hero - Holiday Special",
+      "category": "Hero",
+      "settings": {
+        "hero_heading": "Holiday Shop",
+        "hero_subheading": "Perfect Gifts for Everyone",
+        "font_color": "#ffffff",
+        "btn_width": 140
+      },
+      "blocks": [
+        {
+          "type": "cta",
+          "settings": {
+            "btn_text": "For Her",
+            "btn_link": ""
+          }
+        },
+        {
+          "type": "cta",
+          "settings": {
+            "btn_text": "For Him",
+            "btn_link": ""
+          }
+        },
+        {
+          "type": "cta",
+          "settings": {
+            "btn_text": "For Kids",
+            "btn_link": ""
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
+

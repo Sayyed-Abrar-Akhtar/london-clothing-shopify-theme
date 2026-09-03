@@ -1,0 +1,292 @@
+<section
+  id="{{id}}"
+  class="w-full fixed left-0 hidden {{ display }} lg:my-1"
+>
+  <div
+    style="left:initial; background: rgba(255, 255, 255, 0.4); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1);"
+    class="absolute inset-0 -z-2 cart__drawer__backdrop"
+  >
+    &nbsp;
+  </div>
+  <section class="flex h-full justify-between">
+    <section
+      class="drawer_products_section h-full px-2 py-4"
+      id="cartEmptyArea"
+    >
+      <!--
+        <div class="">
+          <div class="flex justify-center items-center h-16">
+            <h2 class="font-bold uppercase">You may also like</h2>
+          </div>
+          <section class="drawer_products_container overflow-y-scroll max-h-[100vh] bg-white/75">
+          {% comment %}  {%- render 'products-you-may-like', default_coll: default_coll, id: cart.items[0].product_id, symbol: cart.currency.symbol, iso_code: cart.currency.iso_code -%}
+          {% endcomment %}
+          </section>
+        </div>
+      -->
+    </section>
+
+    <section class="cart__drawer__container" id="cartItemsContainer">
+      <div class="sticky bg-white/75 px-4 top-0 right-2 flex justify-between items-center h-12 md:h-16 md:m-0">
+        <h2 class="cart__drawer__title font-bold uppercase ml-2">Your Cart</h2>
+
+        <div class="hidden items-end w-[55%]" data-elem-type="cart-items-variant-qty-detail">
+          <span class="w-4"></span>
+          {% for lineitem in items %}
+            <p
+              data-for="variant-selector"
+              data-key="{{ lineitem.id }}"
+              data-available-stock="{{ lineitem.variant.inventory_quantity }}"
+            >
+              &nbsp;
+            </p>
+          {% endfor %}
+
+          <p
+            data-type="cart_items_info_element"
+            data-currency-symbol="{{ cart.currency.symbol }}"
+            data-currency-isocode="{{ cart.currency.iso_code }}"
+          >
+            &nbsp;
+          </p>
+        </div>
+
+        <span id="cartDrawerCloseIcon" class="h-8 w-8 cursor-pointer flex justify-center items-center">
+          {%- render 'icon-close' -%}
+        </span>
+      </div>
+
+      <p
+        class="text-center w-full py-2 text-[11px] {% if cart.item_count < 1 %}hidden{% endif %}"
+        data-text-type="empty-cart-message"
+      >
+        Your cart is empty!
+      </p>
+
+      <div class="cart_drawer_box px-2 pb-4 overflow-y-scroll">
+        <div class="px-2 cart-progress-bar-box {% if cart.item_count < 1 %}hidden{% endif %}">
+          {% render 'progress-bar', text: 'spend 9 more for free shipping' %}
+        </div>
+
+        <div
+          style="max-height:40dvh;"
+          id="{{ container_id }}"
+          class="cart_items w-[calc(100%-20px)] md:w-[96%] overflow-y-scroll mx-auto"
+        >
+          {% for item in cart.items %}
+            {%- render 'cart-item', item: item -%}
+          {% endfor %}
+        </div>
+        <div class="border-t border-gray-300">
+          <strong class="block uppercase pt-6 px-4">You May Also Like</strong>
+          <div class="hidden">
+            {%- render 'products-you-may-like',
+              default_coll: default_coll,
+              id: cart.items[0].product_id,
+              symbol: cart.currency.symbol,
+              iso_code: cart.currency.iso_code
+            -%}
+          </div>
+
+          <div class="grid grid-cols-2 justify-center gap-5 pt-6 px-4" id="cartRecommendedProducts">
+            {% if default_coll.products.size > 0 %}
+              {% for prod in default_coll.products limit: 4 %}
+                {% render 'cart-product-recommendations',
+                  link: prod.url,
+                  image: prod.featured_image,
+                  title: prod.title,
+                  price: prod.price,
+                  compare_at_price: prod.compare_at_price
+                %}
+              {% endfor %}
+            {% else %}
+              <div class="animate-load-product flex items-center justify-center">
+                <div class="bg-slate-200" style="height:200px; width:150px">&nbsp;</div>
+              </div>
+              <div class="animate-load-product flex items-center justify-center">
+                <div class="bg-slate-200" style="height:200px; width:150px">&nbsp;</div>
+              </div>
+              <div class="animate-load-product flex items-center justify-center">
+                <div class="bg-slate-200" style="height:200px; width:150px">&nbsp;</div>
+              </div>
+              <div class="animate-load-product flex items-center justify-center">
+                <div class="bg-slate-200" style="height:200px; width:150px">&nbsp;</div>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      <div class="h-[200px] cart-footer mt-6 border-t border-gray-300 sticky px-4 md:m-0 bottom-0 right-2 bg-white">
+        <p class="flex justify-between pb-2 mt-6">
+          <strong>subtotal:</strong>
+          <span data-type="cart_total_price" data-cart-total="{{ cart.total_price | money_without_currency }}">
+            {{- cart.total_price | money_with_currency -}}
+          </span>
+        </p>
+        <div class="my-auto flex flex-col">
+          <div class="flex gap-2">
+            <a
+              href="{{routes.cart_url}}"
+              class="flex items-center justify-center mt-2 bg-black text-white w-full border-black border-[1px] hover:bg-[#213a70] hover:border-[#213a70] hover:text-white h-[45px] transition delay-75 cursor-pointer"
+            >
+              view cart
+            </a>
+            <a
+              href="/checkout"
+              class="flex items-center justify-center mt-2 bg-black text-white w-full border-black border-[1px] hover:bg-[#213a70] hover:border-[#213a70] hover:text-white h-[45px] transition delay-75 cursor-pointer"
+            >
+              checkout
+            </a>
+          </div>
+          {% if additional_checkout_buttons %}
+            <div class="additional-checkout-buttons--vertical">
+              {{ content_for_additional_checkout_buttons }}
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </section>
+  </section>
+</section>
+
+{% style %}
+  section.drawer--active,
+  section.drawer--inactive{
+    top:71px;
+    height: calc(100dvh - 71px);
+  }
+  @media (min-width: 450px) {
+    section.drawer--active,
+    section.drawer--inactive{
+      top:0;
+      height:100dvh;
+    }
+  }
+  .cart__drawer__backdrop{
+    width:100%;
+  }
+  .cart__drawer__title,
+  .cart__drawer__container {
+    width: 100%;
+  }
+  .cart__drawer__container {
+    position:relative;
+    height: 100dvh;
+    overflow-y: scroll;
+  }
+  .drawer_products_section {
+    width:0;
+    display:none;
+  }
+  .cart__drawer__container > div:first-child,
+  .cart__drawer__container > div:last-child {
+    margin-inline:0px;
+  }
+
+  /* For screens 500px and larger - fixed 400px width */
+  @media (min-width: 400px) {
+    .cart__drawer__backdrop{
+      width:400px;
+    }
+    .cart__drawer__title,
+    .cart__drawer__container {
+      width: 400px;
+    }
+    .cart__drawer__container {
+      height: 100%;
+    }
+    .drawer_products_section {
+      width: calc(100% - 400px);
+      display:block;
+    }
+    
+  }
+
+  .cart-footer::-webkit-scrollbar,
+  .cart_drawer_box::-webkit-scrollbar,
+  .cart_items::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .cart-footer,
+  .cart_drawer_box,
+  .cart_items {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+
+  .dynamic-checkout__content div .shopify-cleanslate div [data-shopify-buttoncontainer] {
+    width: 100%;
+    display: block !important;
+    margin: 0 !important;
+  }
+
+  .dynamic-checkout__content div .shopify-cleanslate div [data-shopify-buttoncontainer] li {
+    margin: 10px 0 0 !important;
+  }
+
+  .dynamic-checkout__content div .shopify-cleanslate div [data-shopify-buttoncontainer] li div {
+    border-radius: 0 !important;
+  }
+
+
+  .drawer--active {
+    visibility: visible;
+    z-index: 1005;
+    animation: slideInLeft 1s;
+  }
+
+  .drawer--inactive {
+    visibility: hidden;
+    animation: slideInRight 1s;
+    z-index: -100;
+    transition: visibility 0.8s, z-index 1.5s;
+  }
+
+  .drawer--inactive > section > .drawer_products_section > div > .drawer_products_container > section > [data-product-types="you-may-like"] {
+    display: none;
+  }
+
+  #cart_drawer.drawer--inactive .additional-checkout-buttons--vertical {
+    display: none;
+  }
+  .progress__bar__status{
+    transition: transform 0.3s ease-out;
+  }
+
+  @keyframes slideInLeft {
+    from {
+      transform: translateX(100vw);
+    }
+    to {
+      transform: translateX(0vw);
+    }
+  }
+  @keyframes slideInRight {
+    from {
+      transform: translateX(0vw);
+    }
+    to {
+      transform: translateX(100vw);
+    }
+  }
+{% endstyle %}
+
+<script>
+  let cartDrawerElem = document.getElementById('{{ id }}');
+  let cartDrawerCloseIcon = document.getElementById('cartDrawerCloseIcon');
+  const cartEmptyArea = document.getElementById('cartEmptyArea');
+  cartDrawerCloseIcon.addEventListener('click', closeCartDrawer);
+
+  function closeCartDrawer() {
+    cartDrawerElem.classList.add('drawer--inactive');
+    cartDrawerElem.classList.remove('drawer--active');
+    document.querySelector('body').classList.remove('overflow-hidden');
+    toggleOtherEl("close");
+  }
+
+  cartEmptyArea?.addEventListener('click', function (e) {
+    closeCartDrawer();
+  });
+</script>

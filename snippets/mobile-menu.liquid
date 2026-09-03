@@ -1,0 +1,46 @@
+{%- if item.links.size > 0 -%}
+  {%- for link in item.links -%}
+    {%- assign variable = link.title | split: '&' | join: '' | replace: ' ', '' | replace: '-', '' | replace: '/', '' -%}
+    <section class="px-[25px]" x-data="{show{{- variable -}}: false}">
+      <section class="flex justify-between items-center py-[10px]">
+        {% if link.url != "#" %}
+          <p>{{- link.title | replace: '_', 'Product' | downcase | link_to: link.url -}}</p>
+        {% else %}
+          <p>{{- link.title | replace: '_', 'Product' | downcase -}}</p>
+        {% endif %}
+        {%- if link.links.size > 0 -%}
+          <span
+            @click="show{{- variable -}}= !show{{- variable -}}"
+            x-show="!show{{- variable -}}"
+            class="text-2xl">
+            +
+          </span>
+          <span
+            @click="show{{- variable -}}= !show{{- variable -}}"
+            x-show="show{{- variable -}}"
+            class="text-2xl">
+            -
+          </span>
+        {%- endif -%}
+      </section>
+      <section
+        class="transition duration-300 ease-in"
+        x-show="show{{- variable -}}"
+        @click.outside="show{{- variable -}}=false">
+
+        {%- if link.links.size > 0 -%}
+          {%- render 'mobile-menu' for link as item -%}
+
+        {%- endif -%}
+
+      </section>
+    </section>
+
+  {%- endfor -%}
+{%- else -%}
+  {% if item.url != blank %}
+    <a href="{{ item.url }}">{{ item.title }}</a>
+  {% else %}  
+    <p>{{ item.title }}</p>
+  {% endif %}
+{%- endif -%}

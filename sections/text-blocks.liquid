@@ -1,0 +1,601 @@
+{% if section.blocks.size > 0 %}
+  <div
+    style="
+      width:100%;
+      margin:{{ section.settings.top_margin }}px auto {{ section.settings.bottom_margin }}px auto;
+      padding:{{ section.settings.top_padding }}px 0 {{ section.settings.bottom_padding }}px 0;
+      {% if section.settings.bg_gradient != blank %}
+      background: {{ section.settings.bg_gradient }};
+      {% else %}
+      background: {{ section.settings.bg_color }};
+      {% endif %}
+    "
+  >
+    {% for block in section.blocks %}
+      <style>
+        [class^="text-block-paragraph"] {
+          max-width : 70%;
+          margin: auto;
+        }
+        .text-block-paragraph{{ section.id }}{{ forloop.index }} {
+            font-size: {{ block.settings.text_size }}px;
+            border-top: {{ block.settings.border_t }}px solid {{block.settings.border_color}};
+            border-bottom: {{ block.settings.border_b }}px solid {{block.settings.border_color}};
+            border-right: {{ block.settings.border_r }}px solid {{block.settings.border_color}};
+            border-left: {{ block.settings.border_r }}px solid {{block.settings.border_color}};
+         }
+        @media screen and (max-width:600px) {
+          .text-block-paragraph{{ section.id }}{{ forloop.index }} {
+            font-size: {{ block.settings.text_size_mob }}px;
+          }
+
+          [class^="text-block-paragraph"] {
+            max-width : 90%;
+            text-align: center;
+          }
+        }
+      </style>
+      <p
+        class="text-block-paragraph{{ section.id }}{{ forloop.index }}"
+        style="
+          margin:{{ block.settings.top_margin }}px auto {{ block.settings.bottom_margin }}px auto;
+          padding:{{ block.settings.top_padding }}px {{ block.settings.right_padding }}px {{ block.settings.bottom_padding }}px {{ block.settings.left_padding }}px;
+          color: {{ block.settings.text_color }};
+          font-weight: {{ block.settings.text_font-weight }};
+          font-style: {{ block.settings.text_font-style }};
+          text-transform: {{ block.settings.text_transform }};
+          text-align: {{ block.settings.text_alignment }};
+        "
+      >
+        {{ block.settings.text }}
+      </p>
+    {% endfor %}
+  </div>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Text blocks",
+  "class": "m-0 p-0",
+  "settings": [
+    {"type": "header", "content": "Color Settings"},
+    {
+      "type": "color_background",
+      "id": "bg_gradient",
+      "label": "Gradient Background"
+    },
+    {
+      "type": "color",
+      "label": "Background Color",
+      "id":"bg_color",
+      "default":"#000000"
+    },
+    {"type": "header", "content": "Spacing Settings"},
+    {
+      "type": "range",
+      "label": "Top margin",
+      "id":"top_margin",
+      "min":0,
+      "max": 100,
+      "step": 1,
+      "unit":"px",
+      "default":0
+    },
+    {
+      "type": "range",
+      "label": "Bottom margin",
+      "id":"bottom_margin",
+      "min":0,
+      "max": 100,
+      "step": 1,
+      "unit":"px",
+      "default":0
+    },
+     {
+      "type": "range",
+      "label": "Top padding",
+      "id":"top_padding",
+      "min":0,
+      "max": 100,
+      "step": 1,
+      "unit":"px",
+      "default":20
+    },
+    {
+      "type": "range",
+      "label": "Bottom padding",
+      "id":"bottom_padding",
+      "min":0,
+      "max": 100,
+      "step": 1,
+      "unit":"px",
+      "default":20
+    }
+  ],
+  "blocks": [
+     {
+       "name": "Text",
+       "type": "style",
+       "settings": [
+         {
+            "type": "text",
+            "label": "Text",
+            "id":"text"
+         },
+         {"type": "header", "content": "Border Settings"},
+         {
+            "type": "color",
+            "id": "border_color",
+            "label": "Border Color",
+            "default":"#000000"
+          },
+          {
+            "type": "range",
+            "label": "Border Top",
+            "id":"border_t",
+            "min":0,
+            "max": 10,
+            "step": 1,
+            "unit":"px",
+            "default":0
+          },
+          {
+            "type": "range",
+            "label": "Border Bottom",
+            "id":"border_b",
+            "min":0,
+            "max": 10,
+            "step": 1,
+            "unit":"px",
+            "default":0
+          },
+          {
+            "type": "range",
+            "label": "Border Right",
+            "id":"border_r",
+            "min":0,
+            "max": 10,
+            "step": 1,
+            "unit":"px",
+            "default":0
+          },
+          {
+            "type": "range",
+            "label": "Border Left",
+            "id":"border_l",
+            "min":0,
+            "max": 10,
+            "step": 1,
+            "unit":"px",
+            "default":0
+          },
+           {
+              "type": "range",
+              "label": "Top margin",
+              "id":"top_margin",
+              "min":0,
+              "max": 100,
+              "step": 1,
+              "unit":"px",
+              "default":0
+           },
+           {
+              "type": "range",
+              "label": "Bottom margin",
+              "id":"bottom_margin",
+              "min":0,
+              "max": 100,
+              "step": 1,
+              "unit":"px",
+              "default":0
+           },
+           {
+              "type": "range",
+              "label": "Top padding",
+              "id":"top_padding",
+              "min":0,
+              "max": 100,
+              "step": 1,
+              "unit":"px",
+              "default":6
+           },
+           {
+              "type": "range",
+              "label": "Bottom padding",
+              "id":"bottom_padding",
+              "min":0,
+              "max": 100,
+              "step": 1,
+              "unit":"px",
+              "default":6
+           },
+           {
+              "type": "range",
+              "label": "Right padding",
+              "id":"right_padding",
+              "min":0,
+              "max": 100,
+              "step": 1,
+              "unit":"px",
+              "default":6
+           },
+           {
+              "type": "range",
+              "label": "Left padding",
+              "id":"left_padding",
+              "min":0,
+              "max": 100,
+              "step": 1,
+              "unit":"px",
+              "default":6
+           },
+           {
+              "type": "color",
+              "label": "Text Color",
+              "id":"text_color",
+              "default":"#ffffff"
+          },
+    {
+      "type": "select",
+      "id": "text_font-weight",
+      "label": "Text Font Weight",
+      "options": [
+        {
+          "label": "Bold",
+          "value": "bold"
+        },
+        {
+          "label": "Bolder",
+          "value": "bolder"
+        },
+        {
+          "label": "Lighter",
+          "value": "lighter"
+        },
+        {
+          "label": "Normal",
+          "value": "normal"
+        }
+      ],
+      "default":"normal"
+    },
+    {
+      "type": "select",
+      "id": "text_font-style",
+      "label": "Text Font Style",
+      "options": [
+        {
+          "label": "Italic",
+          "value": "italic"
+        },
+        {
+          "label": "Normal",
+          "value": "normal"
+        },
+        {
+          "label": "Oblique",
+          "value": "oblique"
+        }
+      ],
+      "default":"normal"
+    },
+         {
+            "type": "range",
+            "label": "Text size",
+            "id":"text_size",
+            "min":0,
+            "max": 100,
+            "step": 1,
+            "unit":"px",
+            "default":16
+         },
+         {
+            "type": "range",
+            "label": "Mobile View Text Size",
+            "id":"text_size_mob",
+            "min":0,
+            "max": 100,
+            "step": 1,
+            "unit":"px",
+            "default":16
+         },
+         {
+           	"type": "select",
+            "id": "text_transform",
+            "label": "Text transform",
+            "options": [
+              {
+                "value": "capitalize",
+                "label": "Capitalize"
+              },
+              {
+                "value": "uppercase",
+                "label": "Uppercase"
+              },
+              {
+                "value": "lowercase",
+                "label": "Lowercase"
+              },
+              {
+                "value": "initial",
+                "label": "Initial"
+              }
+            ],
+            "default": "initial"
+         },
+         {
+           	"type": "select",
+            "id": "text_alignment",
+            "label": "Text alignment",
+            "options": [
+              {
+                "value": "left",
+                "label": "Left"
+              },
+              {
+                "value": "right",
+                "label": "Right"
+              },
+              {
+                "value": "center",
+                "label": "Center"
+              }
+            ],
+            "default": "center"
+         }
+       ]
+     }
+  ],
+   "presets": [
+    {
+      "name": "Text blocks"
+    },
+    {
+      "name": "Announcement Bar - Sale",
+      "category": "Text",
+      "settings": {
+        "bg_color": "#e63946",
+        "top_margin": 0,
+        "bottom_margin": 0,
+        "top_padding": 15,
+        "bottom_padding": 15
+      },
+      "blocks": [
+        {
+          "type": "style",
+          "settings": {
+            "text": "Summer Sale - Up to 50% Off Everything!",
+            "border_color": "#ffffff",
+            "border_t": 0,
+            "border_b": 0,
+            "border_r": 0,
+            "border_l": 0,
+            "top_margin": 0,
+            "bottom_margin": 0,
+            "top_padding": 0,
+            "bottom_padding": 0,
+            "right_padding": 0,
+            "left_padding": 0,
+            "text_color": "#ffffff",
+            "text_font-weight": "bold",
+            "text_font-style": "normal",
+            "text_size": 18,
+            "text_size_mob": 16,
+            "text_transform": "uppercase",
+            "text_alignment": "center"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Feature Highlights",
+      "category": "Text",
+      "settings": {
+        "bg_color": "#f8f9fa",
+        "top_margin": 20,
+        "bottom_margin": 20,
+        "top_padding": 30,
+        "bottom_padding": 30
+      },
+      "blocks": [
+        {
+          "type": "style",
+          "settings": {
+            "text": "Free Shipping on Orders Over $50",
+            "border_color": "#2a9d8f",
+            "border_t": 0,
+            "border_b": 2,
+            "border_r": 0,
+            "border_l": 0,
+            "top_margin": 10,
+            "bottom_margin": 10,
+            "top_padding": 10,
+            "bottom_padding": 10,
+            "right_padding": 20,
+            "left_padding": 20,
+            "text_color": "#333333",
+            "text_font-weight": "normal",
+            "text_font-style": "normal",
+            "text_size": 20,
+            "text_size_mob": 18,
+            "text_transform": "initial",
+            "text_alignment": "center"
+          }
+        },
+        {
+          "type": "style",
+          "settings": {
+            "text": "30-Day Hassle-Free Returns",
+            "border_color": "#2a9d8f",
+            "border_t": 0,
+            "border_b": 2,
+            "border_r": 0,
+            "border_l": 0,
+            "top_margin": 10,
+            "bottom_margin": 10,
+            "top_padding": 10,
+            "bottom_padding": 10,
+            "right_padding": 20,
+            "left_padding": 20,
+            "text_color": "#333333",
+            "text_font-weight": "normal",
+            "text_font-style": "normal",
+            "text_size": 20,
+            "text_size_mob": 18,
+            "text_transform": "initial",
+            "text_alignment": "center"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Bordered Testimonial",
+      "category": "Text",
+      "settings": {
+        "bg_color": "#ffffff",
+        "top_margin": 40,
+        "bottom_margin": 40,
+        "top_padding": 40,
+        "bottom_padding": 40
+      },
+      "blocks": [
+        {
+          "type": "style",
+          "settings": {
+            "text": "\"The quality exceeded my expectations. I'll definitely be shopping here again!\"",
+            "border_color": "#1d3557",
+            "border_t": 1,
+            "border_b": 1,
+            "border_r": 1,
+            "border_l": 1,
+            "top_margin": 0,
+            "bottom_margin": 0,
+            "top_padding": 30,
+            "bottom_padding": 30,
+            "right_padding": 30,
+            "left_padding": 30,
+            "text_color": "#333333",
+            "text_font-weight": "normal",
+            "text_font-style": "italic",
+            "text_size": 22,
+            "text_size_mob": 18,
+            "text_transform": "initial",
+            "text_alignment": "center"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Minimal Announcement",
+      "category": "Text",
+      "settings": {
+        "bg_color": "#1d3557",
+        "top_margin": 0,
+        "bottom_margin": 0,
+        "top_padding": 10,
+        "bottom_padding": 10
+      },
+      "blocks": [
+        {
+          "type": "style",
+          "settings": {
+            "text": "New Collection Just Launched - Shop Now",
+            "border_color": "#ffffff",
+            "border_t": 0,
+            "border_b": 0,
+            "border_r": 0,
+            "border_l": 0,
+            "top_margin": 0,
+            "bottom_margin": 0,
+            "top_padding": 5,
+            "bottom_padding": 5,
+            "right_padding": 0,
+            "left_padding": 0,
+            "text_color": "#ffffff",
+            "text_font-weight": "normal",
+            "text_font-style": "normal",
+            "text_size": 16,
+            "text_size_mob": 14,
+            "text_transform": "uppercase",
+            "text_alignment": "center"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Callout Box",
+      "category": "Text",
+      "settings": {
+        "bg_color": "#ffd166",
+        "top_margin": 30,
+        "bottom_margin": 30,
+        "top_padding": 25,
+        "bottom_padding": 25
+      },
+      "blocks": [
+        {
+          "type": "style",
+          "settings": {
+            "text": "Limited Time Offer: Free Gift with Every Purchase Over $100",
+            "border_color": "#e63946",
+            "border_t": 0,
+            "border_b": 0,
+            "border_r": 0,
+            "border_l": 5,
+            "top_margin": 0,
+            "bottom_margin": 0,
+            "top_padding": 15,
+            "bottom_padding": 15,
+            "right_padding": 20,
+            "left_padding": 20,
+            "text_color": "#333333",
+            "text_font-weight": "bold",
+            "text_font-style": "normal",
+            "text_size": 24,
+            "text_size_mob": 20,
+            "text_transform": "initial",
+            "text_alignment": "left"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Gradient Banner",
+      "category": "Text",
+      "settings": {
+        "bg_gradient": "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+        "top_margin": 50,
+        "bottom_margin": 50,
+        "top_padding": 50,
+        "bottom_padding": 50
+      },
+      "blocks": [
+        {
+          "type": "style",
+          "settings": {
+            "text": "Transform Your Style with Our Premium Collection",
+            "border_color": "#ffffff",
+            "border_t": 2,
+            "border_b": 2,
+            "border_r": 2,
+            "border_l": 2,
+            "top_margin": 0,
+            "bottom_margin": 0,
+            "top_padding": 40,
+            "bottom_padding": 40,
+            "right_padding": 40,
+            "left_padding": 40,
+            "text_color": "#ffffff",
+            "text_font-weight": "bolder",
+            "text_font-style": "normal",
+            "text_size": 32,
+            "text_size_mob": 24,
+            "text_transform": "uppercase",
+            "text_alignment": "center"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,46 @@
+{%- liquid
+  assign text = text | default: 'Shop Now'
+  assign link = link | default: '#'
+  assign bg_color = bg_color | default: '#000000'
+  assign text_color = text_color | default: '#ffffff'
+  assign hover_bg_color = hover_bg_color | default: '#213a70'
+  assign hover_text_color = hover_text_color | default: '#ffffff'
+  assign full_width = full_width | default: false
+  assign border_radius = border_radius | default: 0
+  assign font_size = font_size | default: 12
+  assign padding_y = padding_y | default: 10
+  assign padding_x = padding_x | default: 20
+  assign new_window = new_window | default: false
+-%}
+
+<style>
+  .simple-cta-button {
+    background-color: {{ bg_color}};
+    color: {{ text_color }};
+    font-size: {{ font_size }}px;
+    padding: {{ padding_y }}px {{ padding_x }}px;
+    border-radius: {{ border_radius }}px;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+  
+  .simple-cta-btn-width-{{ id }} {
+    {% if full_width %}width: 100%;{%else%}width:max-content;{% endif %}
+  }
+  
+  .simple-cta-button:hover {
+    background-color: {{ hover_bg_color }};
+    color: {{ hover_text_color }};
+  }
+</style>
+
+<a 
+  href="{{ link }}" 
+  class="simple-cta-button simple-cta-btn-width-{{ id }}"
+  {% if new_window %}target="_blank" rel="noopener noreferrer"{% endif %}
+>
+  {{ text }}
+</a>

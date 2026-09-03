@@ -1,0 +1,202 @@
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    // Wait for jQuery to be available
+    if (window.jQuery) {
+      initFooterAccordion();
+    } else {
+      // Fallback if jQuery loads later
+      document.addEventListener('DOMContentLoaded', initFooterAccordion);
+    }
+
+    function initFooterAccordion() {
+      $('.accordion.footer-menu h3').click(function () {
+        $(this).next('ul').slideToggle();
+        $(this).find('.footer-menu-icon').toggleClass('footer__menu--rotate');
+      });
+    }
+  });
+</script>
+{% render 'footer',
+  container_classes: 'main-container-mx main-container-px my-6 md:mt-[80px]',
+  shop_description: section.settings.shop_description,
+  facebook_link: section.settings.facebook_link,
+  instagram_link: section.settings.instagram_link,
+  links: section.settings['footer-menu'].links,
+  app_heading: 'Get the App',
+  app_qr_code: section.settings.app_qr_code,
+  app_info_desktop: section.settings.app_info_desktop,
+  app_info_mobile: section.settings.app_info_mobile,
+  app_store_link: section.settings.app_store_link,
+  app_store_image: section.settings.app_store_img,
+  play_store_link: section.settings.play_store_link,
+  play_store_image: section.settings.play_store_img
+%}
+
+{% stylesheet %}
+  .footer-menu-icon{
+    transition: transform .5s;
+  }
+  .footer__menu--rotate {
+    transform: rotate(180deg);
+  }
+{% endstylesheet %}
+
+{%- schema -%}
+{
+  "name": "footer",
+  "tag": "footer",
+  "blocks": [
+    {
+      "name": "payment_option",
+      "type": "payment_option",
+      "settings": [
+        {
+          "type": "text",
+          "label": "Name",
+          "id": "payment_option_name"
+        },
+        {
+          "type": "image_picker",
+          "label": "Payment Option Image",
+          "id": "payment_option_img"
+        }
+      ]
+    }
+  ],
+  "settings": [
+    {
+      "type": "header",
+      "content": "Newsletter Settings"
+    },
+    {
+      "type": "text",
+      "label": "Subscribe section heading",
+      "id": "subscribe_form_heading",
+      "default": "Sign up to our newsletter",
+      "info": "Text to display to customer for email marketing."
+    },
+    {
+      "type": "text",
+      "label": "Subscribe button text",
+      "id": "subscribe_form_btn_text",
+      "default": "Subscribe",
+      "info": "Text to display on button."
+    },
+    {
+      "type": "header",
+      "content": "Footer Menu Settings"
+    },
+    {
+      "type": "text",
+      "label": "Shop Description",
+      "id": "shop_description",
+      "default": "Discover the latest fashion and trends in menswear and womenswear at London Clothing Company. Shop this season's luxury fаѕhіоn and urban brands, London style."
+    },
+    {
+      "type": "link_list",
+      "id": "footer-menu",
+      "label": "Footer menu",
+      "default": "footer"
+    },
+    {
+      "type": "header",
+      "content": "App Settings"
+    },
+    {
+      "type": "image_picker",
+      "label": "APP QR Code",
+      "id": "app_qr_code"
+    },
+    {
+      "type": "text",
+      "label": "QR Info",
+      "id": "app_info_desktop",
+      "default": "SCAN THE QR CODE WITH YOUR IOS OR ANDROID SMARTPHONE TO DOWNLOAD THE APP"
+    },
+    {
+      "type": "text",
+      "label": "Mobile App Info",
+      "id": "app_info_mobile",
+      "default": "DOWNLOAD AND GET 10% OFF YOUR FIRST APP ORDER. T&Cs APPLY."
+    },
+    {
+      "type": "url",
+      "id": "app_store_link",
+      "label": "App Store URL"
+    },
+    {
+      "type": "image_picker",
+      "label": "App Store Image",
+      "id": "app_store_img"
+    },
+    {
+      "type": "url",
+      "label": "Play Store URL",
+      "id": "play_store_link"
+    },
+    {
+      "type": "image_picker",
+      "label": "Play Store Image",
+      "id": "play_store_img"
+    },
+    {
+      "type": "header",
+      "content": "Social Media Settings"
+    },
+    {
+      "type": "url",
+      "label": "Facebook",
+      "id": "facebook_link",
+      "default": "/collections"
+    },
+    {
+      "type": "url",
+      "label": "Twitter",
+      "id": "twitter_link",
+      "default": "/collections"
+    },
+    {
+      "type": "url",
+      "label": "Instagram",
+      "id": "instagram_link",
+      "default": "/collections"
+    },
+    {
+      "type": "url",
+      "label": "Pinterest",
+      "id": "pinterest_link",
+      "default": "/collections"
+    },
+    {
+      "type": "url",
+      "label": "Snapchat",
+      "id": "snapchat_link",
+      "default": "/collections"
+    },
+    {
+      "type": "url",
+      "label": "TikTok",
+      "id": "tiktok_link",
+      "default": "/collections"
+    },
+    {
+      "type": "url",
+      "label": "Tumblr",
+      "id": "tumblr_link",
+      "default": "/collections"
+    },
+    {
+      "type": "url",
+      "label": "YouTube",
+      "id": "youtube_link",
+      "default": "/collections"
+    },
+    {
+      "type": "url",
+      "label": "Vimeo",
+      "id": "vimeo_link",
+      "default": "/collections"
+    }
+  ]
+}
+{%- endschema -%}

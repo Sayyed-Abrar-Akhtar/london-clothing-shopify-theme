@@ -1,0 +1,19 @@
+<a href="{{ link }}" class="flex flex-col items-center">
+  <div style="width:150px;">
+    {{
+      image
+      | image_url: width: 150, height: 200
+      | image_tag: height: 200, alt: title, style: 'object-fit: cover;', class: 'w-full'
+    }}
+
+    <div class="mt-2">
+      <strong class="text-[11px]">{{ title }}</strong>
+    </div>
+    <div class="flex gap-2 items-center text-[11px] mt-3">
+      <span>{{ price | money_with_currency }}</span>
+      {% if compare_at_price %}
+        <s>{{ compare_at_price | money_with_currency }}</s>
+      {% endif %}
+    </div>
+  </div>
+</a>

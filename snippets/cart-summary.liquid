@@ -1,0 +1,35 @@
+<div class="">
+  <div class="cart-summary-heading border-b border-gray-300 uppercase">
+    <h2>Order Summary</h2>
+  </div>
+  <div class="py-5 border-b border-gray-300">
+    <div class="flex justify-between items-center mb-5">
+      <span class="cart-text">Order Value</span>
+      <span class="cart-text" data-elem-value="cart-value">{{ cart.total_price | money_with_currency }}</span>
+    </div>
+    <div class="flex justify-between items-center">
+      <span class="cart-text">Delivery</span>
+      <span class="cart-text">Calculated at checkout</span>
+    </div>
+  </div>
+  <div class="py-5">
+    <div class="flex justify-between items-center mb-6">
+      <span class="cart-text">Subtotal</span>
+      <span class="cart-text" data-elem-value="cart-subtotal">{{ cart.total_price | money_with_currency }}</span>
+    </div>
+    <div class="flex items-center justify-end mb-5">
+      <p class="cart-text-tc">
+        BY CONTINUING TO CHECKOUT YOU AGREE TO THE
+        <a href="https://london-clothing.com/pages/terms-conditions" class="underline">terms and conditions</a>
+      </p>
+    </div>
+    <div>
+      <a
+        href="/checkout"
+        class="flex items-center justify-center uppercase mt-2 bg-black text-white w-full border-black border-[1px] hover:bg-[#213a70] hover:border-[#213a70] hover:text-white h-[45px] transition delay-75 cursor-pointer"
+      >
+        checkout
+      </a>
+    </div>
+  </div>
+</div>

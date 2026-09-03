@@ -1,0 +1,832 @@
+{% liquid
+  assign product_vendor = product.vendor
+  assign product_title = product.title
+  assign product_description = product.description
+  assign product_quantity = 0
+%}
+
+{% assign front_image_type = front_image.alt | split: ',' | first | strip %}
+{% assign front_image_color = front_image.alt | split: ',' | last | strip %}
+{% assign back_image_type = back_image.alt | split: ',' | first | strip %}
+{% assign back_image_color = back_image.alt | split: ',' | last | strip %}
+
+{% capture front_image_alternate_text %}
+{{front_image_type  | replace: 'of a product', '' | replace: 'of product', '' | capitalize }}{% if front_image_type contains 'model' %} wearing{% else %} of{% endif %} the {{product.title|capitalize}} in {{front_image_color | downcase}}, by brand {{product.vendor|capitalize}}
+{% endcapture %}
+{% capture back_image_alternate_text %}
+{{back_image_type  | replace: 'of a product', '' | replace: 'of product', '' | capitalize }}{% if back_image_type contains 'model' %} wearing{% else %} of{% endif %} the {{product.title|capitalize}} in {{back_image_color | downcase}}, by brand {{product.vendor|capitalize}}
+{% endcapture %}
+
+{% assign front_image_alt_text = front_image_alternate_text | strip %}
+{% assign back_image_alt_text = back_image_alternate_text | strip %}
+
+{% if variant != blank or variant != '' %}
+  {% liquid
+    assign product_compare_at_price = variant.compare_at_price
+    assign product_price = variant.price
+    assign product_available = false
+    assign active_color = variant.option1
+  %}
+  {% for prod_variant in product.variants %}
+    {% assign image_color = variant.featured_image.alt | split: ',' | last | strip %}
+    {% if prod_variant.option1 == image_color and prod_variant.available %}
+      {% assign product_quantity = product_quantity | plus: prod_variant.inventory_quantity %}
+      {% assign product_available = true %}
+    {% endif %}
+  {% endfor %}
+
+  {% liquid
+    assign product_url = variant.url
+    assign product_id = variant.id
+  %}
+
+{% else %}
+  {% liquid
+    assign product_compare_at_price = product.compare_at_price
+    assign product_price = product.price
+    assign product_available = product.available
+    assign product_url = product.url
+    assign product_id = product.id
+    assign active_color = product.selected_or_first_available_variant.option1
+  %}
+{% endif %}
+
+{% assign badge = 'new in' %}
+
+{% if product_compare_at_price > product_price %}
+  {% assign badge = 'sale' %}
+{% endif %}
+
+{% if product_available != true %}
+  {% assign badge = 'sold out' %}
+{% endif %}
+
+{% if product_quantity == 1 %}
+  {% assign badge = 'last one' %}
+{% endif %}
+
+{% comment %}
+  {% for tag in product.tags %}
+    {% if tag == 'black-friday' and product_compare_at_price > product_price %}
+      {% assign badge = 'Cyber Monday Sale' %}
+    {% endif %}
+  {% endfor %}
+{% endcomment %}
+
+<section
+  class="product--card {% if extraclass %}{{ extraclass }}{% endif %} relative coll_item self-stretch min-w-[140px] {% if max_width == blank %} max-w-[284px] sm:max-w-full {% endif %} w-full rounded-sm product min-h-max my-5 {% if product_available %} {% else %} hidden {% endif %}"
+  data-coll-type="{{ data_coll_type }}"
+  {% if max_width != blank %}
+    style="max-width:{{ max_width }};"
+  {% endif %}
+  data-prod-title="{{ product_title }}"
+  data-prod-color="{{ variant.featured_image.alt }}"
+  data-prod-img="{{ variant.featured_image | image_url }}"
+  data-prod-price="{{ product_price | money_with_currency }}"
+  data-prod-compare-price="{{ product_compare_at_price | money_with_currency }}"
+  data-front-image-alt="{{ front_image_alt_text }}"
+  data-back-image-alt="{{ back_image_alt_text }}"
+>
+  {% if search.performed %}
+    <span
+      class="hidden"
+      data-type="product-searched-results"
+      data-result='{"available":{{ product.available }},"body":"","compare_at_price_max":"{{ product.compare_at_price_max  | money_without_currency }}","compare_at_price_min":"{{ product.compare_at_price_min |money_without_currency }}","handle":"{{ product.handle }}","id":{{ product.id }},"image":"{{ product.featured_image.src | image_url: width: 800 }}","price":"{{ product.price |money_without_currency}}","price_max":"{{ product.price_max |money_without_currency}}","price_min":"{{ product.price_min |money_without_currency}}","tags":["{{ product.tags | join: '", "' }}"],"title":"{{ product.title }}","type":"{{ product.type }}","url":"{{ product.url }}","variants":[],"vendor":"{{ product.vendor }}","featured_image":{"alt":"{{ product.featured_image.alt }}","aspect_ratio":{{ product.featured_image.aspect_ratio }},"height":{{ product.featured_image.height }},"url":"{{ product.featured_image.src |image_url: width: 800  }}","width":{{ product.featured_image.width }}}}'
+    >
+    </span>
+  {% endif %}
+  <div
+    data-variantstock="{{product_quantity}}"
+    id="{{product_id}}-stock"
+    style="display: none;"
+  >
+    <p class="qv-disc-price">{{ product_price | money }}</p>
+    <del class="qv-org-price">{{ product_compare_at_price | money }}</del>
+  </div>
+
+  <div id="{{product_id}}-description" style="display: none;">
+    {{ product.description }}
+  </div>
+
+  {% comment %}
+    {%- if show_quickview == true -%}
+      {%- render 'quick-view',
+        variant_id: product_id,
+        product_title: product_title,
+        variant_stock: product_quantity,
+        images: product.images,
+        color: variant.option1
+      -%}
+    {%- endif -%}
+  {% endcomment %}
+
+  {% if product_available %}
+    <a
+      href="{{ product_url }}"
+      class="product-image border-red-300 border-1 block w-full overflow-hidden"
+    >
+      <div class="relative">
+        <span
+          class="absolute right-0 text-2xl md:hidden product-card-size-toggle--sm"
+          style="bottom:7px;padding-inline:10px;padding-block:5px;transition:transform 0.7s ease-out;"
+          onclick="showVariantSizes(event, this);"
+          data-sizes="close"
+          data-cart-drawer-el="close"
+          >+</span
+        >
+        {%- if show_quickview == true -%}
+          {% assign variant_showing = variant.option1 %}
+          <div class="variant-available-sizes variant--hidden">
+            <div class="variant-available-sizes-holder">
+              {% for variant in product.variants %}
+                <form
+                  action="{{ routes.cart_add_url }}"
+                  method="post"
+                  enctype="multipart/form-data"
+                  novalidate="novalidate"
+                >
+                  {% if variant.option1 == variant_showing %}
+                    {% if variant.inventory_quantity > 0 %}
+                      <input type="hidden" name="form_type" value="product">
+                      <input type="hidden" name="utf8" value="✓">
+                      <input type="hidden" name="id" value="{{variant.id}}">
+                      <button
+                        type="button"
+                        name="add"
+                        onclick="addVariantToCart(event,this);"
+                        class="variant-sizes available variant-{{product_id}}"
+                        data-variant="{{variant_showing_id}}"
+                        data-variantid="{{variant.id}}"
+                      >
+                        {{ variant.option2 }}
+                      </button>
+                    {% else %}
+                      <p
+                        class="variant-sizes no-stock variant-{{product_id}}"
+                        data-variant="{{variant_showing_id}}-sold"
+                        data-variantid="{{variant.id}}"
+                      >
+                        {{ variant.option2 }}
+                      </p>
+                    {% endif %}
+                  {% endif %}
+                </form>
+              {% endfor %}
+            </div>
+          </div>
+        {% endif %}
+        {% if front_image != blank %}
+          <section class="hidden md:!block relative featured-image aspect-[291/431] rounded-sm overflow-hidden w-full h-[250px] md:h-[431px] mb-4">
+            {{
+              front_image
+              | image_url: width: 300
+              | image_tag:
+                class: 'w-full',
+                widths: '100, 200, 300, 400, 500, 600, 700, 800',
+                preload: true,
+                alt: front_image_alt_text,
+                loading: loading,
+                fetchpriority: fetchpriority
+            }}
+            <span
+              id="product-badge-{{ product_id }}"
+              class="product-badge absolute bottom-10 md:bottom-16 left-0 text-[9px] md:text-[11px] font-semibold md:font-normal bg-[rgba(255,255,255,0.75)] text-black px-[8px] py-[5px] uppercase rounded-r"
+            >
+              {{ badge }}
+
+              {% if product_available
+                and product_compare_at_price != blank
+                and product_compare_at_price > product_price
+                and show_discount_badge
+              %}
+                <span id="discount-badge-{{ product_id }}" class="text-[11px] text-red-600">
+                  {{- product_price | times: 100 | divided_by: product_compare_at_price | minus: 100 }}%</span
+                >
+              {% endif %}
+            </span>
+            {% assign image_thumbnail = front_image | image_url: width: 50 %}
+            {% comment %}
+              {% if variant != blank or variant != '' %}
+                {% render 'card-wishlist-button',
+                  product_id: product.id,
+                  variant_id: variant.id,
+                  product_url: product.url,
+                  product_title: product_title,
+                  product_image: image_thumbnail
+                %}
+              {% else %}
+                {% render 'card-wishlist-button',
+                  product_id: product.id,
+                  variant_id: product.first_available_variant.id,
+                  product_url: product.url,
+                  product_title: product_title,
+                  product_image: image_thumbnail
+                %}
+              {% endif %}
+            {% endcomment %}
+          </section>
+
+          <section class="hidden md:!block absolute second-image aspect-[291/431] rounded-sm overflow-hidden w-full h-[250px] md:h-[431px] mb-4">
+            {% if back_image != blank %}
+              {{
+                back_image
+                | image_url: width: 300
+                | image_tag:
+                  class: 'w-full',
+                  widths: '100, 200, 300, 400, 500, 600, 700, 800',
+                  preload: true,
+                  alt: back_image_alt_text
+              }}
+            {% else %}
+              {{
+                front_image
+                | image_url: width: 300
+                | image_tag:
+                  class: 'w-full',
+                  widths: '100, 200, 300, 400, 500, 600, 700, 800',
+                  preload: true,
+                  alt: front_image_alt_text
+              }}
+            {% endif %}
+            <span
+              id="product-badge-{{ product_id }}"
+              class="product-badge absolute bottom-10 md:bottom-16 left-0 text-[9px] md:text-[11px] font-semibold md:font-normal bg-[rgba(255,255,255,0.75)] text-black px-[8px] py-[5px] uppercase rounded-r"
+            >
+              {{ badge }}
+
+              {% if product_available
+                and product_compare_at_price != blank
+                and product_compare_at_price > product_price
+                and show_discount_badge
+              %}
+                <span id="discount-badge-{{ product_id }}" class="text-[11px] text-red-600">
+                  {{- product_price | times: 100 | divided_by: product_compare_at_price | minus: 100 }}%</span
+                >
+              {% endif %}
+            </span>
+            {% comment %}
+              {% render 'card-wishlist-button',
+                product_id: product.id,
+                variant_id: product.first_available_variant.id,
+                product_url: product.url,
+                product_title: product_title,
+                product_image: image_thumbnail
+              %}
+            {% endcomment %}
+          </section>
+          <section class="md:hidden relative featured-image aspect-[291/431] rounded-sm overflow-hidden w-full h-[250px] md:h-[431px] mb-4">
+            {{
+              front_image
+              | image_url: width: 210
+              | image_tag:
+                class: 'w-full',
+                widths: '140, 210, 280, 350, 420, 490, 560, 630, 700',
+                preload: true,
+                alt: front_image_alt_text,
+                loading: loading,
+                fetchpriority: fetchpriority
+            }}
+            <span
+              id="product-badge-{{ product_id }}"
+              class="product-badge absolute bottom-10 md:bottom-16 left-0 text-[9px] md:text-[11px] font-semibold md:font-normal bg-[rgba(255,255,255,0.75)] text-black px-[8px] py-[5px] uppercase rounded-r"
+            >
+              {{ badge }}
+
+              {% if product_available
+                and product_compare_at_price != blank
+                and product_compare_at_price > product_price
+                and show_discount_badge
+              %}
+                <span id="discount-badge-{{ product_id }}" class="text-[11px] text-red-600">
+                  {{- product_price | times: 100 | divided_by: product_compare_at_price | minus: 100 }}%</span
+                >
+              {% endif %}
+            </span>
+            {% assign image_thumbnail = front_image | image_url: width: 50 %}
+            {% comment %}
+              {% if variant != blank or variant != '' %}
+                {% render 'card-wishlist-button',
+                  product_id: product.id,
+                  variant_id: variant.id,
+                  product_url: product.url,
+                  product_title: product_title,
+                  product_image: image_thumbnail
+                %}
+              {% else %}
+                {% render 'card-wishlist-button',
+                  product_id: product.id,
+                  variant_id: product.first_available_variant.id,
+                  product_url: product.url,
+                  product_title: product_title,
+                  product_image: image_thumbnail
+                %}
+              {% endif %}
+            {% endcomment %}
+          </section>
+
+          <section class="md:hidden absolute second-image aspect-[291/431] rounded-sm overflow-hidden w-full h-[250px] md:h-[431px] mb-4">
+            {% if back_image != blank %}
+              {{
+                back_image
+                | image_url: width: 210
+                | image_tag:
+                  class: 'w-full',
+                  widths: '140, 210, 280, 350, 420, 490, 560, 630, 700',
+                  preload: true,
+                  alt: back_image_alt_text
+              }}
+            {% else %}
+              {{
+                front_image
+                | image_url: width: 210
+                | image_tag:
+                  class: 'w-full',
+                  widths: '140, 210, 280, 350, 420, 490, 560, 630, 700',
+                  preload: true,
+                  alt: front_image_alt_text
+              }}
+            {% endif %}
+            <span
+              id="product-badge-{{ product_id }}"
+              class="product-badge absolute bottom-10 md:bottom-16 left-0 text-[9px] md:text-[11px] font-semibold md:font-normal bg-[rgba(255,255,255,0.75)] text-black px-[8px] py-[5px] uppercase rounded-r"
+            >
+              {{ badge }}
+
+              {% if product_available
+                and product_compare_at_price != blank
+                and product_compare_at_price > product_price
+                and show_discount_badge
+              %}
+                <span id="discount-badge-{{ product_id }}" class="text-[11px] text-red-600">
+                  {{- product_price | times: 100 | divided_by: product_compare_at_price | minus: 100 }}%</span
+                >
+              {% endif %}
+            </span>
+            {% comment %}
+              {% render 'card-wishlist-button',
+                product_id: product.id,
+                variant_id: product.first_available_variant.id,
+                product_url: product.url,
+                product_title: product_title,
+                product_image: image_thumbnail
+              %}
+            {% endcomment %}
+          </section>
+          {% comment %}
+            {% if product.compare_at_price != blank%}
+            <span id='-badge-{{product.id}}' class="discount-badge absolute top-0 right-0  text-xl font-bold text-red-600"></span>
+            {% endif %}
+          {% endcomment %}
+
+        {% else %}
+          <section class="aspect-[291/431] overflow-hidden h-[400px]">
+            {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+          </section>
+        {% endif %}
+      </div>
+      <article class="text-[11px] mt-2" itemscope itemtype="http://schema.org/Product">
+        <p class="uppercase font-semibold leading-[19px] tracking-wide space-x-2 max-w-[280px]" itemprop="name">
+          {{ product_title }}
+        </p>
+        <p itemprop="vendor" class="uppercase mt-2">{{ product_vendor }}</p>
+        <div class="color-swatches-container flex items-center gap-1 py-1">
+          {% render 'color-swatches',
+            product: product,
+            color_values: product.options_by_name.color.values,
+            active_color: active_color
+          %}
+        </div>
+        {% comment %} <p class="leading-[19px]">{{ variant.option1 }}</p> {% endcomment %}
+        <p class="mb-3 leading-[19px]">
+          <data value="{{ product_price | money }}">{{ product_price | money_with_currency }}</data>
+          {% if product_compare_at_price != blank and product_compare_at_price > product_price %}
+            <!--
+              <span class="ml-2 relative before:content-[''] before:absolute before:top-[50%] before:left-0 before:w-full before:h-[1px] before:-rotate-12 before:bg-red-600 before:translate-y-[50%] after:content-[''] after:absolute after:top-[50%] after:left-0 after:w-full after:h-[1px] after:rotate-12 after:bg-red-600 after:translate-y-[50%]">{{ product_compare_at_price | money_with_currency }}</span>
+            -->
+            <s
+              ><data value="{{ product_compare_at_price | money }}">
+                {{- product_compare_at_price | money_with_currency -}}
+              </data></s
+            >
+          {% endif %}
+        </p>
+      </article>
+    </a>
+
+  {% else %}
+    <div
+      class="product-image border-red-300 border-1 block w-full overflow-hidden"
+    >
+      <div class="relative">
+        <span
+          class="absolute right-0 text-2xl md:hidden product-card-size-toggle--sm"
+          style="bottom:7px;padding-inline:10px;padding-block:5px;transition:transform 0.7s ease-out;"
+          onclick="showVariantSizes(event, this);"
+          data-sizes="close"
+          data-cart-drawer-el="close"
+          >+</span
+        >
+        {%- if show_quickview == true -%}
+          {% assign variant_showing = variant.option1 %}
+          <div class="variant-available-sizes variant--hidden">
+            <div class="variant-available-sizes-holder">
+              {% for variant in product.variants %}
+                <form
+                  action="{{ routes.cart_add_url }}"
+                  method="post"
+                  enctype="multipart/form-data"
+                  novalidate="novalidate"
+                >
+                  {% if variant.option1 == variant_showing %}
+                    {% if variant.inventory_quantity > 0 %}
+                      <input type="hidden" name="form_type" value="product">
+                      <input type="hidden" name="utf8" value="✓">
+                      <input type="hidden" name="id" value="{{variant.id}}">
+                      <button
+                        type="button"
+                        name="add"
+                        onclick="addVariantToCart(event,this);"
+                        class="variant-sizes available variant-{{product_id}}"
+                        data-variant="{{variant_showing_id}}"
+                        data-variantid="{{variant.id}}"
+                      >
+                        {{ variant.option2 }}
+                      </button>
+                    {% else %}
+                      <p
+                        class="variant-sizes no-stock variant-{{product_id}}"
+                        data-variant="{{variant_showing_id}}-sold"
+                        data-variantid="{{variant.id}}"
+                      >
+                        {{ variant.option2 }}
+                      </p>
+                    {% endif %}
+                  {% endif %}
+                </form>
+              {% endfor %}
+            </div>
+          </div>
+        {% endif %}
+        {% if front_image != blank %}
+          <section class="hidden md:!block relative featured-image aspect-[291/431] rounded-sm overflow-hidden w-full h-[250px] md:h-[431px] mb-4">
+            {{
+              front_image
+              | image_url: width: 300
+              | image_tag:
+                class: 'w-full',
+                widths: '100, 200, 300, 400, 500, 600, 700, 800',
+                preload: true,
+                alt: front_image_alt_text,
+                loading: loading,
+                fetchpriority: fetchpriority
+            }}
+            <span
+              id="product-badge-{{ product_id }}"
+              class="product-badge absolute bottom-10 md:bottom-16 left-0 text-[9px] md:text-[11px] font-semibold md:font-normal bg-[rgba(255,255,255,0.75)] text-black px-[8px] py-[5px] uppercase rounded-r"
+            >
+              {{ badge }}
+
+              {% if product_available
+                and product_compare_at_price != blank
+                and product_compare_at_price > product_price
+                and show_discount_badge
+              %}
+                <span id="discount-badge-{{ product_id }}" class="text-[11px] text-red-600">
+                  {{- product_price | times: 100 | divided_by: product_compare_at_price | minus: 100 }}%</span
+                >
+              {% endif %}
+            </span>
+            {% assign image_thumbnail = front_image | image_url: width: 50 %}
+            {% comment %}
+              {% if variant != blank or variant != '' %}
+                {% render 'card-wishlist-button',
+                  product_id: product.id,
+                  variant_id: variant.id,
+                  product_url: product.url,
+                  product_title: product_title,
+                  product_image: image_thumbnail
+                %}
+              {% else %}
+                {% render 'card-wishlist-button',
+                  product_id: product.id,
+                  variant_id: product.first_available_variant.id,
+                  product_url: product.url,
+                  product_title: product_title,
+                  product_image: image_thumbnail
+                %}
+              {% endif %}
+            {% endcomment %}
+          </section>
+
+          <section class="hidden md:!block absolute second-image aspect-[291/431] rounded-sm overflow-hidden w-full h-[250px] md:h-[431px] mb-4">
+            {% if back_image != blank %}
+              {{
+                back_image
+                | image_url: width: 300
+                | image_tag:
+                  class: 'w-full',
+                  widths: '100, 200, 300, 400, 500, 600, 700, 800',
+                  preload: true,
+                  alt: back_image_alt_text
+              }}
+            {% else %}
+              {{
+                front_image
+                | image_url: width: 300
+                | image_tag:
+                  class: 'w-full',
+                  widths: '100, 200, 300, 400, 500, 600, 700, 800',
+                  preload: true,
+                  alt: front_image_alt_text
+              }}
+            {% endif %}
+            <span
+              id="product-badge-{{ product_id }}"
+              class="product-badge absolute bottom-10 md:bottom-16 left-0 text-[9px] md:text-[11px] font-semibold md:font-normal bg-[rgba(255,255,255,0.75)] text-black px-[8px] py-[5px] uppercase rounded-r"
+            >
+              {{ badge }}
+
+              {% if product_available
+                and product_compare_at_price != blank
+                and product_compare_at_price > product_price
+                and show_discount_badge
+              %}
+                <span id="discount-badge-{{ product_id }}" class="text-[11px] text-red-600">
+                  {{- product_price | times: 100 | divided_by: product_compare_at_price | minus: 100 }}%</span
+                >
+              {% endif %}
+            </span>
+            {% comment %}
+              {% render 'card-wishlist-button',
+                product_id: product.id,
+                variant_id: product.first_available_variant.id,
+                product_url: product.url,
+                product_title: product_title,
+                product_image: image_thumbnail
+              %}
+            {% endcomment %}
+          </section>
+          <section class="md:hidden relative featured-image aspect-[291/431] rounded-sm overflow-hidden w-full h-[250px] md:h-[431px] mb-4">
+            {{
+              front_image
+              | image_url: width: 210
+              | image_tag:
+                class: 'w-full',
+                widths: '140, 210, 280, 350, 420, 490, 560, 630, 700',
+                preload: true,
+                alt: front_image_alt_text
+            }}
+            <span
+              id="product-badge-{{ product_id }}"
+              class="product-badge absolute bottom-10 md:bottom-16 left-0 text-[9px] md:text-[11px] font-semibold md:font-normal bg-[rgba(255,255,255,0.75)] text-black px-[8px] py-[5px] uppercase rounded-r"
+            >
+              {{ badge }}
+
+              {% if product_available
+                and product_compare_at_price != blank
+                and product_compare_at_price > product_price
+                and show_discount_badge
+              %}
+                <span id="discount-badge-{{ product_id }}" class="text-[11px] text-red-600">
+                  {{- product_price | times: 100 | divided_by: product_compare_at_price | minus: 100 }}%</span
+                >
+              {% endif %}
+            </span>
+            {% comment %}
+              {% assign image_thumbnail = front_image | image_url: width: 50 %}
+                {% if variant != blank or variant != '' %}
+                  {% render 'card-wishlist-button',
+                    product_id: product.id,
+                    variant_id: variant.id,
+                    product_url: product.url,
+                    product_title: product_title,
+                    product_image: image_thumbnail
+                  %}
+                {% else %}
+                  {% render 'card-wishlist-button',
+                    product_id: product.id,
+                    variant_id: product.first_available_variant.id,
+                    product_url: product.url,
+                    product_title: product_title,
+                    product_image: image_thumbnail
+                  %}
+                {% endif %}
+            {% endcomment %}
+          </section>
+
+          <section class="md:hidden absolute second-image aspect-[291/431] rounded-sm overflow-hidden w-full h-[250px] md:h-[431px] mb-4">
+            {% if back_image != blank %}
+              {{
+                back_image
+                | image_url: width: 210
+                | image_tag:
+                  class: 'w-full',
+                  widths: '140, 210, 280, 350, 420, 490, 560, 630, 700',
+                  preload: true,
+                  alt: back_image_alt_text
+              }}
+            {% else %}
+              {{
+                front_image
+                | image_url: width: 210
+                | image_tag:
+                  class: 'w-full',
+                  widths: '140, 210, 280, 350, 420, 490, 560, 630, 700',
+                  preload: true,
+                  alt: front_image_alt_text
+              }}
+            {% endif %}
+            <span
+              id="product-badge-{{ product_id }}"
+              class="product-badge absolute bottom-10 md:bottom-16 left-0 text-[9px] md:text-[11px] font-semibold md:font-normal bg-[rgba(255,255,255,0.75)] text-black px-[8px] py-[5px] uppercase rounded-r"
+            >
+              {{ badge }}
+
+              {% if product_available
+                and product_compare_at_price != blank
+                and product_compare_at_price > product_price
+                and show_discount_badge
+              %}
+                <span id="discount-badge-{{ product_id }}" class="text-[11px] text-red-600">
+                  {{- product_price | times: 100 | divided_by: product_compare_at_price | minus: 100 }}%</span
+                >
+              {% endif %}
+            </span>
+            {% comment %}
+              {% render 'card-wishlist-button',
+                product_id: product.id,
+                variant_id: product.first_available_variant.id,
+                product_url: product.url,
+                product_title: product_title,
+                product_image: image_thumbnail
+              %}
+            {% endcomment %}
+          </section>
+          {% comment %}
+            {% if product.compare_at_price != blank%}
+            <span id='-badge-{{product.id}}' class="discount-badge absolute top-0 right-0  text-xl font-bold text-red-600"></span>
+            {% endif %}
+          {% endcomment %}
+
+        {% else %}
+          <section class="aspect-[291/431] overflow-hidden h-[400px]">
+            {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+          </section>
+        {% endif %}
+      </div>
+      <article class="text-[11px] mt-2" itemscope itemtype="http://schema.org/Product">
+        <p class="uppercase font-semibold leading-[19px] tracking-wide space-x-2 max-w-[280px]" itemprop="name">
+          {{ product_title }}
+        </p>
+        <p itemprop="vendor" class="uppercase mt-2">{{ product_vendor }}</p>
+        <div class="color-swatches-container flex items-center gap-1 py-1 test-color-swatch">
+          {% render 'color-swatches',
+            product: product,
+            color_values: product.options_by_name.color.values,
+            active_color: active_color
+          %}
+        </div>
+        {% comment %} <p class="leading-[19px]">{{ variant.option1 }}</p> {% endcomment %}
+        <p class="mb-3 leading-[19px]">
+          <data value="{{ product_price | money }}">{{ product_price | money_with_currency }}</data>
+          {% if product_compare_at_price != blank and product_compare_at_price > product_price %}
+            <!--
+              <span class="ml-2 relative before:content-[''] before:absolute before:top-[50%] before:left-0 before:w-full before:h-[1px] before:-rotate-12 before:bg-red-600 before:translate-y-[50%] after:content-[''] after:absolute after:top-[50%] after:left-0 after:w-full after:h-[1px] after:rotate-12 after:bg-red-600 after:translate-y-[50%]">{{ product_compare_at_price | money_with_currency }}</span>
+            -->
+            <s>
+              <data value="{{ product_compare_at_price | money }}">
+                {{- product_compare_at_price | money_with_currency -}}
+              </data>
+            </s>
+          {% endif %}
+        </p>
+      </article>
+    </div>
+  {% endif %}
+
+  <style>
+    [data-cart-drawer-el="open"] {
+      z-index:1;
+    }
+    [data-cart-drawer-el="close"] {
+      z-index:100;
+    }
+    .variant-available-sizes {
+      width:100%;
+      background-color: #ffffff;
+      padding: 10px;
+      position: absolute;
+      z-index: 1;
+      bottom: 0;
+      left: 0;
+      transition: all 0.5s;
+    }
+    .variant-available-sizes.variant--hidden{
+      visibility: hidden;
+      opacity: 0;
+    }
+    .variant-available-sizes-holder {
+      display: flex;
+      gap: 2px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .variant-sizes {
+      margin: 0;
+      font-size: 8px !important;
+      font-weight: 500;
+      padding:8px;
+    }
+    .variant-sizes.available:hover {
+      text-decoration:underline;
+    }
+     @media (min-width: 768px) {
+      .variant-available-sizes {
+        display:none;
+        transition: none;
+      }
+      .product--card:hover .variant-available-sizes{
+        display: block;
+        visibility: visible;
+        opacity:1;
+      }
+      .variant-sizes {
+        margin: 0;
+        font-size: 10px !important;
+        font-weight: 700;
+      }
+    }
+    .no-stock {
+      cursor:default;
+      color: #999999;
+      text-decoration: line-through;
+    }
+    .variant-sizes-sold {
+      width: 100px;
+    }
+  </style>
+
+  <script type="application/ld+json">
+    {
+    "@context": "http://schema.org/",
+                                                                                                                                                                                                            "@type": "Product",
+                                                                                                                                                                                                            "name": {{ product_title | json }},
+    "url": {{ request.origin | append: product_url | json }},
+    {% if seo_media -%}
+      "image": [
+      {{ seo_media | image_url: width: 1920 | prepend: "https:" | json }}
+      ],
+    {%- endif %}
+    "description": {{ product_description | strip_html | json }},
+    "sku": {{ product_sku | json }},
+    "brand": {
+                                                                                                                                                                                                            "@type": "Brand",                                                        "name": {{ product_vendor | json }}
+    },
+    "offers": [
+    {% if variant == blank or variant == "" %}
+      {%- for prod_variant in product.prod_variants -%}
+        {
+        "@type" : "Offer",
+        {%- if prod_variant.sku != blank -%}
+          "sku": {{ prod_variant.sku | json }},
+        {%- endif -%}
+        {%- if prod_variant.barcode.size == 12 -%}
+          "gtin12": {{ prod_variant.barcode }},
+        {%- endif -%}
+        {%- if prod_variant.barcode.size == 13 -%}
+          "gtin13": {{ prod_variant.barcode }},
+        {%- endif -%}
+        {%- if prod_variant.barcode.size == 14 -%}
+          "gtin14": {{ prod_variant.barcode }},
+        {%- endif -%}
+        "availability" : "http://schema.org/{% if prod_variant.available %}InStock{% else %}OutOfStock{% endif %}",
+        "price" : {{ prod_variant.price | divided_by: 100.00 | json }},
+        "priceCurrency" : {{ cart.currency.iso_code | json }},
+        "url" : {{ request.origin | append: prod_variant.url | json }}
+        }{% unless forloop.last %},{% endunless %}
+      {%- endfor -%}
+    {% else %}
+      {
+      "@type" : "Offer",
+      {%- if variant.sku != blank -%}
+        "sku": {{ variant.sku | json }},
+      {%- endif -%}
+      {%- if variant.barcode.size == 12 -%}
+        "gtin12": {{ variant.barcode }},
+      {%- endif -%}
+      {%- if variant.barcode.size == 13 -%}
+        "gtin13": {{ variant.barcode }},
+      {%- endif -%}
+      {%- if variant.barcode.size == 14 -%}
+        "gtin14": {{ variant.barcode }},
+      {%- endif -%}
+      "availability" : "http://schema.org/{% if variant.available %}InStock{% else %}OutOfStock{% endif %}",
+      "price" : {{ variant.price | divided_by: 100.00 | json }},
+      "priceCurrency" : {{ cart.currency.iso_code | json }},
+      "url" : {{ request.origin | append: variant.url | json }}
+      }
+    {% endif %}
+    ]
+    }
+  </script>
+</section>

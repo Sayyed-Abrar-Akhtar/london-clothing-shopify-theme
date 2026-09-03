@@ -1,0 +1,61 @@
+<div class="w-[95%] sm:w-[90%] md:w-[80%] lg:w-[70%] mx-auto my-32">
+  <h1 class="tracking-wide text-center my-16 font-semibold text-xs md:text-[18px] md:font-bold uppercase leading-tight">
+    {{ page.title | escape }}
+  </h1>
+  <div class="rte">
+    {{ page.content }}
+  </div>
+</div>
+
+{% style %}
+  .rte > p {
+    margin: 8px 0;
+  }
+
+  .rte > p > strong {
+    margin-top: 4px;
+    display: inline-block;
+  }
+
+  .rte > .page-h3 {
+    font-weight: 700;
+  }
+
+  .rte > p > .page-content {
+    border-bottom: 1px solid black;
+    margin-top: 20px;
+    width: 100%;
+  }
+
+  .rte > ol {
+    margin-left: 25px;
+    list-style: lower-alpha;
+  }
+
+  .rte > .page-footer {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 100px 0;
+  }
+
+  .rte > .page-footer > a {
+    margin: 0 30px;
+    padding: 5px 10px;
+    min-width: 150px;
+    background: #0c0c0c2e;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-transform: uppercase;
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "main-page",
+  "tag": "section",
+  "class": "section"
+}
+{% endschema %}

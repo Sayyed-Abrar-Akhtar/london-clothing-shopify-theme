@@ -1,0 +1,89 @@
+<div>
+  <div class="rounded-none border border-l-0 border-r-0 border-t-0 border-neutral-200 bg-white">
+    <h2 class="mb-0" id="flush-headingOne">
+      <button
+        id="{{ accordion_btn_id }}"
+        onclick="{{ fn }}"
+        class="relative uppercase tracking-[2px] font-semibold !text-[0.75rem] flex w-full items-center rounded-none border-0 bg-white px-5 py-4 text-left text-base text-neutral-800 transition"
+        type="button"
+      >
+        {{ title }}
+        <span class="accordion-icon {%if is_expanded%}{%else%}display_content--icon{% endif %} mr-1 ml-auto h-5 w-5 shrink-0 rotate-[-180deg] fill-[#336dec] transition-transform duration-200 ease-in-out ">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="h-6 w-6"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+          </svg>
+        </span>
+      </button>
+    </h2>
+    <div
+      data-accordion-content="accordion-content"
+      data-accordion-of="{{ accordion_btn_id }}"
+      class="{%if is_expanded%}accordion--show{%else%}accordion--hide{% endif %} border-0 uppercase tracking-[1px] leading-[170%]"
+    >
+      <div id="{{id}}" class="px-5 pb-4">
+        {% if content != blank %}
+          <p>{{ content }}</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% style %}
+  #local_shipping_policy > p,
+  #shipping_policy > p,
+  #faqs_info > p,
+  #product_material_info > ul,
+  #product_description_info > p,
+  #product_description_info > ul {
+    font-size: 0.75rem;
+    line-height: 150%;
+    font-weight: 400;
+    letter-spacing: 0.25px;
+    margin: 10px 0;
+  }
+
+  #local_shipping_policy > h3 > strong,
+  #shipping_policy > h3 > strong,
+  #faqs_info > p > strong,
+  #faqs_info > h3,
+  #product_material_info > ul > li > strong,
+  #product_description_info > p > strong {
+    font-size: 0.72rem;
+    margin: 10px 0 8px;
+    font-weight: 900;
+  }
+
+  #faqs_info > p:has( > strong) {
+    width: 100%;
+    border-bottom: 1px solid black;
+    margin-bottom: 0;
+  }
+
+  .accordion--show {
+
+    display: block;
+    opacity: 1;
+    transition: opacity 1s;
+  }
+
+  .accordion--hide {
+    display: none;
+    opacity: 0;
+    transition: opacity 1s;
+  }
+
+  .display_content--icon {
+    transform: rotate(0deg);
+  }
+{% endstyle %}

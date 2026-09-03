@@ -1,0 +1,43 @@
+{% assign form_style = 'md:justify-' | append: formPos %}
+{% assign form_class = 'w-full flex ' | append: form_style %}
+{% form 'customer', class: form_class %}
+  <section class="py-[10px] newsletter-form-container">
+    <section class="flex gap-2 items-center w-full">
+      <input
+        class="bg-transparent border-b border-black"
+        style="padding-bottom:6px;font-size:12px; flex-grow:1;"
+        type="email"
+        name="contact[email]"
+        aria-required="true"
+        autocorrect="off"
+        autocapitalize="off"
+        autocomplete="email"
+        {% if form.errors %}
+          autofocusaria-invalid="true"aria-describedby="Newsletter-error"
+        {% elsif form.posted_successfully? %}
+          aria-describedby="Newsletter-success"
+        {% endif -%}
+        placeholder="Enter your email"
+        required
+      >
+      <input
+        class="uppercase cursor-pointer {{ btnstyles }}"
+        type="submit"
+        value="{{- buttonText -}}"
+      >
+    </section>
+    <p class="{{ extraInfoStyles }}">{{ extrainfo }}</p>
+  </section>
+  {%- if form.posted_successfully? -%}
+    <h3
+      class="flex"
+      tabindex="-1"
+      autofocus
+    >
+      <span class="w-[20px] h-[20px]">
+        {% render 'icon-success' %}
+      </span>
+      <span class="ml-1"> Thanks for subscribing! </span>
+    </h3>
+  {%- endif -%}
+{% endform %}

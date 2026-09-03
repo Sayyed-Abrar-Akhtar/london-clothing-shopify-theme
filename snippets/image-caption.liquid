@@ -1,0 +1,19 @@
+<div class="caption-content" styles="{{ caption_styles | strip }}">
+  {%- if heading_one != blank -%}
+    <h1 class="caption-heading" style="{{ heading_styles | strip }}">{{ heading_one }}</h1>
+  {% else %}
+    <h2 class="caption-heading" style="{{ heading_styles | strip }}">{{ heading }}</h2>
+  {%- endif -%}
+
+  {%- if paragraph != blank -%}
+    <div class="caption-paragraph" style="{{ paragraph_styles | strip }}">{{ paragraph }}</div>
+  {%- endif -%}
+
+  {%- if cta_label != blank and cta_link != blank -%}
+    <div class="w-full flex align-center" style="{{ cta_container_styles | strip }}">
+      <a href="{{ cta_link }}" class="caption-cta" style="{{ cta_styles | strip }}">
+        {{ cta_label }}
+      </a>
+    </div>
+  {%- endif -%}
+</div>

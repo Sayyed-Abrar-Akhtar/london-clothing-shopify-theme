@@ -1,0 +1,234 @@
+/* ========================================
+   COLLECTION PAGE CONTENT STYLING
+   Luxury Editorial Style - Small Type, Generous Spacing
+   ======================================== */
+
+/* Container System - Full Width to Controlled Width */
+.header-content{
+  text-align:center;
+}
+.collection-content-section {
+  width: 100%;
+}
+
+.content-wrapper {
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 1.5rem; /* Breathing room on mobile */
+  box-sizing: border-box;
+}
+
+/* Responsive Container Widths */
+@media screen and (min-width: 501px) {
+  .content-wrapper {
+    width: 100%;
+    max-width: 800px; /* Never wider than 800px for comfortable reading */
+    padding: 0;
+  }
+}
+
+/* Typography Foundation - All sizes in px as requested */
+.text-block {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  line-height: 1.7; /* Generous leading for readability with small text */
+  color: #1a1a1a; /* Soft black, easier on eyes */
+  max-width: 100%;
+}
+
+/* Headings - 12/13px as requested */
+.text-block h2 {
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.1em; /* Luxury brands use wide letter-spacing */
+  text-transform: uppercase;
+  margin: 3rem 0 1.5rem 0; /* Top margin creates separation between sections */
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #e0e0e0; /* Subtle divider */
+  color: #000;
+}
+
+/* First heading shouldn't have massive top margin */
+.text-block:first-of-type h2 {
+  margin-top: 1rem;
+}
+
+/* Body Text - 11px as requested */
+.text-block p {
+  font-size: 11px;
+  line-height: 1.9; /* Extra line height for 11px text */
+  margin-bottom: 1.75rem;
+  color: #333;
+}
+
+/* Bold text within paragraphs */
+.text-block p strong {
+  font-weight: 600;
+  color: #000;
+  letter-spacing: 0.02em;
+}
+
+/* Links */
+.text-block a {
+  color: #000;
+  text-decoration: none;
+  border-bottom: 1px solid #ccc;
+  transition: border-color 0.2s ease;
+  font-weight: 400;
+}
+
+.text-block a:hover {
+  border-bottom-color: #000;
+}
+
+/* Shop by Accessory Type - Special styling for the descriptive paragraphs */
+.text-block p:has(strong) {
+  /* Paragraphs that start with bold text (like "Men's Belts —") */
+  margin-bottom: 1.5rem;
+}
+
+/* Styled List (Why Choose section) */
+.styled-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 2rem 0;
+}
+
+.styled-list li {
+  font-size: 11px;
+  line-height: 1.8;
+  margin-bottom: 1rem;
+  padding-left: 2rem;
+  position: relative;
+  color: #333;
+}
+
+.styled-list li::before {
+  content: "—";
+  position: absolute;
+  left: 0;
+  color: #999;
+  font-size: 11px;
+}
+
+.styled-list li strong {
+  font-weight: 600;
+  color: #000;
+  display: inline-block;
+  min-width: 7rem; /* Aligns the strong text nicely */
+}
+
+/* FAQ Section */
+.faq-item {
+  margin-bottom: 2rem;
+}
+
+.faq-question {
+  font-size: 11px;
+  font-weight: 600;
+  margin-bottom: 0.35rem;
+  color: #000;
+  letter-spacing: 0.02em;
+}
+
+.faq-item p {
+  margin-bottom: 0.5rem;
+}
+
+.faq-item p:last-child {
+  margin-bottom: 0;
+}
+
+/* The London Edit Styling */
+.text-block p:has(> strong):not(:has(.faq-question)) {
+  /* Special styling for the styling suggestions */
+  border-left: 2px solid #e0e0e0;
+  padding-left: 0.25rem;
+  margin: 1.5rem 0;
+}
+
+/* Small Note (Brand Footnote) */
+.small-note {
+  font-size: 10px;
+  text-align: center;
+  color: #999;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin: 3rem 0 2rem 0;
+}
+
+/* Divider (hr) */
+hr {
+  border: 0;
+  border-top: 1px solid #eaeaea;
+  margin: 2.5rem 0;
+  width: 40px; /* Short, subtle divider */
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Spacing between sections */
+section.text-block {
+  margin-bottom: 2.5rem;
+}
+
+/* Mobile fine-tuning */
+@media screen and (max-width: 500px) {
+  .content-wrapper {
+    padding: 0 1.25rem;
+  }
+  
+  .text-block h2 {
+    font-size: 12px; /* Slightly smaller on mobile */
+    margin-top: 2rem;
+  }
+  
+  .text-block p,
+  .styled-list li,
+  .faq-question {
+    font-size: 10.5px; /* Just a touch smaller but keeps readability */
+    line-height: 1.85;
+  }
+  
+  .styled-list li {
+    padding-left: 1.5rem;
+  }
+  
+  .styled-list li strong {
+    min-width: 6rem; /* Slightly smaller on mobile */
+  }
+}
+
+/* Very small screens */
+@media screen and (max-width: 375px) {
+  .content-wrapper {
+    padding: 0 1rem;
+  }
+  
+  .text-block h2 {
+    font-size: 11px;
+  }
+  
+  .text-block p,
+  .styled-list li,
+  .faq-question {
+    font-size: 10px;
+  }
+}
+
+/* Print styles - for anyone who prints your lookbook */
+@media print {
+  .text-block {
+    color: #000;
+  }
+  
+  .text-block a {
+    text-decoration: underline;
+    border-bottom: none;
+  }
+  
+  .content-wrapper {
+    width: 100%;
+    max-width: none;
+    padding: 0;
+  }
+}

@@ -1,0 +1,111 @@
+{%- unless template == 'index' or template == 'cart' or template == 'list-collections' or template == '404' -%}
+  {%- assign t = template | split: '.' | first -%}
+
+  <nav
+    class="py-2 my-2 max-w-fit uppercase md:tracking-[1px] !text-xs sm:!text-xs md:text-sm"
+    role="navigation"
+    aria-label="breadcrumbs"
+  >
+    <ol class="flex ">
+      <li class="">
+        <a class="text-black hover:text-semibold" href="/">Home</a>
+      </li>
+      {%- case t -%}
+        {%- when 'search' -%}
+          <li class="">
+            {% render 'breadcrumbs-separator' %}
+            search
+          </li>
+        {%- when 'page' -%}
+          <li class="">
+            {% render 'breadcrumbs-separator' %}
+            {{ page.title }}
+          </li>
+        {%- when 'product' -%}
+          {%- if collection.url -%}
+            {% render 'breadcrumbs-separator' %}
+            <li class="">
+              <a
+                class="text-black hover:text-semibold"
+                href="{{ product.url }}"
+                aria-current="page"
+              >
+                {% render 'breadcrumbs-separator' -%}
+                {{- collection.title | link_to: collection.url }}
+              </a>
+            </li>
+          {%- endif -%}
+          <li class="">
+            {% render 'breadcrumbs-separator' -%}
+            {{- product.title }}
+          </li>
+        {%- when 'collection' and collection.handle -%}
+          {%- if current_tags -%}
+            {% render 'breadcrumbs-separator' %}
+            <li class="">
+              <a
+                class="text-black hover:text-semibold"
+                href="{{ collection.url }}"
+                aria-current="page"
+              >
+                {{- collection.title | link_to: collection.url -}}
+              </a>
+            </li>
+            <li class="">
+              {%- capture tag_url -%}
+              {{ collection.url }}/{{ current_tags | join: "+" }}{%- endcapture -%}
+              {% render 'breadcrumbs-separator' -%}
+              {{- current_tags | join: ' + ' }}
+            </li>
+          {%- else -%}
+            <li class="">
+              {% render 'breadcrumbs-separator' -%}
+              {{- collection.title }}
+            </li>
+          {%- endif -%}
+        {%- when 'blog' -%}
+          {%- if current_tags -%}
+            <li class="">
+              <a
+                class="text-black hover:text-semibold pr-2"
+                href="{{ blog.url }}"
+                aria-current="page"
+              >
+                {{- blog.title | link_to: blog.url -}}
+              </a>
+            </li>
+            <li class="">
+              {%- capture tag_url -%}
+              {{ blog.url }}/tagged/{{ current_tags | join: "+" }}{%- endcapture -%}
+              {% render 'breadcrumbs-separator' -%}
+              {{- current_tags | join: ' + ' }}
+            </li>
+          {%- else -%}
+            <li class="">
+              {% render 'breadcrumbs-separator' -%}
+              {{- blog.title }}
+            </li>
+          {%- endif -%}
+        {%- when 'article' -%}
+          <li class="">
+            <a
+              class="text-black hover:text-semibold"
+              href="{{ article.url }}"
+              aria-current="page"
+            >
+              {{- blog.title | link_to: blog.url -}}
+            </a>
+          </li>
+          <li class="">
+            {% render 'breadcrumbs-separator' -%}
+            {{- article.title }}
+          </li>
+        {%- else -%}
+          <li class="">
+            {% render 'breadcrumbs-separator' -%}
+            {{- page_title }}
+          </li>
+      {%- endcase -%}
+    </ol>
+  </nav>
+{%- endunless -%}

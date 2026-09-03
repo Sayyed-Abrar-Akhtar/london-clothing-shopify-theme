@@ -1,0 +1,371 @@
+{{ 'product-card.css' | asset_url | stylesheet_tag }}
+
+{% if section.settings.shuffleActive %}
+  <script src="{{ 'shuffle-collection.js' | asset_url }}"></script>
+{% endif %}
+<script src="{{ 'show-filter.js' | asset_url }}" defer></script>
+
+{% paginate search.results by 50 -%}
+  {% for item in search.results %}
+    {% if item.object_type == 'product' %}
+      {% for tag in item.tags %}
+        {% if tag == 'newin' %}
+          <span
+            class="hidden"
+            data-type="product-searched-results-newin"
+            data-result='{"available":{{ item.available }},"body":"","compare_at_price_max":"{{ item.compare_at_price_max  | money_without_currency }}","compare_at_price_min":"{{ item.compare_at_price_min |money_without_currency }}","handle":"{{ item.handle }}","id":{{ item.id }},"image":"{{ item.featured_image.src | image_url: width: 800 }}","price":"{{ item.price |money_without_currency}}","price_max":"{{ item.price_max |money_without_currency}}","price_min":"{{ item.price_min |money_without_currency}}","tags":["{{ item.tags | join: '", "' }}"],"title":"{{ item.title }}","type":"{{ item.type }}","url":"{{ item.url }}","variants":[],"vendor":"{{ item.vendor }}","featured_image":{"alt":"{{ item.featured_image.alt }}","aspect_ratio":{{ item.featured_image.aspect_ratio }},"height":{{ item.featured_image.height }},"url":"{{ item.featured_image.src |image_url: width: 800  }}","width":{{ item.featured_image.width }}}}'
+          >
+          </span>
+        {% else %}
+          <span
+            class="hidden"
+            data-type="product-searched-results-sale"
+            data-result='{"available":{{ item.available }},"body":"","compare_at_price_max":"{{ item.compare_at_price_max  | money_without_currency }}","compare_at_price_min":"{{ item.compare_at_price_min |money_without_currency }}","handle":"{{ item.handle }}","id":{{ item.id }},"image":"{{ item.featured_image.src | image_url: width: 800 }}","price":"{{ item.price |money_without_currency}}","price_max":"{{ item.price_max |money_without_currency}}","price_min":"{{ item.price_min |money_without_currency}}","tags":["{{ item.tags | join: '", "' }}"],"title":"{{ item.title }}","type":"{{ item.type }}","url":"{{ item.url }}","variants":[],"vendor":"{{ item.vendor }}","featured_image":{"alt":"{{ item.featured_image.alt }}","aspect_ratio":{{ item.featured_image.aspect_ratio }},"height":{{ item.featured_image.height }},"url":"{{ item.featured_image.src |image_url: width: 800  }}","width":{{ item.featured_image.width }}}}'
+          >
+          </span>
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+  {% endfor %}
+{% endpaginate %}
+
+{% paginate search.results by 50 -%}
+  {% assign totalSearchedPages = 1 %}
+
+  {% if search.results_count <= 50 %}
+    {% assign totalSearchedPages = 1 %}
+  {% else %}
+    {% assign totalSearchedPages = search.results_count | divided_by: 50 | ceil | plus: totalSearchedPages %}
+  {% endif %}
+
+  <section class="flex justify-between items-center my-0 md:my-4 w-full" id="{{ section.id }}">
+    {% render 'breadcrumbs' %}
+
+    <!--
+      <section>
+        <button id="filter_btn" class="filter-btn relative p-1 sm:py-1 sm:px-2 md:py-1 md:px-3 lg:py-2 lg:px-8 border-[1px] border-black hover:bg-black hover:text-white" onclick="toggleFilter('filter_btn', 'filter_container')">filter <span class="ml-2">+</span></button>
+
+      </section>
+    -->
+  </section>
+  <!--
+    <section class="w-full h-0 relative filter" id="filter_container">
+    <section class="w-full p-3 absolute top-0 left-0 bg-white border-2 border-black">
+      {% render 'collection-filter' %}
+    </section>
+    </section>
+  -->
+  <h1 class="text-center  uppercase tracking-wide font-bold my-8">
+    {%- if search.results_count > 0 -%}
+      Search results for "{{ search.terms }}"
+    {%- else -%}
+      Search for "{{ search.terms }}" did not yield any results.
+    {%- endif -%}
+  </h1>
+  <p id="mainSearchResultCountValue" class="hidden" data-search-result-count="{{ search.results_count }}">
+    {{ search.results_count }}
+  </p>
+  <form action="{{ routes.search_url }}" class="flex justify-center w-[80%] mx-auto mb-14" id="mainSearchFormContainer">
+    <div class="relative w-full">
+      <input
+        id="mainSearchInput"
+        class="main-search-page-input w-full mx-auto border-2 border-black font-normal text-black"
+        type="text"
+        name="q"
+        placeholder=""
+        value="{{ search.terms | escape }}"
+      >
+      <label for="mainSearchInput">Search</label>
+      <button class="absolute bottom-5 right-4">{%- render 'icon-search-thin', class: 'w-[13px] h-[13px]' -%}</button>
+    </div>
+  </form>
+  <section
+    id="{{ collection.handle }}_{{ collection.id }}"
+    data-current-page="{{ paginate.current_page }}"
+    data-pages="{{ totalSearchedPages }}"
+    style="column-gap:4%;opacity:0;"
+    class="search-res-box grid gap-5 grid-cols-2 md:grid-cols-3 lg:grid-cols-4 mb-12"
+  >
+    {% for product in search.results %}
+      
+      {% if product.object_type == 'product' -%}
+        {% comment %}
+          {% assign has_negative_stock = false %}
+          {% for variant in product.variants %}
+            {% if variant.inventory_quantity < 0 %}
+              {% assign has_negative_stock = true %}
+            {% endif %}
+          {% endfor %}
+        {% endcomment %}
+        {% comment %}{% if has_negative_stock == false %}{% endcomment %}
+
+        {% liquid
+          assign frontImage = ''
+          assign backImage = ''
+        %}
+
+        {% assign variant_color = '' %}
+        {% for variant in product.variants %}
+          {% for image in product.images %}
+            {% assign image_color = image.alt | split: ',' | last | strip %}
+            {% if variant.option1 == image_color and variant_color != image_color %}
+              {% assign variant_color = image_color %}
+              {% liquid
+                assign front_image = image.src
+                assign image_position = image.position
+              %}
+              {% assign current_img_color = product.images[image_position].alt | split: ',' | last | strip %}
+
+              {% if current_img_color == image_color %}
+                {% assign back_image = product.images[image_position].src %}
+              {% else %}
+                {% assign back_image = front_image %}
+              {% endif %}
+              {% comment %}
+                <p>{{frontImage}}-->{{backImage}}-->{{imagePosition}}</p>
+
+                <!--!!{{ product.title }}-
+                {{ variant.title }}!!-->
+              {% endcomment %}
+
+              
+              {%-
+                render 'card-product',
+                product: product,
+                front_image: front_image,
+                back_image: back_image,
+                variant: variant,
+                extraclass: 'brand__collection-item',
+                data_coll_type: 'MAIN_COLLECTION',
+                show_discount_badge: settings.show_discount_badge,
+                show_quickview: true,
+                loading: forloop.index0 < 2 ? 'eager' : 'lazy',
+                fetchpriority: forloop.first ? 'high' : 'auto'
+              -%}
+
+              {% break %}
+            {% endif %}
+          {% endfor %}
+        {% endfor %}
+        {% comment %}{%- endif -%}{% endcomment %}
+      {%- endif -%}
+    {% endfor %}
+  </section>
+  {% comment %} <section class="flex items-center justify-center my-10">
+    <button
+      id="load-more-btn--{{ collection.handle }}"
+      class="border-[1px] border-black px-10 py-2 lowercase hover:bg-black hover:text-white"
+    >
+      Load more
+    </button>
+  </section> {% endcomment %}
+{% endpaginate %}
+{% render 'loader', id: 'moreProductsLoader', coll_handle: collection.handle %}
+<script>
+  const urlParams = new URLSearchParams(window.location.search);
+  const searchBox = document.querySelector('.search-res-box')
+   // Only update if changed
+  if (!urlParams.get('sort_by')) {
+    
+    urlParams.set('sort_by', 'price-descending');
+    window.history.pushState({}, '', `?${urlParams.toString()}`);
+    
+    window.location.href= `${window.location.pathname}?${urlParams.toString()}`;
+  }
+
+  setTimeout(function(){
+    searchBox.style.opacity = 1;
+  }, 900)
+  
+  (()=> {
+
+  {% if section.settings.shuffleActive %}
+  collectionShuffler('MAIN_COLLECTION', null)
+  {% endif %}
+
+  /**
+  Handle load more functionality in a optimistic way
+  */
+
+  // declare loadMoreElements variable
+  let loadMoreElements = []
+
+  // get parent dom element to append loadMoreElements
+  const productsParentElement = document.getElementById('{{ collection.handle }}_{{ collection.id }}')
+
+  //console.log("productsParentElement", productsParentElement)
+
+  // get loadMoreElement 
+  const loadMoreElement = document.getElementById('load-more-btn--{{ collection.handle }}')
+
+  //console.log('loadMoreElement',loadMoreElement)
+
+  const totalPages = Number(productsParentElement.dataset.pages)
+  let currentPage = Number(productsParentElement.dataset.currentPage)
+  let nextPage = currentPage + 1
+  const baseURL = window.location.href
+  let testPages = {{totalSearchedPages}}
+  //console.log({totalPages, currentPage, nextPage, baseURL, productsParentElement, loadMoreElement, testPages})
+  
+  // hide load more button until window is loaded completely
+  loadMoreElement.style.display = 'none';
+  
+  // fetch next page items when window is loaded
+  window.onload =(event) => {
+   
+    
+    // check if next page is available
+    if (nextPage <= totalPages) {
+    loadMoreElement.style.display = 'block';
+
+    loadMoreElements = loadMoreProducts(baseURL, nextPage, false)
+    //console.log({loaded: loadMoreElements})
+    //console.log({currentPage, nextPage})
+    currentPage = nextPage
+    nextPage = currentPage + 1
+    //console.log({currentPage, nextPage})
+    } else {
+      loadMoreElement.remove()
+    }
+  }
+
+
+  loadMoreElement.addEventListener('click', ()=>{
+    loadMoreElements.forEach(item=>productsParentElement.insertAdjacentElement('beforeend', item))
+    setTimeout(()=>{
+
+      if (nextPage < totalPages) {
+        //console.log({nextPage, currentPage})
+        loadMoreElements = loadMoreProducts(baseURL, nextPage, false)
+        //console.log({loaded: loadMoreElements})
+        currentPage = nextPage
+        nextPage = currentPage + 1
+        //console.log({nextPage, currentPage})        
+      } else {
+        loadMoreElements.forEach(item=>productsParentElement.insertAdjacentElement('beforeend', item))
+        loadMoreElement.remove()
+      }
+    }, 100)
+  })
+  
+
+  function loadMoreProducts(baseURL, nextPage, isAsyncReq = true) {
+    //console.log(`${baseURL}?page=${nextPage}`)
+    const xhr = new XMLHttpRequest();
+    //console.log('UNSENT', xhr.readyState); // readyState will be 0
+
+    xhr.open('GET', `${baseURL}${baseURL.includes('?') ? '&':'?'}page=${nextPage}`, isAsyncReq); // readyState will be 1
+
+    xhr.onprogress = () => {
+        //console.log('LOADING', xhr.readyState); // readyState will be 3
+    };
+
+    xhr.onload = (data) => {
+      //console.log({loadMoreElements});
+      const elem = document.createElement('div')
+      elem.innerHTML = data.target.responseText
+      
+      loadMoreElements =shuffleArr([ ...Array.prototype.slice.call(elem.getElementsByClassName('product--card'))]); 
+      //console.log({loadMoreElements})
+    };
+
+    xhr.send(null);
+    return loadMoreElements;
+  }
+  })()
+</script>
+
+{% stylesheet %}
+  .filter-btn--show {
+    visibility:visible;
+  }
+
+  .filter-btn {
+    visibility:hidden;
+  }
+
+  .filter {
+    visibility: hidden;
+    transform: translateY(-10px);
+    z-index:50;
+    transition: all 0.1s;
+    animation: easeOutFilter;
+    backface-visibility: hidden;
+  }
+
+  .filter--active {
+    visibility: visible;
+    z-index: 2;
+    transform: translateY(0);
+    transition: all 0.5s;
+    animation: easeOutFilter;
+    backface-visibility: hidden;
+  }
+
+  .main-search-page-input{
+    padding: 18px 19px 5px;
+    font-size:13px;
+    line-height:19.5px;
+  }
+
+  .main-search-page-input ~ label{
+    font-size: 16px;
+    left: 21px;
+    top: 11px;
+    margin-bottom: 0;
+    pointer-events: none;
+    position: absolute;
+    transition: top 0.1s ease, font-size 0.1s ease;
+    color: rgba(18,18,18, .75);
+    letter-spacing: 1px;
+    line-height: 1.5;
+    text-transform:uppercase;
+  }
+
+  .main-search-page-input:focus ~ label,
+  .main-search-page-input:not(:placeholder-shown) ~ label{
+    font-size: 10px;
+    top:6px;
+    letter-spacing:0.4px;
+  }
+
+  @keyframes easeOutFilter {
+    0 {
+      transform: translateY(0);
+    } 50% {
+      transform: translateY(10px);
+    } 100% {
+      transform: translateY(0);
+    }
+  }
+  @media(min-width:476px) {
+    #mainSearchFormContainer{
+      max-width:476px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "main-search",
+  "tag": "section",
+  "class": "mt-10 mb-20",
+  "settings": [
+    {
+      "type": "checkbox",
+      "label": "Shuffle Collection",
+      "id": "shuffleActive",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "products_range",
+      "min": 12,
+      "max": 32,
+      "step": 4,
+      "label": "Number of Products",
+      "default": 12
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,178 @@
+{% comment %} <script src="{{ 'cart-items.js' | asset_url }}" defer></script> {% endcomment %}
+
+<nav
+  class="nav-smenu-mob lg:mt-0 md:hidden cursor-pointer placeholder:text-lg text-lg"
+  x-data="{ showMenu: false , showCart: false}"
+>
+  <section class="fixed w-full top-0 h-[72px] z-[160] bg-white border-b-[1px] justify-start">
+    <section class="flex justify-between main-container-mx h-full items-center">
+      <section class="flex items-start justify-start">
+        <section onclick="toggleMenu()">
+          {%- render 'icon-menu-thin', class: 'w-[20px] h-[20px]' -%}
+        </section>
+        <section class="">
+          {%- if section.settings['logo-img'] != blank -%}
+            <a href="{{ routes.root_url }}">{{ section.settings['logo-img'] | image_url: width: 175 | image_tag: alt: shop.name }}</a>
+          {%- else -%}
+            <a href="{{ routes.root_url }}">{{ shop.name }}</a>
+          {%- endif -%}
+        </section>
+      </section>
+      <section class="flex items-center justify-end gap-4" data="nav-account">
+        {% comment %}
+          <section class="language-switcher-container relative">
+            {%- render 'language-switcher', class: 'language-switcher-mobile' -%}
+            {%- render 'form-localization', device: 'mob' -%}
+          </section>
+        {% endcomment %}
+        <section class="w-[20px]">
+          <div onclick="toggleCartDrawer()">
+            {%- render 'icon-cart-thin', class: 'w-[20px] h-[20px]' -%}
+          </div>
+        </section>
+        <section>
+          <a href="{{ routes.account_url }}" class="flex flex-col items-center w-max mx-auto" aria-label="my account">
+            <section>
+              {%- render 'icon-account-thin', class: 'w-[20px] h-[20px]' -%}
+            </section>
+          </a>
+        </section>
+      </section>
+    </section>
+  </section>
+
+  <section
+    id="mobile_menu_container"
+    class="fixed w-full top-[72px] z-10 h-[calc(100vh-72px)] bg-white overflow-y-scroll menu--inactive"
+  >
+    {%- render 'mobile-search' -%}
+
+    {%- render 'mobile-menu' for section.settings['main-menu'] as item -%}
+  </section>
+
+  {% comment %}
+    <section class="fixed w-full bottom-0 h-[72px] z-[160] bg-white border-t-[1px]">
+      <section class="flex m-auto items-center justify-center max-w-[400px] h-full">
+        <section class="min-w-[30%] mx-[5%]">
+          <section class="flex flex-col items-center w-max mx-auto" onclick="toggleMenu()">
+            <section>
+              {%- render 'icon-hamburgerbar', class: 'w-[40px] h-[20px]' -%}
+            </section>
+            <p class="text-[11px] tracking-[1px] pt-1">
+              {{- section.settings.menu-text -}}
+            </p>
+          </section>
+        </section>
+        <section class="min-w-[30%] mx-[5%]">
+          <a href="/account" class="flex flex-col items-center w-max mx-auto">
+            <section>
+              {%- render 'icon-account-thin', class: 'w-[20px] h-[20px]' -%}
+            </section>
+            <p class="text-[11px] tracking-[1px] pt-1">
+              {{- section.settings.account-text -}}
+            </p>
+          </a>
+        </section>
+      </section>
+    </section>
+  {% endcomment %}
+</nav>
+
+<script>
+  function toggleCartDrawer() {
+    loadCart("cart_drawer_container", "cart_drawer");
+    const menuContainer = document.getElementById('mobile_menu_container');
+    //console.log("menuContainer", menuContainer)
+
+
+    menuContainer.classList.remove('menu--active');
+    menuContainer.classList.add('menu--inactive');
+
+  }
+
+  function toggleMenu() {
+    const menuContainer = document.getElementById('mobile_menu_container');
+    const cartDrawerContainer = document.getElementById('cart_drawer');
+
+    menuContainer.classList.toggle('menu--active');
+    menuContainer.classList.toggle('menu--inactive');
+    //console.log("cartDrawerContainer", cartDrawerContainer);
+    if (cartDrawerContainer.classList.contains('drawer--active')) {
+      cartDrawerContainer.classList.remove('drawer--active');
+      cartDrawerContainer.classList.add('drawer--inactive');
+    }
+  }
+</script>
+
+{% style %}
+ 
+  .menu--active {
+    visibility: visible;
+    display: block;
+    z-index: 150;
+    animation: slideMenuIn 1s;
+  }
+
+  .menu--inactive {
+    visibility: hidden;
+    display: none;
+    animation: slideMenuOut 1s;
+    z-index: -100;
+    transition: visibility 0.5s, z-index 1.5s;
+  }
+
+  @keyframes slideMenuIn {
+    from {
+      transform: translateX(-100vw);
+    }
+    to {
+      transform: translateX(0vw);
+
+    }
+  }
+  @keyframes slideMenuOut {
+    from {
+      transform: translateX(0vw);
+    }
+    to {
+      transform: translateX(-100vw);
+
+    }
+  }
+  nav.nav-smenu-mob{
+    display:block;
+  }
+  @media (min-width: 450px) {
+    nav.nav-smenu-mob{
+      display:none;
+    }
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "mobile-navigation",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "logo-img",
+      "label": "Logo"
+    }, {
+      "type": "text",
+      "id": "menu-text",
+      "label": "Menu name",
+      "default": "shop"
+    }, {
+      "type": "text",
+      "id": "account-text",
+      "label": "Account name",
+      "default": "login"
+    }, {
+      "type": "link_list",
+      "id": "main-menu",
+      "label": "Main Menu",
+      "default": "main-menu"
+    }
+  ]
+}
+{% endschema %}

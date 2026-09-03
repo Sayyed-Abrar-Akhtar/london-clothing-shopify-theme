@@ -1,0 +1,192 @@
+<div class="sa-filter-loader hidden">
+  <span class="w-10 h-10 rounded-full spinner--animate"></span>
+</div>
+<div class="sa-filter-loading--bg hidden">&nbsp;</div>
+<section id="sectionSaFilter">
+  <div class="sa-heading-box">
+    <p class="w-1/2 sa-heading sa-collection-filter-title-font">Filters</p>
+    <p class="w-1/2 flex justify-end items-center">
+      <span class="sa-icon-close cursor-pointer" id="saIconCloseBtn">
+        {% render 'icon-close', style: 'width:28px; height: 28px;' %}
+      </span>
+    </p>
+  </div>
+  <div class="sa-filter-window hidden">
+    <section class="sa-filter-container">
+      <div class="sa-filters-box">
+        {% for filter in collection.filters %}
+          <p class="sa-filters-heading sa-collection-filter-headings-font">{{ filter.label }}</p>
+          {%- case filter.type -%}
+            {%- when 'price_range' -%}
+              <div class="text-xs uppercase">
+                <div class="sa-price-filter-box">
+                  <div class="flex gap-2">
+                    <span class="sa-price-label price-range-label sa-collection-filter-labels-font w-1/2">
+                      {{ cart.currency.symbol }}
+                      <label
+                        id="sa-filter-label-gte"
+                        for="Filter-{{- filter.min_value.param_name -}}"
+                      >
+                        {% if filter.min_value.value %}
+                          {{- filter.min_value.value | money_without_currency | replace: ',', '' -}}
+                        {% else %}
+                          0
+                        {% endif %}
+                      </label>
+                    </span>
+                    <span class="flex items-center justify-center text-4xl">&dash;</span>
+                    <span class="sa-price-label price-range-label sa-collection-filter-labels-font w-1/2">
+                      {{ cart.currency.symbol }}
+                      <label
+                        id="sa-filter-label-lte"
+                        for="Filter-{{- filter.max_value.param_name -}}"
+                      >
+                        {% if filter.max_value.value %}
+                          {{- filter.max_value.value | money_without_currency | replace: ',', '' -}}
+                        {% else %}
+                          {{ filter.range_max | money_without_currency | replace: ',', '' }}
+                        {% endif %}
+                      </label>
+                    </span>
+                  </div>
+                  <div class="relative">
+                    <input
+                      onclick="applyFilter(event, [{filter_type:'{{ filter.min_value.param_name }}'}])"
+                      class="price-range-slider"
+                      style="left:0;"
+                      type="range"
+                      name="{{ filter.min_value.param_name }}"
+                      id="Filter-{{- filter.min_value.param_name -}}"
+                      {% if filter.min_value.value -%}
+                        value="{{ filter.min_value.value | money_without_currency | replace: ',', '' }}"
+                      {% else %}
+                        value="0"
+                      {%- endif -%}
+                      min="0"
+                      max="{{ filter.range_max | divided_by: 2 | ceil  | money_without_currency | replace: ',', '' }}"
+                    >
+
+                    <input
+                      class="price-range-slider"
+                      onclick="applyFilter(event, [{filter_type:'{{ filter.max_value.param_name }}'}])"
+                      style="right:0;"
+                      type="range"
+                      name="{{ filter.max_value.param_name }}"
+                      id="Filter-{{- filter.max_value.param_name -}}"
+                      {% if filter.max_value.value -%}
+                        value="{{ filter.max_value.value | money_without_currency | replace: ',', '' }}"
+                      {% else %}
+                        value="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                      {%- endif -%}
+                      min="0"
+                      max="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                    >
+                  </div>
+                </div>
+              </div>
+            {%- when 'boolean' -%}
+              <ul class="sa-filters">
+                <li class="sa-filter-list sa-collection-filter-labels-font">
+                  <label for="Filter-{{ filter.param_name }}-{{ filter.true_value.value }}">
+                    {{- filter.true_value.label -}}
+                  </label>
+                  <input
+                    onclick="applyFilter(event, [{filter_type:'{{ filter_value.param_name }}', filter_value:'{{ filter_value.value }}'}])"
+                    type="checkbox"
+                    name="{{ filter.param_name }}"
+                    value="{{ filter.true_value.value }}"
+                    id="Filter-{{ filter.param_name }}-{{ filter.true_value.value }}"
+                    {% if filter.true_value.active -%}
+                      checked
+                    {%- endif %}
+                    {% if filter.true_value.count == 0 and filter.true_value.active == false -%}
+                      disabled
+                    {%- endif -%}
+                  >
+                </li>
+                <li class="sa-filter-list sa-collection-filter-labels-font">
+                  <label for="Filter-{{ filter.param_name }}-{{ filter.false_value.value }}">
+                    {{- filter.false_value.label -}}
+                  </label>
+                  <input
+                    type="checkbox"
+                    name="{{ filter.param_name }}"
+                    value="{{ filter.false_value.value }}"
+                    id="Filter-{{ filter.param_name }}-{{ filter.false_value.value }}"
+                    {% if filter.false_value.active -%}
+                      checked
+                    {%- endif %}
+                    {% if filter.false_value.count == 0 and filter.false_value.active == false -%}
+                      disabled
+                    {%- endif %}
+                  >
+                </li>
+              </ul>
+            {%- when 'list' -%}
+              <ul class="sa-filters">
+                {%- for filter_value in filter.values -%}
+                  <li class="sa-filter-list sa-collection-filter-labels-font">
+                    <label for="{{- filter_value.label -}}">
+                      <span>
+                        {%- case filter_value.display.type -%}
+                          {%- when 'colors' -%}
+                            {% liquid
+                              assign size_limit = filter_value.display.value.size | at_most: 4
+                              assign rotation = '0deg'
+                              if size_limit == 2
+                                assign rotation = '45deg'
+                              endif
+
+                              assign angle_increment = 360 | divided_by: size_limit
+                              assign angle = 0
+                            %}
+                            {%- capture conic_gradient -%}
+                            {%- for color in filter_value.display.value limit: size_limit -%}
+                              {{ color }} {{ angle }}deg{%- assign angle = angle | plus: angle_increment %} {{ angle }}deg{%- unless forloop.last %}, {%- endunless -%}
+                            {%- endfor -%}
+                          {%- endcapture -%}
+                            <span
+                              style="
+                                width: 25px;
+                                height: 25px;
+                                border-radius: 50%;
+                                display: flex;
+                                justify-content: center;
+                                align-items: center;
+                                background: conic-gradient({{ conic_gradient }}); transform: rotateZ({{ rotation }});
+                              "
+                            ></span>
+                          {%- when 'image' -%}
+                            {{
+                              filter_value.display.value
+                              | image_url: width: 25
+                              | image_tag: alt: filter_value.display.value.alt
+                            }}
+                          {%- else -%}
+                            <span class="visual-display__child"></span>
+                        {%- endcase -%}
+                      </span>
+                      {{ filter_value.label }}
+                    </label>
+                    <input
+                      onclick="applyFilter(event, [{filter_type:'{{ filter_value.param_name }}', filter_value:'{{ filter_value.value }}'}])"
+                      type="checkbox"
+                      name="{{ filter_value.param_name }}"
+                      value="{{ filter_value.value }}"
+                      id="{{- filter_value.label -}}"
+                      {% if filter_value.active -%}
+                        checked
+                      {%- endif %}
+                      {% if filter_value.count == 0 and filter_value.active == false -%}
+                        disabled
+                      {%- endif %}
+                    >
+                  </li>
+                {%- endfor -%}
+              </ul>
+          {% endcase %}
+        {% endfor %}
+      </div>
+    </section>
+  </div>
+</section>

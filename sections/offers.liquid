@@ -1,0 +1,394 @@
+{% for textblock in section.blocks %}
+  <style>
+    .offer-{{- textblock.id -}} {
+      padding-block: {{ textblock.settings.spacing }}px;
+      font-weight: {{ textblock.settings.text-font-weight }};
+      font-style: {{ textblock.settings.text-font-style }};
+      text-align: {{ textblock.settings.align }};
+      font-size: clamp({{ textblock.settings.text-size-mobile }}px, {{ textblock.settings.text-size-tablet }}px, {{ textblock.settings.text-size }}px);
+      color: {{ textblock.settings.text-color }};
+      line-height: 1.3;
+    }
+
+    @media (min-width: 768px) {
+      .offer-{{- textblock.id -}} {
+        font-size: {{ textblock.settings.text-size-tablet }}px;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .offer-{{- textblock.id -}} {
+        font-size: {{ textblock.settings.text-size }}px;
+      }
+    }
+  </style>
+{% endfor %}
+
+<div style="padding-inline:5%; background-color:{{ section.settings.bg-color }}; padding-block:{{ section.settings.spacing-y }}px; margin-top:{{- section.settings.margin-top -}}px; margin-bottom:{{- section.settings.margin-bottom -}}px">
+  <div class="flex flex-col items-center" style="gap: {{ section.settings.text_buttons_gap }}px;">
+    <!-- Text Content -->
+    <div class="w-full px-2 lg:px-4">
+      {% for block in section.blocks %}
+        <p class="offer-{{- block.id -}}">
+          {{ block.settings.text }}
+        </p>
+      {% endfor %}
+    </div>
+
+    <!-- Buttons - Always beneath text -->
+    {% if section.settings['left-btn-link'] or section.settings['right-btn-link'] %}
+      <div
+        class="flex flex-col sm:flex-row items-center justify-center w-full max-w-md lg:max-w-2xl"
+        style="gap: {{ section.settings.buttons_gap }}px;"
+      >
+        {% if section.settings['left-btn-link'] %}
+          <a
+            href="{{ section.settings.left-btn-link }}"
+            style="width:{% if section.settings['right-btn-link'] %}{{- section.settings.btn-width-mobile -}}%{% else %}{{- section.settings.btn-width-single -}}%{% endif %};"
+            class="bg-white text-black text-xs lg:text-[13px] px-4 lg:px-6 py-2 lg:py-3 uppercase text-center inline-block hover:opacity-90 transition-opacity duration-200 whitespace-nowrap sm:w-auto"
+          >
+            {{- section.settings['left-btn-text'] -}}
+          </a>
+        {% endif %}
+
+        {% if section.settings['right-btn-link'] %}
+          <a
+            href="{{ section.settings.right-btn-link }}"
+            style="width:{% if section.settings['left-btn-link'] %}{{- section.settings.btn-width-mobile -}}%{% else %}{{- section.settings.btn-width-single -}}%{% endif %};"
+            class="bg-white text-black text-xs lg:text-[13px] px-4 lg:px-6 py-2 lg:py-3 uppercase text-center inline-block hover:opacity-90 transition-opacity duration-200 whitespace-nowrap sm:w-auto"
+          >
+            {{- section.settings['right-btn-text'] -}}
+          </a>
+        {% endif %}
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+{% schema %}
+{
+  "tag": "section",
+  "name": "Promotional Banner",
+  "settings": [
+    {
+      "type": "range",
+      "id": "btn-width-mobile",
+      "min": 40,
+      "max": 80,
+      "step": 5,
+      "unit": "%",
+      "default": 60,
+      "label": "Button Width - Mobile (when two buttons)"
+    },
+    {
+      "type": "range",
+      "id": "btn-width-single",
+      "min": 30,
+      "max": 70,
+      "step": 5,
+      "unit": "%",
+      "default": 50,
+      "label": "Button Width - Single Button"
+    },
+    {
+      "type": "range",
+      "id": "margin-top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0,
+      "label": "Top Margin"
+    },
+    {
+      "type": "range",
+      "id": "margin-bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0,
+      "label": "Bottom Margin"
+    },
+    {
+      "type": "range",
+      "id": "text_buttons_gap",
+      "min": 0,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "default": 24,
+      "label": "Gap Between Text and Buttons"
+    },
+    {
+      "type": "range",
+      "id": "buttons_gap",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 16,
+      "label": "Gap Between Buttons"
+    },
+    {
+      "type": "text",
+      "label": "Left Button Text",
+      "id": "left-btn-text",
+      "default": "Shop Now"
+    },
+    {
+      "type": "url",
+      "label": "Left Button Link",
+      "id": "left-btn-link"
+    },
+    {
+      "type": "text",
+      "label": "Right Button Text",
+      "id": "right-btn-text",
+      "default": "Learn More"
+    },
+    {
+      "type": "url",
+      "label": "Right Button Link",
+      "id": "right-btn-link"
+    },
+    {
+      "type": "color",
+      "id": "bg-color",
+      "label": "Background Color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "spacing-y",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 20,
+      "label": "Vertical Spacing"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "text",
+      "name": "Text",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "Your promotional text here"
+        },
+        {
+          "type": "color",
+          "id": "text-color",
+          "label": "Text Color",
+          "default": "#ffffff"
+        },
+        {
+          "type": "select",
+          "id": "text-font-weight",
+          "label": "Text Font Weight",
+          "options": [
+            {
+              "label": "Bold",
+              "value": "bold"
+            },
+            {
+              "label": "Bolder",
+              "value": "bolder"
+            },
+            {
+              "label": "Lighter",
+              "value": "lighter"
+            },
+            {
+              "label": "Normal",
+              "value": "normal"
+            }
+          ],
+          "default": "normal"
+        },
+        {
+          "type": "select",
+          "id": "text-font-style",
+          "label": "Text Font Style",
+          "options": [
+            {
+              "label": "Italic",
+              "value": "italic"
+            },
+            {
+              "label": "Normal",
+              "value": "normal"
+            },
+            {
+              "label": "Oblique",
+              "value": "oblique"
+            }
+          ],
+          "default": "normal"
+        },
+        {
+          "type": "range",
+          "id": "text-size",
+          "min": 12,
+          "max": 48,
+          "step": 1,
+          "unit": "px",
+          "default": 18,
+          "label": "Text Size - Desktop"
+        },
+        {
+          "type": "range",
+          "id": "text-size-tablet",
+          "min": 12,
+          "max": 36,
+          "step": 1,
+          "unit": "px",
+          "default": 16,
+          "label": "Text Size - Tablet"
+        },
+        {
+          "type": "range",
+          "id": "text-size-mobile",
+          "min": 10,
+          "max": 24,
+          "step": 1,
+          "unit": "px",
+          "default": 14,
+          "label": "Text Size - Mobile"
+        },
+        {
+          "type": "range",
+          "id": "spacing",
+          "min": 0,
+          "max": 30,
+          "step": 1,
+          "unit": "px",
+          "default": 12,
+          "label": "Spacing Between Text Lines"
+        },
+        {
+          "type": "select",
+          "id": "align",
+          "label": "Align",
+          "default": "center",
+          "options": [
+            {
+              "label": "Left",
+              "value": "left"
+            },
+            {
+              "label": "Center",
+              "value": "center"
+            },
+            {
+              "label": "Right",
+              "value": "right"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Promotional Banner - Sale",
+      "category": "Promotional",
+      "settings": {
+        "btn-width-mobile": 60,
+        "btn-width-single": 50,
+        "margin-top": 20,
+        "margin-bottom": 20,
+        "text_buttons_gap": 24,
+        "buttons_gap": 16,
+        "left-btn-text": "Shop Men",
+        "right-btn-text": "Shop Women",
+        "bg-color": "#ff6b6b",
+        "spacing-y": 15
+      },
+      "blocks": [
+        {
+          "type": "text",
+          "settings": {
+            "text": "SUMMER SALE - UP TO 50% OFF",
+            "text-color": "#ffffff",
+            "text-font-weight": "bold",
+            "text-font-style": "normal",
+            "text-size": 18,
+            "text-size-tablet": 16,
+            "text-size-mobile": 14,
+            "spacing": 8,
+            "align": "center"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Compact Banner",
+      "category": "Promotional",
+      "settings": {
+        "btn-width-mobile": 60,
+        "btn-width-single": 50,
+        "margin-top": 10,
+        "margin-bottom": 10,
+        "text_buttons_gap": 12,
+        "buttons_gap": 8,
+        "left-btn-text": "Shop Now",
+        "bg-color": "#2a9d8f",
+        "spacing-y": 15
+      },
+      "blocks": [
+        {
+          "type": "text",
+          "settings": {
+            "text": "FREE SHIPPING ON ALL ORDERS",
+            "text-color": "#ffffff",
+            "text-font-weight": "normal",
+            "text-font-style": "normal",
+            "text-size": 16,
+            "text-size-tablet": 14,
+            "text-size-mobile": 12,
+            "spacing": 4,
+            "align": "center"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Spacious Banner",
+      "category": "Promotional",
+      "settings": {
+        "btn-width-mobile": 60,
+        "btn-width-single": 50,
+        "margin-top": 30,
+        "margin-bottom": 30,
+        "text_buttons_gap": 40,
+        "buttons_gap": 24,
+        "left-btn-text": "View Collection",
+        "right-btn-text": "Learn More",
+        "bg-color": "#6a0572",
+        "spacing-y": 25
+      },
+      "blocks": [
+        {
+          "type": "text",
+          "settings": {
+            "text": "NEW ARRIVALS JUST DROPPED",
+            "text-color": "#ffffff",
+            "text-font-weight": "bold",
+            "text-font-style": "normal",
+            "text-size": 24,
+            "text-size-tablet": 20,
+            "text-size-mobile": 18,
+            "spacing": 12,
+            "align": "center"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

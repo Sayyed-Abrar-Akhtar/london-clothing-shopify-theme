@@ -1,0 +1,546 @@
+<style>
+  {% for block in section.blocks %}
+    .promotion-banner-btn-{{ block.id }} {
+      font-weight: {{ block.settings.btn-font-weight }} !important;
+      font-style: {{ block.settings.btn-font-style }} !important;
+      font-size: {{ block.settings.btn-text-size }}px !important;
+      color: {{ block.settings.btn-color }};
+      padding-inline: {{ block.settings.btn-px }}px;
+      padding-block: {{ block.settings.btn-py }}px;
+      background-color: {{ block.settings.btn-bg-color }};
+      border-radius: {{ block.settings.rounded-corner }}px;
+      margin: {{ block.settings.block_margin_y }}px {{ block.settings.block_margin_x }}px !important;
+      display: block !important;
+    }
+
+    @media (max-width: 768px) {
+      .promotion-banner-btn-{{ block.id }} {
+        font-size: {{ block.settings.btn-text-size-mobile }}px !important;
+        padding-inline: {{ block.settings.btn-px-mobile }}px;
+        padding-block: {{ block.settings.btn-py-mobile }}px;
+        margin: {{ block.settings.block_margin_y_mobile }}px {{ block.settings.block_margin_x_mobile }}px !important;
+      }
+    }
+  {% endfor %}
+</style>
+
+<section
+  style="
+    {% if section.settings.top_margin > 0 %}
+      margin-top: {{ section.settings.top_margin }}px;
+    {% endif %}
+    {% if section.settings.bottom_margin > 0 %}
+      margin-bottom: {{ section.settings.bottom_margin }}px;
+    {% endif %}
+    {% if section.settings.padding > 0 %}
+    padding: {{ section.settings.padding }}px
+    {% endif %}
+  "
+  class="relative mb-6 md:mb-20 md:mb-28"
+  {% if section.settings.img_link != blank %}
+    style="cursor: pointer;"
+    data-elem="promotion-bnr-elem-container"
+    data-link="{{ section.settings.img_link }}"
+  {% endif %}
+>
+  <div class="show-banner">
+    {%- if section.settings.promotion_img != blank -%}
+      {% if section.settings.promotion_img.alt %}
+        {{
+          section.settings.promotion_img
+          | image_url: width: 1500
+          | image_tag:
+            preload: true,
+            widths: '1200, 1300, 1400, 1500, 1600, 2000',
+            style: 'width:100%; height:auto; object-fit: contain;'
+        }}
+      {%- else -%}
+        {{
+          section.settings.promotion_img
+          | image_url: width: 1500
+          | image_tag:
+            alt: 'Banner',
+            preload: true,
+            widths: '1200, 1300, 1400, 1500, 1600, 2000',
+            style: 'width:100%; height:auto; object-fit: contain;'
+        }}
+      {%- endif -%}
+    {%- endif -%}
+  </div>
+  <div class="show-banner--mob">
+    {%- if section.settings.promotion_img_mobile != blank -%}
+      {%- if section.settings.promotion_img_mobile.alt -%}
+        {{
+          section.settings.promotion_img_mobile
+          | image_url: width: 500
+          | image_tag: preload: true, widths: '400,500,600,700', style: 'width:100%; height:auto; object-fit: contain;'
+        }}
+
+      {%- else -%}
+        {{
+          section.settings.promotion_img_mobile
+          | image_url: width: 500
+          | image_tag: alt: 'Banner', widths: '400,500,600,700', style: 'width:100%; height:auto; object-fit: contain;'
+        }}
+      {%- endif -%}
+    {%- else -%}
+      {%- if section.settings.promotion_img != blank -%}
+        {% if section.settings.promotion_img.alt %}
+          {{
+            section.settings.promotion_img
+            | image_url: width: 1500
+            | image_tag:
+              preload: true,
+              widths: '1200, 1300, 1400, 1500, 1600, 2000',
+              style: 'width:100%; height:auto; object-fit: contain;'
+          }}
+        {%- else -%}
+          {{
+            section.settings.promotion_img
+            | image_url: width: 1500
+            | image_tag:
+              alt: 'Banner',
+              preload: true,
+              widths: '1200, 1300, 1400, 1500, 1600, 2000',
+              style: 'width:100%; height:auto; object-fit: contain;'
+          }}
+        {%- endif -%}
+      {%- endif -%}
+    {%- endif -%}
+  </div>
+  <div
+    class="flex flex-col justify-center items-center absolute left-[50%] w-[90%] px-4 translate-x-[-50%] translate-y-[-50%] md:w-[60%]"
+    style="top:{{ section.settings.btn_pos }}%"
+  >
+    <h2
+      class="text-lg leading-[150%] md:text-2xl md:leading-[150%] lg:text-4xl lg:leading-[180%] mb-3 text-center uppercase tracking-[1px] md:tracking-[2px] lg:tracking-[4px]"
+      style="color:{{- section.settings.font_color -}}; text-shadow: 1px 2px 3px #666;"
+    >
+      {{- section.settings.promotion_heading -}}
+    </h2>
+    {% if section.settings.promotion_subheading != blank %}
+      <p class="text-md leading-[130%] md:text-xl md:leading-[130%] lg:text-3xl lg:leading-[150%] mb-3 text-center inline-block uppercase">
+        {{- section.settings.promotion_subheading -}}
+      </p>
+    {% endif %}
+    <div class="w-full flex flex-col sm:flex-row justify-center items-center mt-[20px] gap-2">
+      {%- for block in section.blocks -%}
+        {%- if block.settings.btn_link != blank -%}
+          <a
+            href="{{- block.settings.btn_link -}}"
+            class="promotion-banner-btn-{{ block.id }} text-[11px] min-w-[100px] bg-slate-100/90 text-center m-0 uppercase two-col-bnr-cta"
+            style="display: block !important;"
+          >
+            {{- block.settings.btn_text | downcase -}}
+          </a>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% javascript %}
+  const promotionBnrElement = Array.from(document.querySelectorAll('[data-elem = "promotion-bnr-elem-container"]'));
+  if (!promotionBnrElement) return;
+
+  promotionBnrElement.forEach(function (elem) {
+    const url = elem.dataset.link;
+    elem.addEventListener('click', function () {
+      window.location.href = url;
+    });
+  });
+{% endjavascript %}
+
+
+{% style %}
+   .two-col-bnr-cta {
+    min-width:140px;
+    display: block !important;
+  }
+
+  @media only screen and (max-width: 500px) {
+    .show-banner--mob {
+      display: block;
+      height: auto;
+      overflow: hidden;
+    }
+    .show-banner {
+      display: none;
+    }
+  }
+  @media only screen and (min-width: 500px) {
+    .show-banner {
+      display: block;
+    }
+    .show-banner--mob {
+      display: none;
+    }
+  }
+  @media (min-width: 768px) {
+
+    .two-col-bnr-cta {
+      min-width:150px;
+    }
+  }
+
+  /* Fix for image display */
+  .show-banner img,
+  .show-banner--mob img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+  }
+
+  /* Ensure all buttons are visible */
+  .promotion-banner-btn {
+    display: block !important;
+    visibility: visible !important;
+  }
+{% endstyle %}
+
+
+{% schema %}
+{
+  "name": "promotion-banner",
+  "settings": [
+    {
+      "type": "range",
+      "label": "Button Position",
+      "id": "btn_pos",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "default": 50
+    },
+    {
+      "type": "text",
+      "label": "Promotion Heading",
+      "id": "promotion_heading",
+      "default": "Next level style"
+    },
+    {
+      "type": "text",
+      "label": "Promotion Subheading",
+      "id": "promotion_subheading"
+    },
+    {
+      "type": "image_picker",
+      "label": "Promotion Image",
+      "id": "promotion_img",
+      "info": "Image for desktop view"
+    },
+    {
+      "type": "image_picker",
+      "label": "Promotion Image Mobile",
+      "id": "promotion_img_mobile",
+      "info": "Image for mobile view"
+    },
+    {
+      "type": "url",
+      "label": "Image Link",
+      "id": "img_link",
+      "info": "Link to collections, menus or pages."
+    },
+    {
+      "type": "color_background",
+      "label": "font color",
+      "id": "font_color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "label": "Padding",
+      "id": "padding",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "label": "Top margin",
+      "id": "top_margin",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "label": "Bottom margin",
+      "id": "bottom_margin",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "label": "Button Width",
+      "id": "btn_width",
+      "unit": "px",
+      "step": 5,
+      "min": 60,
+      "max": 200,
+      "default": 70
+    }
+  ],
+  "blocks": [
+    {
+      "name": "CTA",
+      "type": "cta",
+      "settings": [
+        {
+          "type": "text",
+          "label": "Tab Text",
+          "id": "btn_text",
+          "info": "men",
+          "default": "Men"
+        },
+        {
+          "type": "url",
+          "label": "Tab Link",
+          "id": "btn_link",
+          "info": "Collections, menus or pages link."
+        },
+        {
+          "type": "header",
+          "content": "Button Settings"
+        },
+        {
+          "type": "select",
+          "id": "btn-font-weight",
+          "label": "Button Font Weight",
+          "options": [
+            {
+              "label": "Bold",
+              "value": "bold"
+            },
+            {
+              "label": "Bolder",
+              "value": "bolder"
+            },
+            {
+              "label": "Lighter",
+              "value": "lighter"
+            },
+            {
+              "label": "Normal",
+              "value": "normal"
+            }
+          ],
+          "default": "normal"
+        },
+        {
+          "type": "select",
+          "id": "btn-font-style",
+          "label": "Button Font Style",
+          "options": [
+            {
+              "label": "Italic",
+              "value": "italic"
+            },
+            {
+              "label": "Normal",
+              "value": "normal"
+            },
+            {
+              "label": "Oblique",
+              "value": "oblique"
+            }
+          ],
+          "default": "normal"
+        },
+        {
+          "type": "range",
+          "label": "Button Text Size",
+          "id": "btn-text-size",
+          "unit": "px",
+          "step": 1,
+          "min": 1,
+          "max": 30,
+          "default": 11
+        },
+        {
+          "type": "range",
+          "label": "Button Text Size (Mobile)",
+          "id": "btn-text-size-mobile",
+          "unit": "px",
+          "step": 1,
+          "min": 1,
+          "max": 24,
+          "default": 10
+        },
+        {
+          "type": "color_background",
+          "label": "Button Text Color",
+          "id": "btn-color",
+          "default": "#000000"
+        },
+        {
+          "type": "range",
+          "label": "Horizontal Padding",
+          "id": "btn-px",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "px",
+          "default": 10
+        },
+        {
+          "type": "range",
+          "label": "Horizontal Padding (Mobile)",
+          "id": "btn-px-mobile",
+          "min": 0,
+          "max": 50,
+          "step": 1,
+          "unit": "px",
+          "default": 8
+        },
+        {
+          "type": "range",
+          "label": "Vertical Padding",
+          "id": "btn-py",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "px",
+          "default": 10
+        },
+        {
+          "type": "range",
+          "label": "Vertical Padding (Mobile)",
+          "id": "btn-py-mobile",
+          "min": 0,
+          "max": 50,
+          "step": 1,
+          "unit": "px",
+          "default": 8
+        },
+        {
+          "type": "color_background",
+          "label": "Button Background Color",
+          "id": "btn-bg-color"
+        },
+        {
+          "type": "range",
+          "label": "Rounded Button Corner",
+          "id": "rounded-corner",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "default": 0
+        },
+        {
+          "type": "header",
+          "content": "Block Margins"
+        },
+        {
+          "type": "range",
+          "label": "Vertical Margin",
+          "id": "block_margin_y",
+          "min": 0,
+          "max": 20,
+          "step": 1,
+          "unit": "px",
+          "default": 6
+        },
+        {
+          "type": "range",
+          "label": "Horizontal Margin",
+          "id": "block_margin_x",
+          "min": 0,
+          "max": 20,
+          "step": 1,
+          "unit": "px",
+          "default": 8
+        },
+        {
+          "type": "range",
+          "label": "Vertical Margin (Mobile)",
+          "id": "block_margin_y_mobile",
+          "min": 0,
+          "max": 15,
+          "step": 1,
+          "unit": "px",
+          "default": 4
+        },
+        {
+          "type": "range",
+          "label": "Horizontal Margin (Mobile)",
+          "id": "block_margin_x_mobile",
+          "min": 0,
+          "max": 15,
+          "step": 1,
+          "unit": "px",
+          "default": 6
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Promotion Banner - Dual Buttons",
+      "category": "Promotional",
+      "settings": {
+        "btn_pos": 50,
+        "promotion_heading": "New Collection",
+        "promotion_subheading": "Discover Fresh Styles",
+        "font_color": "#ffffff",
+        "padding": 0,
+        "top_margin": 20,
+        "bottom_margin": 20,
+        "btn_width": 120
+      },
+      "blocks": [
+        {
+          "type": "cta",
+          "settings": {
+            "btn_text": "Shop Men",
+            "btn-font-weight": "bold",
+            "btn-font-style": "normal",
+            "btn-text-size": 13,
+            "btn-text-size-mobile": 11,
+            "btn-color": "#ffffff",
+            "btn-px": 20,
+            "btn-px-mobile": 15,
+            "btn-py": 12,
+            "btn-py-mobile": 8,
+            "btn-bg-color": "#000000",
+            "rounded-corner": 2,
+            "block_margin_y": 6,
+            "block_margin_x": 8,
+            "block_margin_y_mobile": 4,
+            "block_margin_x_mobile": 6
+          }
+        },
+        {
+          "type": "cta",
+          "settings": {
+            "btn_text": "Shop Women",
+            "btn-font-weight": "bold",
+            "btn-font-style": "normal",
+            "btn-text-size": 13,
+            "btn-text-size-mobile": 11,
+            "btn-color": "#000000",
+            "btn-px": 20,
+            "btn-px-mobile": 15,
+            "btn-py": 12,
+            "btn-py-mobile": 8,
+            "btn-bg-color": "#ffffff",
+            "rounded-corner": 2,
+            "block_margin_y": 6,
+            "block_margin_x": 8,
+            "block_margin_y_mobile": 4,
+            "block_margin_x_mobile": 6
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,108 @@
+<div style="margin: {{ section.settings.top_margin }}px 0 {{ section.settings.bottom_margin }}px 0">
+  {% if section.settings.image %}
+    {% if section.settings.image.alt %}
+      {{ section.settings.image | image_url: width: '1900' | image_tag }}
+    {% else %}
+      {{ section.settings.image | image_url: width: '1900' | image_tag: alt: 'Indeep' }}
+    {% endif %}
+  {% endif %}
+</div>
+
+{% schema %}
+{
+  "name": "Image Full Width",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "range",
+      "label": "Top margin",
+      "id": "top_margin",
+      "min": -25,
+      "max": 75,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "label": "Bottom margin",
+      "id": "bottom_margin",
+      "min": -25,
+      "max": 75,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "Full Width Image - Standard",
+      "category": "Image",
+      "settings": {
+        "top_margin": 0,
+        "bottom_margin": 0
+      }
+    },
+    {
+      "name": "Full Width Image - Spaced Top",
+      "category": "Image",
+      "settings": {
+        "top_margin": 40,
+        "bottom_margin": 0
+      }
+    },
+    {
+      "name": "Full Width Image - Spaced Bottom",
+      "category": "Image",
+      "settings": {
+        "top_margin": 0,
+        "bottom_margin": 40
+      }
+    },
+    {
+      "name": "Full Width Image - Centered",
+      "category": "Image",
+      "settings": {
+        "top_margin": 30,
+        "bottom_margin": 30
+      }
+    },
+    {
+      "name": "Full Width Image - Tight Spacing",
+      "category": "Image",
+      "settings": {
+        "top_margin": -10,
+        "bottom_margin": -10
+      }
+    },
+    {
+      "name": "Full Width Image - Section Break",
+      "category": "Image",
+      "settings": {
+        "top_margin": 50,
+        "bottom_margin": 50
+      }
+    },
+    {
+      "name": "Full Width Image - Compact",
+      "category": "Image",
+      "settings": {
+        "top_margin": 20,
+        "bottom_margin": 20
+      }
+    },
+    {
+      "name": "Full Width Image - Seamless",
+      "category": "Image",
+      "settings": {
+        "top_margin": -15,
+        "bottom_margin": -15
+      }
+    }
+  ]
+}
+{% endschema %}

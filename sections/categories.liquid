@@ -1,0 +1,76 @@
+<ul class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 mx-4 md:mx-10 justify-center items-center gap-2 sm:gap-3 md:gap-4 lg:gap-5">
+  {% for block in section.blocks %}
+    {% if block.settings.link %}
+      <li>
+        <figure>
+          <a href="{{ block.settings.link }}">
+            {% if block.settings.img %}
+              {% if block.settings.img.alt %}
+                {{-
+                  block.settings.img
+                  | image_url: width: 600
+                  | image_tag: class: 'rounded shadow-sm border border-gray-100'
+                }}
+              {% else %}
+                {{-
+                  block.settings.img
+                  | image_url: width: 600
+                  | image_tag: tag: block.settings.title, class: 'rounded shadow-sm border border-gray-100'
+                }}
+              {% endif %}
+            {% endif %}
+            <figcaption>
+              <main class="text-center h-16 mt-6">
+                <h2 class="text-lg md:text-xl font-bold tracking-wider py-1">{{ block.settings.title }}</h2>
+                {% if block.settings.subtitle %}
+                  <p class="text-sm md:text-md lg:text-lg">
+                    {{ block.settings.subtitle }}
+                  </p>
+                {% endif %}
+              </main>
+            </figcaption>
+          </a>
+        </figure>
+      </li>
+    {% endif %}
+  {% endfor %}
+</ul>
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Categories",
+  "class": "mb-20",
+  "settings": [],
+  "blocks": [
+    {
+      "type": "Category",
+      "name": "Category",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "img",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title"
+        },
+        {
+          "type": "text",
+          "id": "subtitle",
+          "label": "Sub title"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

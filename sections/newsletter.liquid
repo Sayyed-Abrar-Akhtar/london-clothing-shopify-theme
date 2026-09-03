@@ -1,0 +1,463 @@
+<style>
+  .newsletter-container{
+    height :{{section.settings.sm-image-height}}px;
+    background:center / cover no-repeat url('{{ section.settings.bg-image | image_url}}');
+    margin-block:{{section.settings.my}}px;
+    margin-inline:{{settings.uniform-mx-sm}}px;
+  }
+  .newsletter-styles{
+    height:100%;
+    margin-block:40px;
+    display:flex;
+    justify-content:{{section.settings.x-alignment}};
+    align-items:{{section.settings.y-alignment}};
+    margin-inline:19px;
+    padding-block:{{section.settings.py}}px;
+    padding-inline:{{section.settings.px}}px;
+  }
+  .newsletter-form-container {
+    width:90%;
+  }
+  .newsletter-heading-styles {
+    font-size:{{ section.settings.heading-size }}px;
+    color:{{section.settings.heading-color}};
+    font-weight:{{section.settings.heading-weight}};
+    font-style:{{section.settings.heading-style}};
+    margin-bottom:20px;
+  }
+  .newsletter-btn-styles {
+    font-size:{{ section.settings.btn-text-size }}px;
+    color:{{section.settings.btn-text-color}};
+    background-color:{{section.settings.btn-color}};
+    font-weight:{{section.settings.btn-text-weight}};
+    font-style:{{section.settings.btn-text-style}};
+  }
+  .newsletter-extra-info-styles {
+    font-size:{{ section.settings.extra-info-size }}px;
+    color:{{section.settings.extra-info-color}};
+    font-weight:{{section.settings.extra-info-weight}};
+    font-style:{{section.settings.extra-info-style}};
+    margin-top:16px;
+    text-transform:uppercase;
+    width:100%;
+  }
+  @media (min-width: 600px) {
+    .newsletter-container{
+      height :{{section.settings.image-height}}px;
+      margin-inline:{{settings.uniform-mx-lg}}px;
+    }
+    .newsletter-styles{
+      margin-inline:{{ section.settings.mx }}%;
+    }
+    .newsletter-form-container {
+      width:400px;
+    }
+  }
+</style>
+
+<section class="newsletter-styles">
+  <section class="tracking-widest">
+    <h2 class="w-full inline-block uppercase newsletter-heading-styles">
+      {{- section.settings.subscribe_form_heading -}}
+    </h2>
+    {%- render 'newsletter',
+      buttonText: section.settings.subscribe_form_btn_text,
+      extrainfo: section.settings['extra-info'],
+      btnstyles: 'newsletter-btn-styles',
+      extraInfoStyles: 'newsletter-extra-info-styles',
+      formPos: section.settings['x-alignment']
+    -%}
+  </section>
+</section>
+
+{% schema %}
+{
+  "name": "Newsletter",
+  "class": "newsletter-container",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section Settings"
+    },
+    {
+      "type": "image_picker",
+      "label": "Background Image",
+      "id": "bg-image"
+    },
+    {
+      "type": "range",
+      "label": "Image Height",
+      "id": "image-height",
+      "min": 40,
+      "max": 1200,
+      "step": 20,
+      "default": 100,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "label": "Mobile Image Height",
+      "id": "sm-image-height",
+      "min": 140,
+      "max": 1200,
+      "step": 20,
+      "default": 200,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "options": [
+        {
+          "label": "Left",
+          "value": "start"
+        },
+        {
+          "label": "Center",
+          "value": "center"
+        },
+        {
+          "label": "Right",
+          "value": "end"
+        }
+      ],
+      "default": "center",
+      "id": "x-alignment",
+      "label": "Horizontal Alignment"
+    },
+    {
+      "type": "select",
+      "options": [
+        {
+          "label": "Top",
+          "value": "flex-start"
+        },
+        {
+          "label": "Center",
+          "value": "center"
+        },
+        {
+          "label": "Bottom",
+          "value": "flex-end"
+        }
+      ],
+      "default": "center",
+      "id": "y-alignment",
+      "label": "Vertical Alignment"
+    },
+    {
+      "type": "range",
+      "id": "mx",
+      "label": "Horizontal Margin",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "my",
+      "label": "Vertical Margin",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "px",
+      "label": "Horizontal Padding",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 6
+    },
+    {
+      "type": "range",
+      "id": "py",
+      "label": "Vertical Padding",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 6
+    },
+    {
+      "type": "header",
+      "content": "Heading Settings"
+    },
+    {
+      "type": "text",
+      "label": "Subscribe section heading",
+      "id": "subscribe_form_heading",
+      "default": "Sign up to our newsletter",
+      "info": "Text to display to customer for email marketing."
+    },
+    {
+      "type": "range",
+      "id": "heading-size",
+      "label": "Heading Size",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "color",
+      "id": "heading-color",
+      "label": "Heading Color",
+      "default": "#000000"
+    },
+    {
+      "type": "select",
+      "id": "heading-weight",
+      "label": "Heading Font Weight",
+      "options": [
+        {
+          "value": "100",
+          "label": "Thin"
+        },
+        {
+          "value": "200",
+          "label": "Extra Light"
+        },
+        {
+          "value": "300",
+          "label": "Light"
+        },
+        {
+          "value": "400",
+          "label": "Normal"
+        },
+        {
+          "value": "500",
+          "label": "Medium"
+        },
+        {
+          "value": "600",
+          "label": "Semi Bold"
+        },
+        {
+          "value": "700",
+          "label": "Bold"
+        },
+        {
+          "value": "800",
+          "label": "Extra Bold"
+        },
+        {
+          "value": "900",
+          "label": "Black"
+        }
+      ],
+      "default": "700"
+    },
+    {
+      "type": "select",
+      "id": "heading-style",
+      "label": "Heading Font Style",
+      "options": [
+        {
+          "value": "normal",
+          "label": "Normal"
+        },
+        {
+          "value": "italic",
+          "label": "Italic"
+        },
+        {
+          "value": "oblique",
+          "label": "Oblique"
+        }
+      ],
+      "default": "normal"
+    },
+    {
+      "type": "header",
+      "content": "Button Settings"
+    },
+    {
+      "type": "text",
+      "label": "Subscribe button text",
+      "id": "subscribe_form_btn_text",
+      "default": "Subscribe",
+      "info": "Text to display on button."
+    },
+    {
+      "type": "range",
+      "id": "btn-text-size",
+      "label": "Button Text Size",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "color",
+      "id": "btn-text-color",
+      "label": "Button Text Color",
+      "default": "#000000"
+    },
+    {
+      "type": "color_background",
+      "id": "btn-color",
+      "label": "Button Background Color",
+      "default": "transparent"
+    },
+    {
+      "type": "select",
+      "id": "btn-text-weight",
+      "label": "Button Text Font Weight",
+      "options": [
+        {
+          "value": "100",
+          "label": "Thin"
+        },
+        {
+          "value": "200",
+          "label": "Extra Light"
+        },
+        {
+          "value": "300",
+          "label": "Light"
+        },
+        {
+          "value": "400",
+          "label": "Normal"
+        },
+        {
+          "value": "500",
+          "label": "Medium"
+        },
+        {
+          "value": "600",
+          "label": "Semi Bold"
+        },
+        {
+          "value": "700",
+          "label": "Bold"
+        },
+        {
+          "value": "800",
+          "label": "Extra Bold"
+        },
+        {
+          "value": "900",
+          "label": "Black"
+        }
+      ],
+      "default": "600"
+    },
+    {
+      "type": "select",
+      "id": "btn-text-style",
+      "label": "Button Text Font Style",
+      "options": [
+        {
+          "value": "normal",
+          "label": "Normal"
+        },
+        {
+          "value": "italic",
+          "label": "Italic"
+        },
+        {
+          "value": "oblique",
+          "label": "Oblique"
+        }
+      ],
+      "default": "normal"
+    },
+    {
+      "type": "header",
+      "content": "Extra Information Settings"
+    },
+    {
+      "type": "text",
+      "id": "extra-info",
+      "label": "Extra Information",
+      "default": "Register to receive 10% off your first purchase."
+    },
+    {
+      "type": "range",
+      "id": "extra-info-size",
+      "label": "Extra Information Size",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 11,
+      "unit": "px"
+    },
+    {
+      "type": "color",
+      "id": "extra-info-color",
+      "label": "Extra Information Color",
+      "default": "#000000"
+    },
+    {
+      "type": "select",
+      "id": "extra-info-weight",
+      "label": "Extra Information Font Weight",
+      "options": [
+        {
+          "value": "100",
+          "label": "Thin"
+        },
+        {
+          "value": "200",
+          "label": "Extra Light"
+        },
+        {
+          "value": "300",
+          "label": "Light"
+        },
+        {
+          "value": "400",
+          "label": "Normal"
+        },
+        {
+          "value": "500",
+          "label": "Medium"
+        },
+        {
+          "value": "600",
+          "label": "Semi Bold"
+        },
+        {
+          "value": "700",
+          "label": "Bold"
+        },
+        {
+          "value": "800",
+          "label": "Extra Bold"
+        },
+        {
+          "value": "900",
+          "label": "Black"
+        }
+      ],
+      "default": "400"
+    },
+    {
+      "type": "select",
+      "id": "extra-info-style",
+      "label": "Extra Information Font Style",
+      "options": [
+        {
+          "value": "normal",
+          "label": "Normal"
+        },
+        {
+          "value": "italic",
+          "label": "Italic"
+        },
+        {
+          "value": "oblique",
+          "label": "Oblique"
+        }
+      ],
+      "default": "normal"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,6 @@
+<p class="mx-6 uppercase leading-[170%]">
+  {{ text }}
+  {% if order_price > 0 %}
+    &nbsp;€<span data-type="order-limit">{{- order_price -}}</span>
+  {% endif %}
+</p>
